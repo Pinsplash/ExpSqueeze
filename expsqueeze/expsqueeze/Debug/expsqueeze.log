@@ -1,0 +1,13 @@
+﻿Build started 6/28/2024 10:40:45 AM.
+     1>Project "C:\source\repos\expsqueeze\expsqueeze\expsqueeze\expsqueeze.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\expsqueeze.cpp
+         expsqueeze.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\source\repos\expsqueeze\expsqueeze\Debug\expsqueeze.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\source\repos\expsqueeze\expsqueeze\Debug\expsqueeze.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\source\repos\expsqueeze\expsqueeze\Debug\expsqueeze.lib" /MACHINE:X86 Debug\expsqueeze.obj
+         expsqueeze.vcxproj -> C:\source\repos\expsqueeze\expsqueeze\Debug\expsqueeze.exe
+     1>Done Building Project "C:\source\repos\expsqueeze\expsqueeze\expsqueeze\expsqueeze.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.91
