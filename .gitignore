@@ -35,3 +35,9 @@
 *.log
 *.tlog
 *.pdb
+*.ilk
+*.pdb
+*.sdf
+*.suo
+*.log
+*.idb
