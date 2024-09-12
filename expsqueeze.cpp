@@ -21,6 +21,7 @@ struct Settings
 	string wantedradiostation;
 	string expfile;
 	int generation;
+	int repellevel;
 };
 
 struct Encounter
@@ -37,6 +38,7 @@ struct EncounterTable
 	string placename;
 	vector<Encounter> encounters;
 	int filenumber;
+	int expectedtotalpercent;
 };
 
 string remove_whitespace(string str)
@@ -322,6 +324,19 @@ int Setup(Settings *settings)
 			settings->wantedradiostation = "radio-off";
 		}
 	}
+	//repel level
+	settings->repellevel = -1;
+	cout << "\n\nEnter minimum level for the purpose of repels. (Level of the first (non-fainted g2-g5) member of the party.) Use 0 if not using repels.\n";
+	getline(cin, answer);
+	if (!answer.empty() && all_of(answer.begin(), answer.end(), ::isdigit))
+	{
+		settings->repellevel = stoi(answer);
+	}
+	else
+	{
+		cout << "Didn't understand answer, going with default 0\n";
+		settings->repellevel = 0;
+	}
 
 	//these conditions are not used for encounters that are repeatable, at least easily, so we don't care about them:
 	//starter
@@ -333,6 +348,44 @@ int Setup(Settings *settings)
 	//first-party-pokemon
 	return 1;
 	
+}
+
+void RegisterEncounter(Settings *settings, vector<EncounterTable> *maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
+{
+	if (settings->repellevel <= maxlevel)
+	{
+		Encounter newEnc;
+		newEnc.chance = chance;
+		newEnc.maxlevel = maxlevel;
+		newEnc.minlevel = minlevel;
+		newEnc.pokemonname = pokemonname;
+		bool makenewtable = true;
+		for (EncounterTable& table : *maintables)
+		{
+			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
+			if (table.placename == placename && table.method == method)
+			{
+				makenewtable = false;
+				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+				table.encounters.push_back(newEnc);
+				table.expectedtotalpercent += chance;
+				break;
+			}
+		}
+		if (makenewtable)
+		{
+			//cout << "Line " << linenum << ": new table\n";
+			EncounterTable newTable;
+			newTable.method = method;
+			newTable.placename = placename;
+			newTable.filenumber = i;
+			newTable.expectedtotalpercent = chance;
+			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+			newTable.encounters.push_back(newEnc);
+
+			maintables->push_back(newTable);
+		}
+	}
 }
 
 int ParseLocationDataFile(string basepath, int i, Settings *settings, vector<EncounterTable> *maintables)
@@ -504,35 +557,7 @@ int ParseLocationDataFile(string basepath, int i, Settings *settings, vector<Enc
 		{
 			if (inencounterdetails && !encounterinvalid && !inconditionvalues && !inmethod)
 			{
-				Encounter newEnc;
-				newEnc.chance = chance;
-				newEnc.maxlevel = maxlevel;
-				newEnc.minlevel = minlevel;
-				newEnc.pokemonname = pokemonname;
-				bool makenewtable = true;
-				for (EncounterTable& table : *maintables)
-				{
-					//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-					if (table.placename == placename && table.method == method)
-					{
-						makenewtable = false;
-						//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-						table.encounters.push_back(newEnc);
-						break;
-					}
-				}
-				if (makenewtable)
-				{
-					//cout << "Line " << linenum << ": new table\n";
-					EncounterTable newTable;
-					newTable.method = method;
-					newTable.placename = placename;
-					newTable.filenumber = i;
-					//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-					newTable.encounters.push_back(newEnc);
-
-					maintables->push_back(newTable);
-				}
+				RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, i);
 				finishedline = true;
 			}
 			/*
@@ -601,35 +626,7 @@ int ParseLocationDataFile(string basepath, int i, Settings *settings, vector<Enc
 		{
 			if (inencounterdetails && !encounterinvalid && !inconditionvalues)
 			{
-				Encounter newEnc;
-				newEnc.chance = chance;
-				newEnc.maxlevel = maxlevel;
-				newEnc.minlevel = minlevel;
-				newEnc.pokemonname = pokemonname;
-				bool makenewtable = true;
-				for (EncounterTable& table : *maintables)
-				{
-					//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-					if (table.placename == placename && table.method == method)
-					{
-						makenewtable = false;
-						//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-						table.encounters.push_back(newEnc);
-						break;
-					}
-				}
-				if (makenewtable)
-				{
-					//cout << "Line " << linenum << ": new table\n";
-					EncounterTable newTable;
-					newTable.method = method;
-					newTable.placename = placename;
-					newTable.filenumber = i;
-					//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-					newTable.encounters.push_back(newEnc);
-
-					maintables->push_back(newTable);
-				}
+				RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, i);
 				finishedline = true;
 			}
 			/*
@@ -1024,7 +1021,7 @@ int main(int argc, char* argv[])
 	{
 		cout << "\n" << table.placename << ", " << table.method << "\n";
 		double totalavgexp = 0;
-		int totalchance = 0;//sanity check: this number should always = 100 at the end of the table.
+		int totalchance = 0;//sanity check: this number should always = expectedtotalpercent at the end of the table.
 		for (Encounter encounter : table.encounters)
 		{
 			//get experience yield from stripped down bulba tables
@@ -1063,6 +1060,7 @@ int main(int argc, char* argv[])
 					continue;
 				}
 			}
+			encounter.minlevel = max(encounter.minlevel, settings.repellevel);
 			//30-30: 1
 			//30-31: 2
 			//30-40: 11
@@ -1072,7 +1070,7 @@ int main(int argc, char* argv[])
 				levelsum += encounter.minlevel + i;
 			double avglevel = levelsum / numlevels;
 			int factor = (settings.generation == 5 || settings.generation >= 7) ? 5 : 7;
-			double avgexpweighted = (((baseexp * avglevel) / factor) * encounter.chance) / 100;
+			double avgexpweighted = (((baseexp * avglevel) / factor) * encounter.chance) / table.expectedtotalpercent;
 			cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << ((baseexp * avglevel) / factor) << ", weighted " << avgexpweighted << "\n";
 			totalavgexp += avgexpweighted;
 			totalchance += encounter.chance;
@@ -1093,11 +1091,12 @@ int main(int argc, char* argv[])
 		//if we're getting data for all games, then there are multiple fully correct encounter tables inside a file
 		//this means if the table is correct it will be a multiple of 100
 		//long story short we can't know what that multiple will be, so % is our best option
-		if (settings.wantedgame == "all" ? (totalchance % 100 != 0) : (totalchance != 100))
+		//also, again, because all is meant for debugging only, we're just going to not expect it to be used in conjunction with repellevel because that gets hairy
+		if (settings.wantedgame == "all" ? (totalchance % 100 != 0) : (totalchance != table.expectedtotalpercent))
 		{
 			if (knownerror)
 			{
-				warnings.push_back("WARNING: Data for " + table.placename + ", " + table.method + " known to be inaccurate. Total percent chance reported as " + to_string(totalchance) + "%.\n");
+				warnings.push_back("WARNING: Data for " + table.placename + ", " + table.method + " known to be inaccurate. Total percent chance reported as " + to_string(totalchance) + "% when it should be " + to_string(table.expectedtotalpercent) + " after considering levels for repel.\n");
 			}
 			else
 			{
