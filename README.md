@@ -11,7 +11,7 @@ The files in the [location-area](https://github.com/Pinsplash/ExpSqueeze/tree/ma
 Encounter tables consist of encounter slots. Every slot has a Pokemon, minimum and maximum level, and % chance value. ExpSqueeze finds the average level given the minimum and maximum level, solves the leftmost fraction of the [experience gain formula](https://bulbapedia.bulbagarden.net/wiki/Experience#Gain_formula), and then weighs this according to the slot's % chance. This is done for every slot. When the numbers are added up, you get the encounter table's average experience per encounter.
 
 ## Using the output
-To actually make sense of the data, use the two links given at the end of the output. The program does not perform sorting and filtering automatically because there are in fact several other things you may want to do with the data, and the program has no idea what locations and encounter methods are currently accessible to you.
+To actually make sense of the data, use the two links given at the end of the output. The program does not perform sorting and filtering automatically because there are in fact several other things you may want to do with the data, and the program has no idea what locations and encounter methods are currently accessible to you. Here is how you can find the areas with the best encounters for experience:
 
 - [Filter Lines](http://www.unit-conversion.info/texttools/filter-lines/)
   - **Input Data**: Copy the output and paste it here.
