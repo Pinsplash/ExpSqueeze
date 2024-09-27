@@ -22,6 +22,7 @@ struct Settings
 	string expfile;
 	int generation;
 	int repellevel;
+	int maxlevel;
 };
 
 struct Encounter
@@ -337,6 +338,19 @@ int Setup(Settings *settings)
 		cout << "Didn't understand answer, going with default 0\n";
 		settings->repellevel = 0;
 	}
+	//max level
+	settings->maxlevel = -1;
+	cout << "\n\nEnter maximum level Pokemon in the encounter table may have. Tables with Pokemon above this level will not be considered.\n";
+	getline(cin, answer);
+	if (!answer.empty() && all_of(answer.begin(), answer.end(), ::isdigit))
+	{
+		settings->maxlevel = stoi(answer);
+	}
+	else
+	{
+		cout << "Didn't understand answer, going with default 100\n";
+		settings->maxlevel = 100;
+	}
 
 	//these conditions are not used for encounters that are repeatable, at least easily, so we don't care about them:
 	//starter
@@ -352,6 +366,11 @@ int Setup(Settings *settings)
 
 void RegisterEncounter(Settings *settings, vector<EncounterTable> *maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
 {
+	bool tablebad = false;
+	//throw out the whole table
+	if (settings->maxlevel < maxlevel)
+		tablebad = true;
+
 	if (settings->repellevel <= maxlevel)
 	{
 		Encounter newEnc;
@@ -360,19 +379,28 @@ void RegisterEncounter(Settings *settings, vector<EncounterTable> *maintables, i
 		newEnc.minlevel = minlevel;
 		newEnc.pokemonname = pokemonname;
 		bool makenewtable = true;
+		int index = -1;
 		for (EncounterTable& table : *maintables)
 		{
+			index++;
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
 			if (table.placename == placename && table.method == method)
 			{
-				makenewtable = false;
-				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-				table.encounters.push_back(newEnc);
-				table.expectedtotalpercent += chance;
-				break;
+				if (tablebad)
+				{
+					maintables->erase(maintables->begin() + index);
+				}
+				else
+				{
+					makenewtable = false;
+					//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+					table.encounters.push_back(newEnc);
+					table.expectedtotalpercent += chance;
+					break;
+				}
 			}
 		}
-		if (makenewtable)
+		if (makenewtable && !tablebad)
 		{
 			//cout << "Line " << linenum << ": new table\n";
 			EncounterTable newTable;
