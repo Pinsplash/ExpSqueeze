@@ -37,37 +37,37 @@ using namespace std;
 
 struct Settings
 {
-	int firstfolder;
-	int lastfolder;
+	int firstfolder = 0;
+	int lastfolder = 0;
 	string wantedgame;
 	string wantedtime;
 	string wantedseason;
-	bool wantswarm;
-	bool wantradar;
+	bool wantswarm = false;
+	bool wantradar = false;
 	string wantedslot2game;
 	string wantedradiostation;
 	string expfile;
-	int generation;
-	int repellevel;
-	int maxlevel;
-	bool printtext;
+	int generation = 0;
+	int repellevel = 0;
+	int maxlevel = 100;
+	bool printtext = false;
 };
 
 struct SettingsWindowData
 {
-	int generation_lastframe;
-	int time_chosen;
+	int generation_lastframe = 0;
+	int time_chosen = 0;
 	bool running = false;
 };
 
 struct Encounter
 {
-	int chance;
-	int minlevel;
-	int maxlevel;
+	int chance = 0;
+	int minlevel = 0;
+	int maxlevel = 0;
 	string pokemonname;
-	double avgexp;
-	double avgexpweighted;
+	double avgexp = 0;
+	double avgexpweighted = 0;
 };
 
 struct EncounterTable
@@ -75,14 +75,14 @@ struct EncounterTable
 	string method;
 	string placename;
 	vector<Encounter> encounters;
-	int filenumber;
-	int expectedtotalpercent;
-	double totalavgexp;
-	int totalchance;
-	bool knownerror;
+	int filenumber = 0;
+	int expectedtotalpercent = 0;
+	double totalavgexp = 0;
+	int totalchance = 0;
+	bool knownerror = false;
 };
 
-string remove_whitespace(string str)
+static string remove_whitespace(string str)
 {
 	string str1 = str;
 
@@ -106,7 +106,7 @@ string remove_whitespace(string str)
 	return str2;
 }
 
-void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
 {
 	bool tablebad = false;
 	//throw out the whole table
@@ -158,7 +158,7 @@ void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, i
 	}
 }
 
-int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<EncounterTable>* maintables)
+static int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<EncounterTable>* maintables)
 {
 	string path = basepath + "\\" + to_string(i) + "\\index.json";
 	//cout << path << "\n";
@@ -190,9 +190,9 @@ int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<Enc
 
 	string placename;//only one place name per file
 	string pokemonname;
-	int chance;
-	int maxlevel;
-	int minlevel;
+	int chance = 0;
+	int maxlevel = 0;
+	int minlevel = 0;
 	string method;
 	bool inmainbrackets = false;
 	bool inencountermethodrates = false;
@@ -761,17 +761,17 @@ int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<Enc
 	return 1;
 }
 
-bool compareByExp(const EncounterTable& a, const EncounterTable& b)
+static bool compareByExp(const EncounterTable& a, const EncounterTable& b)
 {
 	return a.totalavgexp > b.totalavgexp;
 }
 
-bool compareByAEW(const Encounter& a, const Encounter& b)
+static bool compareByAEW(const Encounter& a, const Encounter& b)
 {
 	return a.avgexpweighted > b.avgexpweighted;
 }
 
-void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
+static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
@@ -923,7 +923,7 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 	return *p ? p : NULL;
 }
 
-void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
+static void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
 	static bool use_work_area = false;
 	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
@@ -1164,6 +1164,7 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 			if (settingswindowdata->generation_lastframe != newsettings.generation)
 				settingswindowdata->time_chosen = 1;
 		}
+#pragma warning(suppress: 6384)
 		ImGui::Combo("Time of Day", &settingswindowdata->time_chosen, times, IM_ARRAYSIZE(times));
 		//ImGui::SameLine(); HelpMarker("dobedobedo");
 		newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);//internal_times[settingswindowdata->time_chosen];
@@ -1394,8 +1395,6 @@ int main(int, char**)
     //IM_ASSERT(font != nullptr);
 
     // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	vector<EncounterTable> maintables;
