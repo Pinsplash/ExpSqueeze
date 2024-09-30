@@ -44,3 +44,17 @@
 *.opensdf
 *.tlog
 *.lastbuildstate
+*.vsidx
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+src_imgui/examples/.vs/expsqueeze_sln/v17/DocumentLayout.backup.json
+src_imgui/examples/.vs/expsqueeze_sln/v17/DocumentLayout.json
+*.ipch
+*.recipe
+src_imgui/examples/example_win32_directx9/Debug/example_win32_directx9.vcxproj.FileListAbsolute.txt
+*.vcxproj
+*.filters
+*.user
+src_imgui/examples/example_win32_directx9/imgui.ini

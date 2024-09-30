@@ -1,0 +1,569 @@
+{
+    "encounter_method_rates": [
+        {
+            "encounter_method": {
+                "name": "old-rod",
+                "url": "/api/v2/encounter-method/2/"
+            },
+            "version_details": [
+                {
+                    "rate": 25,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "rate": 25,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        },
+        {
+            "encounter_method": {
+                "name": "good-rod",
+                "url": "/api/v2/encounter-method/3/"
+            },
+            "version_details": [
+                {
+                    "rate": 50,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "rate": 50,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        },
+        {
+            "encounter_method": {
+                "name": "super-rod",
+                "url": "/api/v2/encounter-method/4/"
+            },
+            "version_details": [
+                {
+                    "rate": 75,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "rate": 75,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        },
+        {
+            "encounter_method": {
+                "name": "surf",
+                "url": "/api/v2/encounter-method/5/"
+            },
+            "version_details": [
+                {
+                    "rate": 15,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "rate": 15,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        }
+    ],
+    "game_index": 73,
+    "id": 256,
+    "location": {
+        "name": "mt-moon",
+        "url": "/api/v2/location/80/"
+    },
+    "name": "mt-moon-mt-moon-square",
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Mount Moon Square"
+        },
+        {
+            "language": {
+                "name": "fr",
+                "url": "/api/v2/language/5/"
+            },
+            "name": "Aire de repos du Mont S\u00e9l\u00e9nite"
+        }
+    ],
+    "pokemon_encounters": [
+        {
+            "pokemon": {
+                "name": "poliwag",
+                "url": "/api/v2/pokemon/60/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 60,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        }
+                    ],
+                    "max_chance": 190,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 60,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 40,
+                            "method": {
+                                "name": "super-rod",
+                                "url": "/api/v2/encounter-method/4/"
+                            },
+                            "min_level": 40
+                        }
+                    ],
+                    "max_chance": 190,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "magikarp",
+                "url": "/api/v2/pokemon/129/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 30,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 30
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 4,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 1,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        }
+                    ],
+                    "max_chance": 210,
+                    "version": {
+                        "name": "heartgold",
+                        "url": "/api/v2/version/15/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 30,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 30
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 4,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 1,
+                            "condition_values": [],
+                            "max_level": 35,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 40,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 20,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 20
+                        }
+                    ],
+                    "max_chance": 210,
+                    "version": {
+                        "name": "soulsilver",
+                        "url": "/api/v2/version/16/"
+                    }
+                }
+            ]
+        }
+    ]
+}
