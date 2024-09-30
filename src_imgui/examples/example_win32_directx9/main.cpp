@@ -761,6 +761,16 @@ int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<Enc
 	return 1;
 }
 
+bool compareByExp(const EncounterTable& a, const EncounterTable& b)
+{
+	return a.totalavgexp > b.totalavgexp;
+}
+
+bool compareByAEW(const Encounter& a, const Encounter& b)
+{
+	return a.avgexpweighted > b.avgexpweighted;
+}
+
 void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
@@ -841,6 +851,7 @@ void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string b
 			table.totalchance += encounter.chance;
 		}
 		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << "\n";
+		sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 		table.knownerror = false;
 		if (table.placename == "S.S.Annedock" //swarm conditions missing
 			|| table.placename == "Road42" //probably incorrect golbat 1% encounter in crystal during day/morning
@@ -895,11 +906,6 @@ static void HelpMarker(const char* desc)
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
-}
-
-bool compareByExp(const EncounterTable& a, const EncounterTable& b)
-{
-	return a.totalavgexp > b.totalavgexp;
 }
 
 static const char* Items_SingleStringGetter(void* data, int idx)
