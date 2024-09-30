@@ -50,6 +50,7 @@ struct Settings
 	int generation;
 	int repellevel;
 	int maxlevel;
+	bool printtext;
 };
 
 struct SettingsWindowData
@@ -103,304 +104,6 @@ string remove_whitespace(string str)
 		nums.end());
 #endif
 	return str2;
-}
-
-int Setup(Settings* settings)
-{
-	string answer;
-
-	cout << "Enter game name. Only include the main word(s) of the game's name and replace spaces with hyphens (e.g. black-2, yellow, soulsilver)\nGens 8+, spinoffs, Pokemon Green, ORAS, and Let's Go games not available.\n";
-	getline(cin, answer);
-
-	//answer = "pearl";
-	settings->wantedgame = answer;
-
-	//validate game choice
-	bool rse = false;
-	bool frlg = false;
-	bool dpp = false;
-	bool hgss = false;
-	bool bw1 = false;
-	bool bw2 = false;
-	bool xy = false;
-	bool sm = false;
-	bool usum = false;
-	bool allgames = false;
-	settings->generation = 0;
-
-	if (settings->wantedgame == "blue" || settings->wantedgame == "red" || settings->wantedgame == "yellow")
-	{
-		settings->expfile = "gen1_exp.txt";
-		settings->firstfolder = 258;
-		settings->lastfolder = 833;
-		settings->generation = 1;
-	}
-
-	if (settings->wantedgame == "gold" || settings->wantedgame == "silver" || settings->wantedgame == "crystal")
-	{
-		settings->expfile = "gen2_exp.txt";
-		settings->firstfolder = 184;
-		settings->lastfolder = 841;
-		settings->generation = 2;
-	}
-
-	if (settings->wantedgame == "ruby" || settings->wantedgame == "sapphire" || settings->wantedgame == "emerald")
-	{
-		settings->firstfolder = 350;
-		settings->lastfolder = 834;
-		rse = true;
-	}
-
-	if (settings->wantedgame == "firered" || settings->wantedgame == "leafgreen")
-	{
-		settings->firstfolder = 258;
-		settings->lastfolder = 833;
-		frlg = true;
-	}
-
-	if (rse || frlg)
-	{
-		settings->expfile = "gen3_exp.txt";
-		settings->generation = 3;
-	}
-
-	if (settings->wantedgame == "diamond" || settings->wantedgame == "pearl" || settings->wantedgame == "platinum")
-	{
-		settings->firstfolder = 1;
-		settings->lastfolder = 840;
-		dpp = true;
-	}
-
-	if (settings->wantedgame == "heartgold" || settings->wantedgame == "soulsilver")
-	{
-		settings->firstfolder = 184;
-		settings->lastfolder = 842;
-		hgss = true;
-	}
-
-	if (dpp || hgss)
-	{
-		settings->expfile = "gen4_exp.txt";
-		settings->generation = 4;
-	}
-
-	if (settings->wantedgame == "black" || settings->wantedgame == "white")
-	{
-		settings->expfile = "gen5bw1_exp.txt";
-		settings->firstfolder = 576;
-		settings->lastfolder = 775;
-		bw1 = true;
-	}
-
-	if (settings->wantedgame == "black-2" || settings->wantedgame == "white-2")
-	{
-		settings->expfile = "gen5bw2_exp.txt";
-		settings->firstfolder = 576;
-		settings->lastfolder = 792;
-		bw2 = true;
-	}
-
-	if (bw1 || bw2)
-		settings->generation = 5;
-
-	if (settings->wantedgame == "x" || settings->wantedgame == "y")
-	{
-		settings->expfile = "gen6_exp.txt";
-		settings->firstfolder = 708;
-		settings->lastfolder = 780;
-		settings->generation = 6;
-		xy = true;
-	}
-
-	if (settings->wantedgame == "sun" || settings->wantedgame == "moon")
-	{
-		settings->expfile = "gen7sm_exp.txt";
-		sm = true;
-	}
-
-	if (settings->wantedgame == "ultra-sun" || settings->wantedgame == "ultra-moon")
-	{
-		settings->expfile = "gen7usum_exp.txt";
-		usum = true;
-	}
-
-	if (sm || usum)
-	{
-		settings->firstfolder = 1035;
-		settings->lastfolder = 1164;
-		settings->generation = 7;
-	}
-
-	if (settings->wantedgame == "all")
-	{
-		settings->firstfolder = 1;
-		settings->lastfolder = 1164;
-		allgames = true;
-	}
-
-	if (settings->generation == 0 && !allgames)
-	{
-		cout << "\nGame '" << settings->wantedgame << "' not valid. Here is the full list of games. Please restart and enter the game's name as shown here.\n";
-		cout << "blue, red, yellow\ngold, silver, crystal\nruby, sapphire, emerald, firered, leafgreen\n";
-		cout << "diamond, pearl, platinum, heartgold, soulsilver\nblack, white, black-2, white-2\n";
-		cout << "x, y,\nsun, moon, ultra-sun, ultra-moon";
-		cin.get();
-		return 0;
-	}
-
-	//conditions https://github.com/PokeAPI/api-data/blob/master/data/api/v2/encounter-condition-value/index.json
-	//encounter slots that get replaced are marked with things like "off" or "none"
-	//all slots in a table that change based on conditions will still add up to the same probability. for instance if there's a 10% chance on a morning encounter, there must necessarily be a day and night encounter with 10% as well.
-	//even though we don't know specifically which slots are replacing which, the chances will always add up to 100% regardless of the condition's value.
-	//ask user about these things for relevant games
-	//time: morning/day/night (all gens except 1, 3)
-	settings->wantedtime = "NA";
-	if (allgames || (settings->generation != 1 && settings->generation != 3))
-	{
-		cout << "\n\nEnter time of day. morning, day, or night\n";
-		getline(cin, answer);
-		//answer = "day";
-		if (answer == "morning")
-			settings->wantedtime = "time-morning";
-		else if (answer == "day")
-			settings->wantedtime = "time-day";
-		else if (answer == "night")
-			settings->wantedtime = "time-night";
-		else
-		{
-			cout << "Didn't understand answer, going with default day\n";
-			settings->wantedtime = "time-day";
-		}
-	}
-	//season: spring/summer/autumn/winter (gen 5)
-	settings->wantedseason = "NA";
-	if (allgames || settings->generation == 5)
-	{
-		cout << "\n\nEnter season. spring, summer, autumn, or winter\n";
-		getline(cin, answer);
-		//answer = "spring";
-		if (answer == "spring")
-			settings->wantedseason = "season-spring";
-		else if (answer == "summer")
-			settings->wantedseason = "season-summer";
-		else if (answer == "autumn")
-			settings->wantedseason = "season-autumn";
-		else if (answer == "winter")
-			settings->wantedseason = "season-winter";
-		else
-		{
-			cout << "Didn't understand answer, going with default spring\n";
-			settings->wantedseason = "season-spring";
-		}
-
-	}
-	//swarm: yes/no (gen 2-5)
-	settings->wantswarm = false;
-	if (allgames || (settings->generation >= 2 && settings->generation <= 5))
-	{
-		cout << "\n\nPretend mass outbreaks are active? yes or no\n";
-		getline(cin, answer);
-		//answer = "no";
-		settings->wantswarm = answer == "yes";
-		if (answer != "yes" && answer != "no")
-		{
-			cout << "Didn't understand answer, going with default no\n";
-		}
-	}
-	//radar: on/off (DPP, XY)
-	settings->wantradar = false;
-	if (allgames || dpp || xy)
-	{
-		cout << "\n\nPoke radar status? on or off (don't know if this matters for X/Y)\n";
-		getline(cin, answer);
-		//answer = "off";
-		settings->wantradar = answer == "on";
-		if (answer != "on" && answer != "off")
-		{
-			cout << "Didn't understand answer, going with default off\n";
-		}
-	}
-	//slot2: none/ruby/sapphire/emerald/firered/leafgreen (gen 4)
-	settings->wantedslot2game = "NA";
-	if (allgames || settings->generation == 4)
-	{
-		cout << "\n\nEnter game for DS slot 2. (Pal Park) none, ruby, sapphire, emerald, firered, or leafgreen\n";
-		getline(cin, answer);
-		//answer = "none";
-		if (answer == "none")
-			settings->wantedslot2game = "slot2-none";
-		else if (answer == "ruby")
-			settings->wantedslot2game = "slot2-ruby";
-		else if (answer == "sapphire")
-			settings->wantedslot2game = "slot2-sapphire";
-		else if (answer == "emerald")
-			settings->wantedslot2game = "slot2-emerald";
-		else if (answer == "firered")
-			settings->wantedslot2game = "slot2-firered";
-		else if (answer == "leafgreen")
-			settings->wantedslot2game = "slot2-leafgreen";
-		else
-		{
-			cout << "Didn't understand answer, going with default none\n";
-			settings->wantedslot2game = "slot2-none";
-		}
-	}
-	//radio: off/hoenn/sinnoh (HGSS)
-	settings->wantedradiostation = "NA";
-	if (allgames || hgss)
-	{
-		cout << "\n\nEnter radio status. (Hoenn Sound and Sinnoh Sound) off, hoenn, or sinnoh\n";
-		getline(cin, answer);
-		//answer = "off";
-		if (answer == "off")
-			settings->wantedradiostation = "radio-off";
-		else if (answer == "hoenn")
-			settings->wantedradiostation = "radio-hoenn";
-		else if (answer == "sinnoh")
-			settings->wantedradiostation = "radio-sinnoh";
-		else
-		{
-			cout << "Didn't understand answer, going with default off\n";
-			settings->wantedradiostation = "radio-off";
-		}
-	}
-	//repel level
-	settings->repellevel = -1;
-	cout << "\n\nEnter minimum level for the purpose of repels. (Level of the first (non-fainted g2-g5) member of the party.) Use 0 if not using repels.\n";
-	getline(cin, answer);
-	if (!answer.empty() && all_of(answer.begin(), answer.end(), ::isdigit))
-	{
-		settings->repellevel = stoi(answer);
-	}
-	else
-	{
-		cout << "Didn't understand answer, going with default 0\n";
-		settings->repellevel = 0;
-	}
-	//max level
-	settings->maxlevel = -1;
-	cout << "\n\nEnter maximum level Pokemon in the encounter table may have. Tables with Pokemon above this level will not be considered.\n";
-	getline(cin, answer);
-	if (!answer.empty() && all_of(answer.begin(), answer.end(), ::isdigit))
-	{
-		settings->maxlevel = stoi(answer);
-	}
-	else
-	{
-		cout << "Didn't understand answer, going with default 100\n";
-		settings->maxlevel = 100;
-	}
-
-	//these conditions are not used for encounters that are repeatable, at least easily, so we don't care about them:
-	//starter
-	//tv-option
-	//story-progress
-	//other
-	//item
-	//weekday
-	//first-party-pokemon
-	return 1;
-
 }
 
 void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
@@ -1060,27 +763,27 @@ int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<Enc
 
 void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
 {
-	cout << "Reading encounter data\n";
+	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
 	string tablepath = basepath + "location-area";
 	int notch = 1;
 	double range = settings->lastfolder - settings->firstfolder;
-	cout << "|     PROGRESS     |\n";
+	if (settings->printtext) cout << "|     PROGRESS     |\n";
 	for (int i = settings->firstfolder; i <= settings->lastfolder; i++)
 	{
 		if ((i - settings->firstfolder) / range >= (notch * 0.05))
 		{
-			cout << "-";
+			if (settings->printtext) cout << "-";
 			notch++;
 		}
 		if (ParseLocationDataFile(tablepath, i, settings, maintables) == 0)
 			return;
 	}
-	cout << "\n";
+	if (settings->printtext) cout << "\n";
 	vector<string> warnings;
 	for (EncounterTable &table : *maintables)
 	{
-		cout << "\n" << table.placename << ", " << table.method << "\n";
+		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << "\n";
 		table.totalavgexp = 0;
 		table.totalchance = 0;//sanity check: this number should always = expectedtotalpercent at the end of the table.
 		for (Encounter &encounter : table.encounters)
@@ -1133,11 +836,11 @@ void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string b
 			int factor = (settings->generation == 5 || settings->generation >= 7) ? 5 : 7;
 			encounter.avgexp = (baseexp * avglevel) / factor;
 			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
-			cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+			if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 			table.totalavgexp += encounter.avgexpweighted;
 			table.totalchance += encounter.chance;
 		}
-		cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << "\n";
+		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << "\n";
 		table.knownerror = false;
 		if (table.placename == "S.S.Annedock" //swarm conditions missing
 			|| table.placename == "Road42" //probably incorrect golbat 1% encounter in crystal during day/morning
@@ -1168,13 +871,16 @@ void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string b
 			}
 		}
 	}
-	cout << "\n";
+	if (settings->printtext) cout << "\n";
 	for (string warning : warnings)
 		cout << warning;
-	cout << "\n";
-	cout << "Done. Press ENTER or the X button to close.\n";
-	cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
-	cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
+	if (settings->printtext)
+	{
+		cout << "\n";
+		cout << "Done. Press ENTER or the X button to close.\n";
+		cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
+		cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
+	}
 }
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
@@ -1219,8 +925,10 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 	// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
 	// Based on your use case you may want one or the other.
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
-	//ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
-	//ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+#ifndef _DEBUG
+	ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+	ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+#endif
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	Settings newsettings;
@@ -1511,6 +1219,10 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
 	newsettings.maxlevel = maxlevel;
 
+	static bool printtext = false;
+	ImGui::Checkbox("Text Output", &printtext);
+	newsettings.printtext = printtext;
+
 	if (settingswindowdata->running)
 	{
 		//only save the new settings once the button is pressed. this prevents changing the settings mid-iteration.
@@ -1527,6 +1239,7 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 		settings->generation = newsettings.generation;
 		settings->repellevel = newsettings.repellevel;
 		settings->maxlevel = newsettings.maxlevel;
+		settings->printtext = newsettings.printtext;
 		ReadTables(settings, maintables, basepath);
 		sort(maintables->begin(), maintables->end(), compareByExp);
 		settingswindowdata->running = false;
@@ -1622,8 +1335,9 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 // Main code
 int main(int, char**)
 {
-	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based output will be printed inside me.\n";
-	cout << "This was the program's output from before it had a GUI. You may want to use the old output if you have some kind of specific analytical use.\n";
+	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based\n";
+	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
+	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ExpSqueeze", nullptr };
@@ -1728,7 +1442,9 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
+#ifdef _DEBUG
         ImGui::ShowDemoWindow(&show_demo_window);
+#endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         dosettingswindow(&settings, &settingswindowdata, &maintables, basepath);
