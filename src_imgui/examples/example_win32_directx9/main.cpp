@@ -1196,8 +1196,33 @@ bool compareByExp(const EncounterTable& a, const EncounterTable& b)
 	return a.totalavgexp > b.totalavgexp;
 }
 
+static const char* Items_SingleStringGetter(void* data, int idx)
+{
+	const char* items_separated_by_zeros = (const char*)data;
+	int items_count = 0;
+	const char* p = items_separated_by_zeros;
+	while (*p)
+	{
+		if (idx == items_count)
+			break;
+		p += strlen(p) + 1;
+		items_count++;
+	}
+	return *p ? p : NULL;
+}
+
 void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
+	static bool use_work_area = false;
+	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
+
+	// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
+	// Based on your use case you may want one or the other.
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	//ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+	//ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+
 	Settings newsettings;
 	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 	const char* games[] = { "Blue", "Red", "Yellow",
@@ -1427,7 +1452,7 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 		}
 		ImGui::Combo("Time of Day", &settingswindowdata->time_chosen, times, IM_ARRAYSIZE(times));
 		//ImGui::SameLine(); HelpMarker("dobedobedo");
-		newsettings.wantedtime = internal_times[settingswindowdata->time_chosen];
+		newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);//internal_times[settingswindowdata->time_chosen];
 	}
 
 	if (allgames || newsettings.generation == 5)
@@ -1541,7 +1566,7 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 		string header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + table.method;
 		if (ImGui::CollapsingHeader(header.c_str()))
 		{
-			if (ImGui::BeginTable("tablee", 5))
+			if (ImGui::BeginTable("tablee", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
 				ImGui::TableSetupColumn("Pokemon");
 				ImGui::TableSetupColumn("Chance");
@@ -1597,11 +1622,13 @@ void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata
 // Main code
 int main(int, char**)
 {
+	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based output will be printed inside me.\n";
+	cout << "This was the program's output from before it had a GUI. You may want to use the old output if you have some kind of specific analytical use.\n";
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ExpSqueeze", nullptr };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"ExpSqueeze", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"ExpSqueeze", WS_OVERLAPPEDWINDOW, 100, 100, 600, 600, nullptr, nullptr, wc.hInstance, nullptr);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -1621,16 +1648,6 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-#ifdef IMGUI_HAS_VIEWPORT
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(viewport->GetWorkPos());
-	ImGui::SetNextWindowSize(viewport->GetWorkSize());
-	ImGui::SetNextWindowViewport(viewport->ID);
-#else 
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
-#endif
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -1717,6 +1734,7 @@ int main(int, char**)
         dosettingswindow(&settings, &settingswindowdata, &maintables, basepath);
 
         // Rendering
+		ImGui::PopStyleVar();
         ImGui::EndFrame();
         g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
         g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
