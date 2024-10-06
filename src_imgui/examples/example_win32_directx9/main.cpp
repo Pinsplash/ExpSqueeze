@@ -9,6 +9,9 @@
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
+#include "..\json-parser\json.h"
+#include <stdio.h>
+#include <sys/stat.h>
 #include <d3d9.h>
 #include <tchar.h>
 #include <fstream>
@@ -80,6 +83,7 @@ struct EncounterTable
 	double totalavgexp = 0;
 	int totalchance = 0;
 	bool knownerror = false;
+	bool overlevellimit = false;
 };
 
 static string remove_whitespace(string str)
@@ -121,16 +125,14 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		newEnc.minlevel = minlevel;
 		newEnc.pokemonname = pokemonname;
 		bool makenewtable = true;
-		int index = -1;
 		for (EncounterTable& table : *maintables)
 		{
-			index++;
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
 			if (table.placename == placename && table.method == method)
 			{
 				if (tablebad)
 				{
-					maintables->erase(maintables->begin() + index);
+					table.overlevellimit = true;
 				}
 				else
 				{
@@ -158,606 +160,496 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 	}
 }
 
-static int ParseLocationDataFile(string basepath, int i, Settings* settings, vector<EncounterTable>* maintables)
+static bool isEqualInt(json_value* initial, json_value* compare)
 {
-	string path = basepath + "\\" + to_string(i) + "\\index.json";
-	//cout << path << "\n";
-	ifstream ReadFile(path);
-	string textfileLine;
-	vector<string> fileLines;
+	assert(initial->type == json_integer);
+	return (long)initial->u.integer == compare->u.integer;
+}
 
-	//since getline is apparently not very good at handling skipping ahead in a file, we're going to copy every line of the file into a vector.
-	//line 0 blank
-	fileLines.push_back("");
-	while (getline(ReadFile, textfileLine))
+static bool isEqualDouble(json_value* initial, json_value* compare)
+{
+	assert(initial->type == json_double);
+	return initial->u.dbl == compare->u.dbl;
+}
+
+static bool isEqualString(json_value* initial, json_value* compare)
+{
+	assert(initial->type == json_string);
+	return initial->u.string.ptr == compare->u.string.ptr;
+}
+
+static bool isEqualString(json_value* initial, char* compare)
+{
+	assert(initial->type == json_string);
+	return initial->u.string.ptr == compare;
+}
+
+static bool isEqualString(char* initial, char* compare)
+{
+	return !strcmp(initial, compare);
+}
+
+static bool isEqualBool(json_value* initial, json_value* compare)
+{
+	assert(initial->type == json_boolean);
+	return initial->u.boolean == compare->u.boolean;
+}
+/*
+static int FindObjectInArrayByKeyValueChar(json_value* initialArray, char* key, char* value)
+{
+	assert(initialArray->type == json_array);
+	int arrayLength = initialArray->u.array.length;
+	cout << "FindObjectInArrayByKeyValueChar: arrayLength: " << to_string(arrayLength) << "\n";
+	for (int i = 0; i < arrayLength; i++)
 	{
-		textfileLine = remove_whitespace(textfileLine);
+		json_value* obj = initialArray->u.array.values[i];
+		int objectArrayLength = obj->u.object.length;
+		cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " objectArrayLength: " << to_string(objectArrayLength) << "\n";
+		for (int j = 0; j < objectArrayLength; j++)
+		{
+			json_object_entry val = obj->u.object.values[j];
+			cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " " + to_string(j) + " val name: " << val.name << +" val value: " << val.value << "\n";
+			if (isEqualString(val.name, key))
+			{
+				//return index object is at in array
+				cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " " + to_string(j) + " MATCHED\n";
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+*/
 
-		////code for finding folder numbers associated with each game
-		//size_t s1End = textfileLine.find(':');
-		//string str1 = textfileLine.substr(0, s1End);
-		//if (str1 == "\"name\"")
-		//{
-		//	size_t s2Start = s1End + 2;
-		//	size_t s2End = textfileLine.find('\"', s2Start + 1);
-		//	string str2 = textfileLine.substr(s2Start, s2End - s2Start);
-		//	if (str2 == settings->wantedgame)
-		//		cout << settings->wantedgame << " " << i << "\n";
-		//}
+static void ExplainJSONValue(json_value* obj)
+{
+	const char* str2 = " ";
+	long myint;
+	double mydub;
+	char* mystring;
+	bool mybool;
+	switch (obj->type)
+	{
+	case json_none:
+		str2 = " type: none";
+		break;
+	case json_null:
+		str2 = " type: null";
+		break;
+	case json_object:
+		str2 = " type: object";
+		break;
+	case json_array:
+		str2 = " type: array";
+		break;
+	case json_integer:
+		myint = (long)obj->u.integer;
+		char intbuffer[128];
+		snprintf(intbuffer, sizeof(intbuffer), " type: integer (%i)", myint);
+		str2 = intbuffer;
+		break;
+	case json_double:
+		mydub = obj->u.dbl;
+		char dubbuffer[128];
+		snprintf(dubbuffer, sizeof(dubbuffer), " type: double (%ld)", mydub);
+		str2 = dubbuffer;
+		break;
+	case json_string:
+		mystring = obj->u.string.ptr;
+		char stringbuffer[128];
+		snprintf(stringbuffer, sizeof(stringbuffer), " type: string (%s)", mystring);
+		str2 = stringbuffer;
+		break;
+	case json_boolean:
+		mybool = obj->u.boolean;
+		char booleanbuffer[128];
+		snprintf(booleanbuffer, sizeof(booleanbuffer), " type: bool (%s)", mybool ? "TRUE" : "FALSE");
+		str2 = booleanbuffer;
+		break;
+	}
+	//cout << str2 << "\n";
+}
 
-		fileLines.push_back(textfileLine);
+static void ExplainObjectEntry(json_object_entry obj)
+{
+	string combinestring(string("val name: ") + obj.name);
+	const char* str1 = combinestring.c_str();
+	//cout << str1;
+	ExplainJSONValue(obj.value);
+}
+
+static json_value* FindArrayInObjectByName(json_value* initialObject, char* name)
+{
+	assert(initialObject->type == json_object);
+	int arrayLength = initialObject->u.object.length;
+	//cout << "FindArrayInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
+	for (int i = 0; i < arrayLength; i++)
+	{
+		json_object_entry obj = initialObject->u.object.values[i];
+		//cout << "FindArrayInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		if (obj.value->type == json_array)
+		{
+			if (isEqualString(obj.name, name))
+			{
+				//return index array is at in object
+				//cout << "FindArrayInObjectByName: " + to_string(i) + " MATCHED\n";
+				return obj.value;
+			}
+		}
+	}
+	return NULL;
+}
+
+static json_value* FindValueInObjectByKey(json_value* initialObject, char* key)
+{
+	assert(initialObject->type == json_object);
+	int arrayLength = initialObject->u.object.length;
+	//cout << "FindValueInObjectByKey: arrayLength: " << to_string(arrayLength) << "\n";
+	for (int i = 0; i < arrayLength; i++)
+	{
+		json_object_entry obj = initialObject->u.object.values[i];
+		//cout << "FindValueInObjectByKey: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		if (isEqualString(obj.name, key))
+		{
+			//cout << "FindValueInObjectByKey: " + to_string(i) + " MATCHED\n";
+			return obj.value;
+		}
+	}
+	return NULL;
+}
+
+static int FindObjectInArrayByName(json_value* initialObject, char* name)
+{
+	assert(initialObject->type == json_array);
+	int arrayLength = initialObject->u.array.length;
+	//cout << "FindObjectInArrayByName: arrayLength: " << to_string(arrayLength) << "\n";
+	for (int i = 0; i < arrayLength; i++)
+	{
+		json_value* obj = initialObject->u.array.values[i];
+		//cout << "FindObjectInArrayByName: " + to_string(i); ExplainJSONValue(obj);
+		if (obj->type == json_object)
+		{
+			int objectArrayLength = obj->u.object.length;
+			//cout << "FindObjectInArrayByName: " + to_string(i) + " objectArrayLength: " << to_string(objectArrayLength) << "\n";
+			for (int j = 0; j < objectArrayLength; j++)
+			{
+				json_object_entry val = obj->u.object.values[j];
+				//cout << "FindObjectInArrayByName: " + to_string(i) + " " + to_string(j) + " "; ExplainObjectEntry(val);
+				if (isEqualString(val.name, name))
+				{
+					//return index object is at in array
+					//cout << "FindObjectInArrayByName: " + to_string(i) + " " + to_string(j) + " MATCHED\n";
+					return i;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+static json_value* FindObjectInObjectByName(json_value* initialObject, char* name)
+{
+	assert(initialObject->type == json_object);
+	int arrayLength = initialObject->u.object.length;
+	//cout << "FindObjectInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
+	for (int i = 0; i < arrayLength; i++)
+	{
+		json_object_entry obj = initialObject->u.object.values[i];
+		//cout << "FindObjectInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		if (obj.value->type == json_object && isEqualString(obj.name, name))
+		{
+			//return index object is at in object
+			//cout << "FindObjectInObjectByName: " + to_string(i) + " MATCHED\n";
+			return obj.value;
+		}
+	}
+	return NULL;
+}
+
+static bool isEqual(json_value* initial, json_value* compare)
+{
+	switch (initial->type)
+	{
+	case json_integer:
+		isEqualInt(initial, compare);
+		break;
+	case json_double:
+		isEqualDouble(initial, compare);
+		break;
+	case json_string:
+		isEqualString(initial, compare);
+		break;
+	case json_boolean:
+		isEqualBool(initial, compare);
+		break;
+	default:
+		assert(0);
+	}
+}
+
+static int ParseLocationDataFile(string basepath, int iFile, Settings* settings, vector<EncounterTable>* maintables)
+{
+	//if (iFile != 57)
+	//	return 1;
+	string path = basepath + "\\" + to_string(iFile) + "\\index.json";
+	string placename;//only one place name per file
+	FILE* fp;
+	struct stat filestatus;
+	int file_size;
+	char* file_contents;
+	json_char* json;
+	json_value* file;
+
+	if (stat(path.c_str(), &filestatus) != 0)
+	{
+		//cout << "File " + path + " not found\n";
+		//for whatever reason, some folders are missing from pokeapi.
+		//the first missing file as of right now is #65. this folder is also missing in their live api (https://pokeapi.co/api/v2/location-area/65/)
+		//so it's not simply an omission on my part or the api-data repo.
+		//return quietly
+		return 1;
 	}
 
-	string placename;//only one place name per file
-	string pokemonname;
-	int chance = 0;
-	int maxlevel = 0;
-	int minlevel = 0;
-	string method;
-	bool inmainbrackets = false;
-	bool inencountermethodrates = false;
-	bool inencountermethod = false;
-	bool inversiondetails = false;
-	bool inversion = false;
-	bool inlocation = false;
-	bool innames = false;
-	bool inlanguage = false;
-	bool inpokemonencounters = false;
-	bool inpokemon = false;
-	bool inencounterdetails = false;
-	bool inmethod = false;
-	bool inconditionvalues = false;
-	bool inencounterentry = false;
-	bool approachingplacename = false;
-	bool encounterinvalid = false;
-	string badencounterreason;
-	bool readingcorrectgame = false;
-	for (int linenum = 1; linenum < (int)fileLines.size(); linenum++)
+	file_size = filestatus.st_size;
+	file_contents = (char*)malloc(filestatus.st_size);
+
+	if (!file_contents)
 	{
-		string textLine = fileLines[linenum];
-		bool finishedline = false;
-		//cout << "Line " << linenum << ": start (line is '" << textLine << "')\n";
-		//skip any blank lines
-		if (textLine.size() == 0)
+		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+		return 0;
+	}
+
+	fp = fopen(path.c_str(), "rt");
+
+	if (!fp)
+	{
+		cout << "Unable to open " + path + "\n";
+		fclose(fp);
+		free(file_contents);
+		return 0;
+	}
+
+	if (fread(file_contents, file_size, 1, fp) != 1)
+	{
+		cout << "Unable to read content of " + path + "\n";
+		fclose(fp);
+		free(file_contents);
+		return 0;
+	}
+
+	fclose(fp);
+	json = (json_char*)file_contents;
+	file = json_parse(json, file_size);
+
+	if (file == NULL)
+	{
+		cout << "Unable to parse data\n";
+		free(file_contents);
+		return 0;
+	}
+
+	json_value* names = FindArrayInObjectByName(file, "names");
+
+	if (!names)
+	{
+		assert(0);
+		return 0;
+	}
+
+	//cout << "found names\n";
+	for (int nameIdx = 0; nameIdx < names->u.array.length; nameIdx++)
+	{
+		//cout << "found localized name block\n";
+		json_value* localname = names->u.array.values[nameIdx];
+
+		if (!localname)
 		{
-			cout << "Line " << linenum << ": Blank\n";
-			cin.get();
-			ReadFile.close();
+			assert(0);
 			return 0;
 		}
 
-		if (textLine == "{")
+		json_value* language = FindObjectInObjectByName(localname, "language");
+
+		if (!language)
 		{
-			if (inversiondetails && !inencounterdetails && !inconditionvalues && !inencountermethodrates && !readingcorrectgame)
-			{
-				//skip ahead to our version name. don't bother reading in data for the wrong game
-				//streampos current_pos = ReadFile.tellg();
-				int oldline = linenum;
-				for (int j = oldline + 1; j < (int)fileLines.size(); j++)
-				{
-					string aheadLine = fileLines[j];
-					linenum++;
-					//cout << "Skip hit line " << linenum << "! A (line is '" << aheadLine << "')\n";
-					if (aheadLine == "\"version\":{")
-					{
-						string aheadLine = fileLines[j + 1];
-						linenum++;
-						//cout << "Skip hit line " << linenum << "! B (line is '" << aheadLine << "')\n";
-						size_t s1End = aheadLine.find(':');
-						string str1 = aheadLine.substr(0, s1End);
-						if (str1 == "\"name\"")
-						{
-							size_t s2Start = s1End + 2;
-							size_t s2End = aheadLine.find('\"', s2Start + 1);
-							string str2 = aheadLine.substr(s2Start, s2End - s2Start);
-							if (str2 == settings->wantedgame || settings->wantedgame == "all")
-							{
-								//good, go back to the top and read it in
-								linenum = oldline;
-								readingcorrectgame = true;
-								//cout << "Line " << oldline << ", wanted " << settings->wantedgame << ", got " << str2 << ", game is right\n";
-								break;
-							}
-							else
-							{
-								//not our version, skip down
-								linenum += 4;
-								//cout << "Line " << oldline << ", wanted " << settings->wantedgame << ", got " << str2 << ", wrong game\n";
-								break;
-							}
-						}
-						else
-						{
-							//cout << "Line " << linenum << ": hit something we don't know about when trying to get game name\n";
-							cin.get();
-							ReadFile.close();
-							return 0;
-						}
-					}
-				}
-				//if (readingcorrectgame)
-				//	continue;
-				//cout << "Line " << linenum << ": resuming here (line is '" << textLine << "')\n";
-				linenum--;
-				continue;
-			}
-			readingcorrectgame = false;
-			if (inencounterdetails && encounterinvalid)
-			{
-				//badencounterreason = "";
-				//encounterinvalid = false;
-			}
-			if (!inmainbrackets)
-			{
-				inmainbrackets = true;
-				finishedline = true;
-			}
-			if (inencountermethodrates)
-				finishedline = true;
-			if (innames)
-				finishedline = true;
-			if (textLine != "]" && inpokemonencounters)
-				finishedline = true;
-			if (!inencounterentry)
-			{
-				inencounterentry = true;
-				finishedline = true;
-			}
-			if (inencounterdetails)
-				finishedline = true;
-		}
-		if (textLine == "\"encounter_method_rates\":[],")
-			finishedline = true;
-		if (textLine == "\"encounter_method_rates\":[")
-		{
-			inencountermethodrates = true;
-			finishedline = true;
+			assert(0);
+			return 0;
 		}
 
-		if (textLine == "\"encounter_method\":{")
+		json_value* langname = FindValueInObjectByKey(language, "name");
+		//cout << "langname: " << langname->u.string.ptr << "\n";
+		if (isEqualString(langname->u.string.ptr, "en"))
 		{
-			if (!inencountermethod)
-			{
-				inencountermethod = true;
-				finishedline = true;
-			}
+			//cout << "language is en\n";
+			placename = FindValueInObjectByKey(localname, "name")->u.string.ptr;
+			//cout << "place name: " << placename << "\n";
 		}
+	}
 
-		if (textLine == "},")
-		{
-			if (inencounterdetails && !encounterinvalid && !inconditionvalues && !inmethod)
-			{
-				RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, i);
-				finishedline = true;
-			}
-			/*
-			if (inencounterdetails && encounterinvalid && !inconditionvalues && !inmethod && placename == "CherrygroveCity")
-			{
-				cout << "Line " << linenum << "\n";
-				cout << placename << " " << method << " " << pokemonname << " was invalid encounter.\n";
-				cout << "inmethod " << (inmethod ? "TRUE" : "FALSE") << "\n";
-				cout << "inencountermethod " << (inencountermethod ? "TRUE" : "FALSE") << "\n";
-				cout << "inencountermethodrates " << (inencountermethodrates ? "TRUE" : "FALSE") << "\n";
-				cout << "inlocation " << (inlocation ? "TRUE" : "FALSE") << "\n";
-				cout << "inlanguage " << (inlanguage ? "TRUE" : "FALSE") << "\n";
-				cout << "innames " << (innames ? "TRUE" : "FALSE") << "\n";
-				cout << "inpokemon " << (inpokemon ? "TRUE" : "FALSE") << "\n";
-				cout << "inencounterentry " << (inencounterentry ? "TRUE" : "FALSE") << "\n";
-				cout << "inversiondetails " << (inversiondetails ? "TRUE" : "FALSE") << "\n";
-				cout << "inpokemonencounters " << (inpokemonencounters ? "TRUE" : "FALSE") << "\n";
-				cout << "inversion " << (inversion ? "TRUE" : "FALSE") << "\n";
-				cout << "inmainbrackets " << (inmainbrackets ? "TRUE" : "FALSE") << "\n";
-				cout << "}REASON: " << badencounterreason << "\n\n";
-			}
-			*/
-			if (inmethod)
-			{
-				inmethod = false;
-				finishedline = true;
-			}
-			if (inencountermethod)
-			{
-				inencountermethod = false;
-				finishedline = true;
-			}
-			//idk why i had put this here but it was making us think we left version details before we should, which made us think we left pokemon encounters before we should
+	json_value* encounters = FindArrayInObjectByName(file, "pokemon_encounters");
 
-			//if (inversiondetails)
-			//{
-			//if (!inencounterdetails && !inencountermethodrates)
-			//inversiondetails = false;
-			//continue;
-			//}
-
-			if (inencountermethodrates)
-				finishedline = true;
-			if (inlocation)
-			{
-				inlocation = false;
-				finishedline = true;
-			}
-			if (inlanguage)
-			{
-				inlanguage = false;
-				finishedline = true;
-			}
-			if (innames)
-				finishedline = true;
-			if (inpokemon)//no point in setting this back to be false. once we hit the pokemon section of a file, there's no data after that to read
-				finishedline = true;
-			if (inencounterentry)
-			{
-				inencounterentry = false;
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "}")
-		{
-			if (inencounterdetails && !encounterinvalid && !inconditionvalues)
-			{
-				RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, i);
-				finishedline = true;
-			}
-			/*
-			if (inencounterdetails && encounterinvalid && !inconditionvalues && placename == "CherrygroveCity")
-			{
-				cout << "Line " << linenum << "\n";
-				cout << placename << " " << method << " " << pokemonname << " was invalid encounter.\n";
-				cout << "inmethod " << (inmethod ? "TRUE" : "FALSE") << "\n";
-				cout << "inencountermethod " << (inencountermethod ? "TRUE" : "FALSE") << "\n";
-				cout << "inencountermethodrates " << (inencountermethodrates ? "TRUE" : "FALSE") << "\n";
-				cout << "inlocation " << (inlocation ? "TRUE" : "FALSE") << "\n";
-				cout << "inlanguage " << (inlanguage ? "TRUE" : "FALSE") << "\n";
-				cout << "innames " << (innames ? "TRUE" : "FALSE") << "\n";
-				cout << "inpokemon " << (inpokemon ? "TRUE" : "FALSE") << "\n";
-				cout << "inencounterentry " << (inencounterentry ? "TRUE" : "FALSE") << "\n";
-				cout << "inversiondetails " << (inversiondetails ? "TRUE" : "FALSE") << "\n";
-				cout << "inpokemonencounters " << (inpokemonencounters ? "TRUE" : "FALSE") << "\n";
-				cout << "inversion " << (inversion ? "TRUE" : "FALSE") << "\n";
-				cout << "inmainbrackets " << (inmainbrackets ? "TRUE" : "FALSE") << "\n";
-				cout << "}REASON: " << badencounterreason << "\n\n";
-			}
-			*/
-			if (inversiondetails)
-				finishedline = true;
-			if (inencountermethodrates)
-				finishedline = true;
-			if (innames)
-				finishedline = true;
-			if (inpokemonencounters)
-				finishedline = true;
-			if (inencounterentry)
-			{
-				inencounterentry = false;
-				finishedline = true;
-			}
-			if (inversion)
-			{
-				inversion = false;
-				finishedline = true;
-			}
-			//end of file
-			if (!finishedline && inmainbrackets)
-			{
-				//cout << "Line " << linenum << ": left main brackets\n";
-				inmainbrackets = false;
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "\"version_details\":[")
-		{
-			if (!inversiondetails)
-			{
-				inversiondetails = true;
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "\"version\":{")
-		{
-			inversion = true;
-			if (inversiondetails && inencountermethodrates)
-				finishedline = true;
-			if (inpokemonencounters)
-				finishedline = true;
-		}
-
-		if (textLine == "\"location\":{")
-		{
-			if (!inlocation)
-			{
-				inlocation = true;
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "\"language\":{")
-		{
-			if (!inlanguage)
-			{
-				inlanguage = true;
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "\"names\":[],")
-			finishedline = true;
-
-		if (textLine == "\"names\":[")
-		{
-			innames = true;
-			finishedline = true;
-		}
-
-		if (textLine == "\"pokemon_encounters\":[]")
-			finishedline = true;
-
-		if (textLine == "\"pokemon_encounters\":[")
-		{
-			inpokemonencounters = true;
-			finishedline = true;
-		}
-
-		if (textLine == "\"encounter_details\":[")
-		{
-			inencounterdetails = true;
-			finishedline = true;
-		}
-
-		if (textLine == "\"pokemon\":{")
-		{
-			inpokemon = true;
-			finishedline = true;
-		}
-
-		if (textLine == "]")
-		{
-			if (inversiondetails)
-			{
-				inversiondetails = false;
-				finishedline = true;
-			}
-			else if (inpokemonencounters)
-			{
-				inpokemonencounters = false;
-				//cout << "Line " << linenum << ": left pokemon encounters\n";
-				finishedline = true;
-			}
-		}
-
-		if (textLine == "],")
-		{
-			if (inconditionvalues)
-			{
-				inconditionvalues = false;
-				finishedline = true;
-			}
-			else if (inencounterdetails)
-			{
-				inencounterdetails = false;
-				finishedline = true;
-			}
-			if (inencountermethodrates)
-			{
-				inencountermethodrates = false;
-				finishedline = true;
-			}
-			if (innames)
-			{
-				innames = false;
-				finishedline = true;
-			}
-		}
-
-		size_t s1End = textLine.find(':');
-		string str1 = textLine.substr(0, s1End);
-
-		if (str1 == "\"name\"")
-		{
-			size_t s2Start = s1End + 2;
-			size_t s2End = textLine.find('\"', s2Start + 1);
-			string str2 = textLine.substr(s2Start, s2End - s2Start);
-
-			if (inconditionvalues)
-			{
-				if (!encounterinvalid)
-				{
-					//make sure encounter meets applicable parameters
-					//time: morning/day/night (all gens except 1, 3)
-					if (str2 == "time-morning" || str2 == "time-day" || str2 == "time-night")
-					{
-						if (settings->wantedtime != str2)
-						{
-							badencounterreason = "Needed time " + settings->wantedtime + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-					//season: spring/summer/autumn/winter (gen 5)
-					if (str2 == "season-spring" || str2 == "season-summer" || str2 == "season-autumn" || str2 == "season-winter")
-					{
-						if (settings->wantedseason != str2)
-						{
-							badencounterreason = "Needed season " + settings->wantedseason + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-					//swarm: yes/no (gen 2-5)
-					if (str2 == "swarm-yes" || str2 == "swarm-no")
-					{
-						if (settings->wantswarm != (str2 == "swarm-yes"))
-						{
-							string swarmanswer = (settings->wantswarm ? "swarm-yes" : "swarm-no");
-							badencounterreason = "Needed swarm " + swarmanswer + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-					//radar: on/off (DPP, XY)
-					if (str2 == "radar-on" || str2 == "radar-off")
-					{
-						if (settings->wantradar != (str2 == "radar-on"))
-						{
-							string radaranswer = (settings->wantradar ? "radar-on" : "radar-off");
-							badencounterreason = "Needed radar " + radaranswer + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-					//slot2: none/ruby/sapphire/emerald/firered/leafgreen (gen 4)
-					if (str2 == "slot2-none" || str2 == "slot2-ruby" || str2 == "slot2-sapphire" || str2 == "slot2-emerald" || str2 == "slot2-firered" || str2 == "slot2-leafgreen")
-					{
-						if (settings->wantedslot2game != str2)
-						{
-							badencounterreason = "Needed slot2game " + settings->wantedslot2game + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-					//radio: off/hoenn/sinnoh (HGSS)
-					if (str2 == "radio-off" || str2 == "radio-hoenn" || str2 == "radio-sinnoh")
-					{
-						if (settings->wantedradiostation != str2)
-						{
-							badencounterreason = "Needed radio " + settings->wantedradiostation + " but got " + str2;
-							encounterinvalid = true;
-						}
-					}
-				}
-				finishedline = true;
-			}
-
-			if (inmethod)
-			{
-				if (!encounterinvalid)
-				{
-					//these encounter types are impossible to repeat or take a long time. they are not ideal for training.
-					//some are not even battle encounters.
-					//sos-encounter is because it's a specific and distinct way to train.
-					if (str2 == "gift" || str2 == "gift-egg" || str2 == "only-one" || str2 == "pokeflute"
-						|| str2 == "squirt-bottle" || str2 == "wailmer-pail" || str2 == "devon-scope"
-						|| str2 == "island-scan" || str2 == "sos-encounter" || str2 == "berry-piles"
-						|| str2 == "npc-trade" || str2 == "sos-from-bubbling-spot" || str2 == "roaming-grass"
-						|| str2 == "roaming-water" || str2 == "feebas-tile-fishing")
-					{
-						badencounterreason = "Bad encounter type: " + str2;
-						encounterinvalid = true;
-					}
-					method = str2;
-					//cout << "Line " << linenum << ": method name\n";
-				}
-				finishedline = true;
-			}
-			if (inpokemon && !inconditionvalues && !inversiondetails)
-			{
-				pokemonname = str2;
-				//cout << "Line " << linenum << ": pokemon name " << str2 << "\n";
-				finishedline = true;
-			}
-			//only care for english name. data is not very robust for other langs
-			if (approachingplacename)
-			{
-				placename = str2;
-				approachingplacename = false;
-				//cout << "Line " << linenum << ": place name\n";
-				finishedline = true;
-			}
-			if (inlanguage)
-			{
-				if (textLine == "\"name\":\"en\",")
-					approachingplacename = true;
-				//cout << "Line " << linenum << ": language name\n";
-				finishedline = true;
-			}
-			if (innames && !approachingplacename)
-				finishedline = true;
-			if (inencountermethod || inversion || inlocation)
-				finishedline = true;
-			//Alola entries apparently don't have the nice capitalized names that come from the language block
-			//we have to use the crummy looking strings instead, which just kinda sit there in the main block
-			if (!finishedline)
-			{
-				placename = str2;
-				finishedline = true;
-			}
-			finishedline = true;
-		}
-
-		if (inencounterdetails)
-		{
-
-			if (str1 == "\"chance\"")
-			{
-				size_t s2Start = s1End + 1;
-				size_t s2End = textLine.find('\"', s2Start + 1);
-				string str2 = textLine.substr(s2Start, s2End - s2Start);
-				chance = stoi(str2);
-				//cout << "chance is " << chance << "\n";
-				finishedline = true;
-			}
-			if (str1 == "\"max_level\"")
-			{
-				size_t s2Start = s1End + 1;
-				size_t s2End = textLine.find('\"', s2Start + 1);
-				string str2 = textLine.substr(s2Start, s2End - s2Start);
-				maxlevel = stoi(str2);
-				//cout << "maxlevel is " << maxlevel << "\n";
-				finishedline = true;
-			}
-			if (str1 == "\"min_level\"")
-			{
-				size_t s2Start = s1End + 1;
-				size_t s2End = textLine.find('\"', s2Start + 1);
-				string str2 = textLine.substr(s2Start, s2End - s2Start);
-				minlevel = stoi(str2);
-				//cout << "minlevel is " << minlevel << "\n";
-				finishedline = true;
-			}
-			if (textLine == "\"condition_values\":[],")
-			{
-				badencounterreason = "";
-				encounterinvalid = false;
-				finishedline = true;
-			}
-			if (textLine == "\"condition_values\":[")
-			{
-				inconditionvalues = true;
-				badencounterreason = "";
-				encounterinvalid = false;
-				finishedline = true;
-			}
-			if (textLine == "\"method\":{")
-			{
-				inmethod = true;
-				finishedline = true;
-			}
-		}
-
-		if (str1 == "\"rate\"")
-		{
-			if (inversiondetails)
-				finishedline = true;
-		}
-
-		if (str1 == "\"url\"")
-			finishedline = true;
-
-		if (str1 == "\"game_index\"")
-			finishedline = true;
-
-		if (str1 == "\"id\"")
-			finishedline = true;
-
-		if (str1 == "\"max_chance\"")
-			finishedline = true;
-
-		if (finishedline)
-			continue;
-
-		cout << "File " << i << ", line " << linenum << ": Didn't know what to do with:\n" << textLine << "\n";
-		cin.get();
-		ReadFile.close();
+	if (!encounters)
+	{
+		assert(0);
 		return 0;
 	}
-	ReadFile.close();
+
+	//cout << "found encounters\n";
+	for (int encounterIdx = 0; encounterIdx < encounters->u.array.length; encounterIdx++)
+	{
+		//cout << "found encounter block\n";
+		json_value* encounterblock = encounters->u.array.values[encounterIdx];
+
+		if (!encounterblock)
+		{
+			assert(0);
+			return 0;
+		}
+
+		//ensure this pokemon is in our game version before doing anything else
+		json_value* versiondetails = FindArrayInObjectByName(encounterblock, "version_details");
+
+		if (!versiondetails)
+		{
+			assert(0);
+			return 0;
+		}
+
+		for (int verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
+		{
+			json_value* verdetailblock = versiondetails->u.array.values[verdetailsIdx];
+
+			if (!verdetailblock)
+			{
+				assert(0);
+				return 0;
+			}
+
+			json_value* version = FindObjectInObjectByName(verdetailblock, "version");
+
+			if (!version)
+			{
+				assert(0);
+				return 0;
+			}
+
+			string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
+			if (givengame == settings->wantedgame || settings->wantedgame == "all")
+			{
+				//okay, now read the encounter data
+				string pokemonname;
+				json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
+
+				if (!pokemon)
+				{
+					assert(0);
+					return 0;
+				}
+
+				pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
+				//cout << "pokemonname: " << pokemonname << "\n";
+				json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
+
+				if (!encounterdetails)
+				{
+					assert(0);
+					return 0;
+				}
+
+				for (int encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
+				{
+					json_value* encdetailblock = encounterdetails->u.array.values[encdetailsIdx];
+
+					if (!encdetailblock)
+					{
+						assert(0);
+						return 0;
+					}
+
+					json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
+
+					if (conditionvalues)
+					{
+						bool encounterinvalid = false;
+
+						for (int conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
+						{
+							json_value* condobj = conditionvalues->u.array.values[conditionIdx];
+							string condition = FindValueInObjectByKey(condobj, "name")->u.string.ptr;
+
+							//make sure encounter meets applicable parameters
+							
+							//time: morning/day/night (all gens except 1, 3)
+							if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
+								if (settings->wantedtime != condition)
+									encounterinvalid = true;
+
+							//season: spring/summer/autumn/winter (gen 5)
+							if (condition == "season-spring" || condition == "season-summer" || condition == "season-autumn" || condition == "season-winter")
+								if (settings->wantedseason != condition)
+									encounterinvalid = true;
+
+							//swarm: yes/no (gen 2-5)
+							if (condition == "swarm-yes" || condition == "swarm-no")
+								if (settings->wantswarm != (condition == "swarm-yes"))
+									encounterinvalid = true;
+
+							//radar: on/off (DPP, XY)
+							if (condition == "radar-on" || condition == "radar-off")
+								if (settings->wantradar != (condition == "radar-on"))
+									encounterinvalid = true;
+
+							//slot2: none/ruby/sapphire/emerald/firered/leafgreen (gen 4)
+							if (condition == "slot2-none" || condition == "slot2-ruby" || condition == "slot2-sapphire" || condition == "slot2-emerald" || condition == "slot2-firered" || condition == "slot2-leafgreen")
+								if (settings->wantedslot2game != condition)
+									encounterinvalid = true;
+
+							//radio: off/hoenn/sinnoh (HGSS)
+							if (condition == "radio-off" || condition == "radio-hoenn" || condition == "radio-sinnoh")
+								if (settings->wantedradiostation != condition)
+									encounterinvalid = true;
+						}
+
+						if (encounterinvalid)
+							continue;
+					}
+					else
+					{
+						assert(0);
+						return 0;
+					}
+
+					json_value* methodobj = FindObjectInObjectByName(encdetailblock, "method");
+
+					if (!methodobj)
+					{
+						assert(0);
+						return 0;
+					}
+
+					//these encounter methods are not very useful, if even applicable.
+					//sos encounters may come back, if the alola tables are ever fixed.
+					string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
+					if (method == "gift" || method == "gift-egg" || method == "only-one" || method == "pokeflute"
+						|| method == "squirt-bottle" || method == "wailmer-pail" || method == "devon-scope"
+						|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
+						|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
+						|| method == "roaming-water" || method == "feebas-tile-fishing")
+						continue;
+
+					//all good
+					int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
+					int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
+					int minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
+					RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, iFile);
+				}
+			}
+			else
+				continue;
+		}
+	}
+	json_value_free(file);
+	free(file_contents);
 	return 1;
 }
 
@@ -793,6 +685,8 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	vector<string> warnings;
 	for (EncounterTable &table : *maintables)
 	{
+		if (table.overlevellimit)
+			continue;
 		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << "\n";
 		table.totalavgexp = 0;
 		table.totalchance = 0;//sanity check: this number should always = expectedtotalpercent at the end of the table.
@@ -853,9 +747,9 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << "\n";
 		sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 		table.knownerror = false;
-		if (table.placename == "S.S.Annedock" //swarm conditions missing
-			|| table.placename == "Road42" //probably incorrect golbat 1% encounter in crystal during day/morning
-			|| table.placename == "Road13" //crystal entries seem to be duplicated? added up to 300%
+		if (table.placename == "S.S. Anne dock" //swarm conditions missing
+			|| table.placename == "Road 42" //probably incorrect golbat 1% encounter in crystal during day/morning
+			|| table.placename == "Road 13" //crystal entries seem to be duplicated? added up to 300%
 			)
 		{
 			table.knownerror = true;
@@ -1448,7 +1342,7 @@ int main(int, char**)
         ImGui::NewFrame();
 
 #ifdef _DEBUG
-        ImGui::ShowDemoWindow(&show_demo_window);
+        ImGui::ShowDemoWindow();
 #endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
