@@ -455,7 +455,12 @@
                     "encounter_details": [
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -465,7 +470,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -828,7 +838,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -838,7 +853,12 @@
                         },
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -1051,7 +1071,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -1061,7 +1086,12 @@
                         },
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -1424,7 +1454,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -1509,7 +1544,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -3028,26 +3068,6 @@
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 25
-                        },
-                        {
-                            "chance": 1,
-                            "condition_values": [],
-                            "max_level": 25,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 25
-                        },
-                        {
-                            "chance": 1,
-                            "condition_values": [],
-                            "max_level": 25,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 25
                         }
                     ],
                     "max_chance": 3,
@@ -4029,7 +4049,12 @@
                     "encounter_details": [
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -4318,7 +4343,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -4328,7 +4358,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 27,
                             "method": {
                                 "name": "walk",
@@ -4338,7 +4373,12 @@
                         },
                         {
                             "chance": 4,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 27,
                             "method": {
                                 "name": "walk",
@@ -4348,7 +4388,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -4358,7 +4403,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 27,
                             "method": {
                                 "name": "walk",
@@ -4368,7 +4418,12 @@
                         },
                         {
                             "chance": 4,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-morning",
+                                    "url": "/api/v2/encounter-condition-value/3/"
+                                }
+                            ],
                             "max_level": 27,
                             "method": {
                                 "name": "walk",
@@ -4871,7 +4926,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 23,
                             "method": {
                                 "name": "walk",
@@ -4881,7 +4941,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",
@@ -4891,7 +4956,12 @@
                         },
                         {
                             "chance": 4,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 25,
                             "method": {
                                 "name": "walk",

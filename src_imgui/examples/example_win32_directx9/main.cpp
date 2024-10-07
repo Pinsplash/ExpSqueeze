@@ -59,15 +59,9 @@ enum MethodFilterFlags
 	MethodFilterFlags_Last = 1 << 15,
 };
 
-struct FolderRange
-{
-	int firstfolder = 0;
-	int lastfolder = 0;
-};
-
 struct Settings
 {
-	vector<FolderRange> folderRanges;
+	vector<int> folderRanges;
 	string wantedgame;
 	string wantedtime;
 	string wantedseason;
@@ -109,7 +103,6 @@ struct EncounterTable
 	int expectedtotalpercent = 0;
 	double totalavgexp = 0;
 	int totalchance = 0;
-	bool knownerror = false;
 	bool overlevellimit = false;
 };
 
@@ -645,7 +638,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		return 0;
 	}
-	fp = fopen(path.c_str(), "rt");
+	fp = fopen(path.c_str(), "rb");
 	if (!fp)
 	{
 		cout << "Unable to open " + path + "\n";
@@ -653,9 +646,13 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		free(file_contents);
 		return 0;
 	}
-	if (fread(file_contents, file_size, 1, fp) != 1)
+	int readNum = fread(file_contents, 1, file_size, fp);
+	if (readNum != file_size)
 	{
-		cout << "Unable to read content of " + path + "\n";
+		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+		cout << "ferror " + to_string(ferror(fp)) + "\n";
+		cout << "feof " + to_string(feof(fp)) + "\n";
+		cout << "file_size " + to_string(file_size) + "\n";
 		fclose(fp);
 		free(file_contents);
 		return 0;
@@ -787,24 +784,23 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
 	string tablepath = basepath + "location-area";
-	for (FolderRange folderrange : settings->folderRanges)
+	for (int i = 0; i < settings->folderRanges.size(); i += 2)
 	{
 		int notch = 1;
-		double range = folderrange.lastfolder - folderrange.firstfolder;
+		double range = settings->folderRanges[i + 1] - settings->folderRanges[i];
 		if (settings->printtext) cout << "|     PROGRESS     |\n";
-		for (int i = folderrange.firstfolder; i <= folderrange.lastfolder; i++)
+		for (int j = settings->folderRanges[i]; j <= settings->folderRanges[i + 1]; j++)
 		{
-			if ((i - folderrange.firstfolder) / range >= (notch * 0.05))
+			if ((j - settings->folderRanges[i]) / range >= (notch * 0.05))
 			{
 				if (settings->printtext) cout << "-";
 				notch++;
 			}
-			if (ParseLocationDataFile(tablepath, i, settings, maintables) == 0)
+			if (ParseLocationDataFile(tablepath, j, settings, maintables) == 0)
 				return;
 		}
 	}
 	if (settings->printtext) cout << "\n";
-	vector<string> warnings;
 	for (EncounterTable &table : *maintables)
 	{
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
@@ -869,43 +865,30 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		}
 		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << "\n";
 		sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
-		table.knownerror = false;
-		if (table.placename == "S.S. Anne dock" //swarm conditions missing
-			|| table.placename == "Road 42" //probably incorrect golbat 1% encounter in crystal during day/morning
-			|| table.placename == "Road 13" //crystal entries seem to be duplicated? added up to 300%
-			)
-		{
-			table.knownerror = true;
-		}
-		if (table.filenumber >= 1035) //starting in alola we're missing seemingly all day/night conditions
-		{
-			table.knownerror = true;
-		}
 		//if we're getting data for all games, then there are multiple fully correct encounter tables inside a file
 		//this means if the table is correct it will be a multiple of 100
 		//long story short we can't know what that multiple will be, so % is our best option
 		//also, again, because all is meant for debugging only, we're just going to not expect it to be used in conjunction with repellevel because that gets hairy
-		if (settings->wantedgame == "all" ? (table.totalchance % 100 != 0) : (table.totalchance != table.expectedtotalpercent))
+		bool errorfound = false;
+		if (settings->wantedgame == "all" && table.totalchance % 100 != 0)
+			errorfound = true;
+		else if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100)
+			errorfound = true;
+		else if (table.totalchance != table.expectedtotalpercent)
+			errorfound = true;
+		if (errorfound)
 		{
-			if (table.knownerror)
-			{
-				warnings.push_back("WARNING: Data for " + table.placename + ", " + table.method + " known to be inaccurate. Total percent chance reported as " + to_string(table.totalchance) + "% when it should be " + to_string(table.expectedtotalpercent) + " after considering levels for repel.\n");
-			}
-			else
-			{
-				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
-				cin.get();
-				return;
-			}
+			cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
+			cout << "wantedgame: " << settings->wantedgame << " totalchance: " << to_string(table.totalchance) << "\n";
+			cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
+			cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
+			cin.get();
+			return;
 		}
 	}
-	if (settings->printtext) cout << "\n";
-	for (string warning : warnings)
-		cout << warning;
 	if (settings->printtext)
 	{
 		cout << "\n";
-		cout << "Done. Press ENTER or the X button to close.\n";
 		cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
 		cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
 	}
@@ -993,10 +976,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.expfile = "gen1_exp.txt";
 		newsettings.folderRanges.clear();
-		FolderRange* range = new FolderRange;
-		range->firstfolder = 258;
-		range->lastfolder = 349;
-		newsettings.folderRanges.push_back(*range);
+		newsettings.folderRanges.push_back(258);
+		newsettings.folderRanges.push_back(349);
 		newsettings.generation = 1;
 	}
 
@@ -1004,38 +985,28 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.expfile = "gen2_exp.txt";
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 184;
-		range1->lastfolder = 349;
-		newsettings.folderRanges.push_back(*range1);
-		FolderRange* range2 = new FolderRange;
-		range2->firstfolder = 798;
-		range2->lastfolder = 798;
-		newsettings.folderRanges.push_back(*range2);
+		newsettings.folderRanges.push_back(184);
+		newsettings.folderRanges.push_back(349);
+		newsettings.folderRanges.push_back(798);
+		newsettings.folderRanges.push_back(798);
 		newsettings.generation = 2;
 	}
 
 	if (newsettings.wantedgame == "ruby" || newsettings.wantedgame == "sapphire" || newsettings.wantedgame == "emerald")
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 350;
-		range1->lastfolder = 449;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(350);
+		newsettings.folderRanges.push_back(449);
 		rse = true;
 	}
 
 	if (newsettings.wantedgame == "firered" || newsettings.wantedgame == "leafgreen")
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 258;
-		range1->lastfolder = 572;
-		newsettings.folderRanges.push_back(*range1);
-		FolderRange* range2 = new FolderRange;
-		range2->firstfolder = 825;
-		range2->lastfolder = 825;
-		newsettings.folderRanges.push_back(*range2);
+		newsettings.folderRanges.push_back(258);
+		newsettings.folderRanges.push_back(572);
+		newsettings.folderRanges.push_back(825);
+		newsettings.folderRanges.push_back(825);
 		frlg = true;
 	}
 
@@ -1048,20 +1019,16 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (newsettings.wantedgame == "diamond" || newsettings.wantedgame == "pearl" || newsettings.wantedgame == "platinum")
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 1;
-		range1->lastfolder = 183;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(1);
+		newsettings.folderRanges.push_back(183);
 		dpp = true;
 	}
 
 	if (newsettings.wantedgame == "heartgold" || newsettings.wantedgame == "soulsilver")
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 184;
-		range1->lastfolder = 349;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(184);
+		newsettings.folderRanges.push_back(349);
 		hgss = true;
 	}
 
@@ -1075,10 +1042,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.expfile = "gen5bw1_exp.txt";
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 576;
-		range1->lastfolder = 655;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(576);
+		newsettings.folderRanges.push_back(655);
 		bw1 = true;
 	}
 
@@ -1086,10 +1051,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.expfile = "gen5bw2_exp.txt";
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 576;
-		range1->lastfolder = 707;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(576);
+		newsettings.folderRanges.push_back(707);
 		bw2 = true;
 	}
 
@@ -1100,10 +1063,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.expfile = "gen6_exp.txt";
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 708;
-		range1->lastfolder = 760;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(708);
+		newsettings.folderRanges.push_back(760);
 		newsettings.generation = 6;
 		xy = true;
 	}
@@ -1123,20 +1084,16 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (sm || usum)
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 1035;
-		range1->lastfolder = 1164;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(1035);
+		newsettings.folderRanges.push_back(1164);
 		newsettings.generation = 7;
 	}
 
 	if (newsettings.wantedgame == "all")
 	{
 		newsettings.folderRanges.clear();
-		FolderRange* range1 = new FolderRange;
-		range1->firstfolder = 1;
-		range1->lastfolder = 1164;
-		newsettings.folderRanges.push_back(*range1);
+		newsettings.folderRanges.push_back(1);
+		newsettings.folderRanges.push_back(1164);
 		allgames = true;
 	}
 
@@ -1374,9 +1331,9 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (ImGui::Button("Go!"))
 	{
 		int totalrange = 0;
-		for (FolderRange fr : newsettings.folderRanges)
+		for (int i = 0; i < newsettings.folderRanges.size(); i += 2)
 		{
-			totalrange += fr.lastfolder - fr.firstfolder;
+			totalrange += (newsettings.folderRanges[i + 1] - newsettings.folderRanges[i]) + 1;
 		}
 		string imgoing = "Searching through " + to_string(totalrange) + " tables.";
 		ImGui::SameLine(); ImGui::Text(imgoing.c_str());
