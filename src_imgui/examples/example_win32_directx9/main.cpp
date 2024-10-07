@@ -38,6 +38,27 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 using namespace std;
 
+enum MethodFilterFlags
+{
+	MethodFilterFlags_None = 0,
+	MethodFilterFlags_Walk = 1 << 0,
+	MethodFilterFlags_Surf = 1 << 1,
+	MethodFilterFlags_RodOld = 1 << 2,
+	MethodFilterFlags_RodGood = 1 << 3,
+	MethodFilterFlags_RodSuper = 1 << 4,
+	MethodFilterFlags_RockSmash = 1 << 5,
+	MethodFilterFlags_Headbutt = 1 << 6,
+	MethodFilterFlags_Seaweed = 1 << 7,
+	MethodFilterFlags_DarkGrass = 1 << 8,
+	MethodFilterFlags_Phenomena = 1 << 9,
+	MethodFilterFlags_FlowersRed = 1 << 10,
+	MethodFilterFlags_FlowersYellow = 1 << 11,
+	MethodFilterFlags_FlowersPurple = 1 << 12,
+	MethodFilterFlags_RoughTerrain = 1 << 13,
+	MethodFilterFlags_BubblingSpots = 1 << 14,
+	MethodFilterFlags_Last = 1 << 15,
+};
+
 struct Settings
 {
 	int firstfolder = 0;
@@ -54,6 +75,7 @@ struct Settings
 	int repellevel = 0;
 	int maxlevel = 100;
 	bool printtext = false;
+	int methodflags = MethodFilterFlags_Last - 1;
 };
 
 struct SettingsWindowData
@@ -86,28 +108,55 @@ struct EncounterTable
 	bool overlevellimit = false;
 };
 
-static string remove_whitespace(string str)
+#ifdef _DEBUG
+vector<string> g_debugdata;
+//dumb thing for collecting whatever data i need for some purpose
+static void RecordCustomData(string condition)
 {
-	string str1 = str;
+	bool found = false;
+	for (string str : g_debugdata)
+	{
+		if (str == condition)
+		{
+			found = true;
+		}
+	}
+	if (!found)
+	{
+		g_debugdata.push_back(condition);
+	}
+}
 
-	auto noSpaceEnd = remove(str1.begin(), str1.end(), ' ');
+static void PrintCustomData(Settings* settings)
+{
+	//cout << settings->wantedgame << "\n";
+	for (string str : g_debugdata)
+	{
+		//cout << "condition " << str << "\n";
+	}
+}
+#endif //_DEBUG
 
-	str1.erase(noSpaceEnd, str1.end());
-
-	string str2 = str;
-	str2.erase(remove_if(str2.begin(),
-		str2.end(),
-		[](unsigned char x) { return isspace(x); }),
-		str2.end());
-
-	vector<complex<double>> nums{ { 2, 2 }, { 1, 3 }, { 4, 8 } };
-#ifdef __cpp_lib_algorithm_default_value_type
-	nums.erase(remove(nums.begin(), nums.end(), { 1, 3 }), nums.end());
-#else
-	nums.erase(remove(nums.begin(), nums.end(), complex<double>{1, 3}),
-		nums.end());
-#endif
-	return str2;
+static void PrintMethodFlags(int flags)
+{
+	cout << "Method Flags:\n";
+	if (flags == 0) cout << "-MethodFilterFlags_None\n";
+	if (flags & MethodFilterFlags_Walk) cout << "-MethodFilterFlags_Walk\n";
+	if (flags & MethodFilterFlags_Surf) cout << "-MethodFilterFlags_Surf\n";
+	if (flags & MethodFilterFlags_RodOld) cout << "-MethodFilterFlags_RodOld\n";
+	if (flags & MethodFilterFlags_RodGood) cout << "-MethodFilterFlags_RodGood\n";
+	if (flags & MethodFilterFlags_RodSuper) cout << "-MethodFilterFlags_RodSuper\n";
+	if (flags & MethodFilterFlags_RockSmash) cout << "-MethodFilterFlags_RockSmash\n";
+	if (flags & MethodFilterFlags_Headbutt) cout << "-MethodFilterFlags_Headbutt\n";
+	if (flags & MethodFilterFlags_Seaweed) cout << "-MethodFilterFlags_Seaweed\n";
+	if (flags & MethodFilterFlags_DarkGrass) cout << "-MethodFilterFlags_DarkGrass\n";
+	if (flags & MethodFilterFlags_Phenomena) cout << "-MethodFilterFlags_Phenomena\n";
+	if (flags & MethodFilterFlags_FlowersRed) cout << "-MethodFilterFlags_FlowersRed\n";
+	if (flags & MethodFilterFlags_FlowersYellow) cout << "-MethodFilterFlags_FlowersYellow\n";
+	if (flags & MethodFilterFlags_FlowersPurple) cout << "-MethodFilterFlags_FlowersPurple\n";
+	if (flags & MethodFilterFlags_RoughTerrain) cout << "-MethodFilterFlags_RoughTerrain\n";
+	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
+	if (flags & MethodFilterFlags_Last) cout << "-MethodFilterFlags_Last\n";
 }
 
 static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
@@ -576,7 +625,9 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 						{
 							json_value* condobj = conditionvalues->u.array.values[conditionIdx];
 							string condition = FindValueInObjectByKey(condobj, "name")->u.string.ptr;
-
+#ifdef _DEBUG
+							RecordCustomData(condition);
+#endif //_DEBUG
 							//make sure encounter meets applicable parameters
 							
 							//time: morning/day/night (all gens except 1, 3)
@@ -637,6 +688,119 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 						|| method == "roaming-water" || method == "feebas-tile-fishing")
 						continue;
 
+					bool foundmethod = false;
+					bool methodgood = false;
+
+					if (method == "walk")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_Walk)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "surf")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_Surf)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "old-rod")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_RodOld)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "good-rod")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_RodGood)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "super-rod")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_RodSuper)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "rock-smash")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_RockSmash)
+							methodgood = true;
+					}
+
+					if (!foundmethod && (method == "headbutt-low" || method == "headbutt-normal" || method == "headbutt-high"))
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_Headbutt)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "seaweed")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_Seaweed)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "dark-grass")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_DarkGrass)
+							methodgood = true;
+					}
+
+					if (!foundmethod && (method == "grass-spots" || method == "cave-spots" || method == "bridge-spots" || method == "super-rod-spots" || method == "surf-spots"))
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_Phenomena)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "red-flowers")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_FlowersRed)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "yellow-flowers")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_FlowersYellow)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "purple-flowers")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_FlowersPurple)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "rough-terrain")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_RoughTerrain)
+							methodgood = true;
+					}
+
+					if (!foundmethod && method == "bubbling-spots")
+					{
+						foundmethod = true;
+						if (settings->methodflags & MethodFilterFlags_BubblingSpots)
+							methodgood = true;
+					}
+
+					if (!foundmethod)
+						assert(0);//this encounter method is unaccounted for
+					else if (!methodgood)
+						continue;//bad method
+
 					//all good
 					int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 					int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
@@ -685,6 +849,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	vector<string> warnings;
 	for (EncounterTable &table : *maintables)
 	{
+		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
 		if (table.overlevellimit)
 			continue;
 		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << "\n";
@@ -786,6 +951,9 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
 		cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
 	}
+#ifdef _DEBUG
+	PrintCustomData(settings);
+#endif //_DEBUG
 }
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
@@ -819,16 +987,9 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 
 static void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
-	static bool use_work_area = false;
-	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
-
-	// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-	// Based on your use case you may want one or the other.
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
-#ifndef _DEBUG
-	ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
-	ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
-#endif
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	Settings newsettings;
@@ -1037,6 +1198,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	}
 
 	//1 and 3 don't have day/night cycles, 5 and 6's are cosmetic for most purposes
+	//missing gen 7 time data
 	if (allgames || (newsettings.generation == 2 || newsettings.generation == 4 || newsettings.generation == 7))
 	{
 		const char* times;
@@ -1073,22 +1235,20 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		newsettings.wantedseason = internal_seasons[season_current];
 	}
 
-	if (allgames || (newsettings.generation >= 2 && newsettings.generation <= 5))
+	//mass outbreaks exist in gen 3 and 5, but we have no data for them! braugh!
+	if (allgames || (newsettings.generation == 2 || newsettings.generation == 4))
 	{
 		static bool wantswarm = false;
 		ImGui::Checkbox("Mass Outbreaks", &wantswarm);
 		newsettings.wantswarm = wantswarm;
 	}
 
-	if (allgames || dpp || xy)
+	if (allgames || dpp)
 	{
 		static bool wantradar = false;
 		ImGui::Checkbox("PokeRadar", &wantradar);
 		newsettings.wantradar = wantradar;
-	}
 
-	if (allgames || newsettings.generation == 4)
-	{
 		const char* slotgames[] = { "None", "Ruby", "Sapphire", "Emerald", "FireRed", "LeafGreen" };
 		const char* internal_slotgames[] = { "slot2-none", "slot2-ruby", "slot2-sapphire", "slot2-emerald", "slot2-firered", "slot2-leafgreen" };
 		static int slotgame_current = 0;
@@ -1120,6 +1280,53 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
 	newsettings.maxlevel = maxlevel;
 
+	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
+	{
+		ImGui::Text("Choose which encounter methods to include in the analysis.");
+		static int methodflags = MethodFilterFlags_Last - 1;
+		ImGui::CheckboxFlags("Walk", &methodflags, MethodFilterFlags_Walk);
+		ImGui::SameLine(); HelpMarker("\"Walk\" generally means whatever the most obvious method of encounters is in an area. This means grass in most outdoor places and means walking anywhere in caves and dungeons.");
+		ImGui::CheckboxFlags("Surf", &methodflags, MethodFilterFlags_Surf);
+		if (newsettings.generation != 5 && newsettings.generation != 7)
+		{
+			ImGui::CheckboxFlags("Old Rod", &methodflags, MethodFilterFlags_RodOld);
+			ImGui::CheckboxFlags("Good Rod", &methodflags, MethodFilterFlags_RodGood);
+		}
+
+		if (newsettings.generation != 7)
+			ImGui::CheckboxFlags("Super Rod", &methodflags, MethodFilterFlags_RodSuper);
+
+		if (allgames || newsettings.generation == 2 || newsettings.generation == 3 || newsettings.generation == 6 || hgss)
+			ImGui::CheckboxFlags("Rock Smash", &methodflags, MethodFilterFlags_RockSmash);
+
+		if (allgames || newsettings.generation == 2 || hgss)
+			ImGui::CheckboxFlags("Headbutt", &methodflags, MethodFilterFlags_Headbutt);
+
+		if (allgames || rse)
+			ImGui::CheckboxFlags("Seaweed", &methodflags, MethodFilterFlags_Seaweed);
+
+		if (allgames || newsettings.generation == 5)
+		{
+			ImGui::CheckboxFlags("Dark Grass", &methodflags, MethodFilterFlags_DarkGrass);
+			ImGui::CheckboxFlags("Phenomena", &methodflags, MethodFilterFlags_Phenomena);
+			ImGui::SameLine(); HelpMarker("Rustling grass, dust clouds, flying pokemon's shadows, and rippling water.");
+		}
+
+		if (allgames || xy)
+		{
+			ImGui::CheckboxFlags("Red Flowers", &methodflags, MethodFilterFlags_FlowersRed);
+			ImGui::CheckboxFlags("Yellow Flowers", &methodflags, MethodFilterFlags_FlowersYellow);
+			ImGui::CheckboxFlags("Purple Flowers", &methodflags, MethodFilterFlags_FlowersPurple);
+			ImGui::CheckboxFlags("Rough Terrain", &methodflags, MethodFilterFlags_RoughTerrain);
+			ImGui::SameLine(); HelpMarker("\"Rough Terrain\" encompasses several different kinds of encounters, most of them being unique to a single location, like the snow on Route 17.");
+		}
+
+		if (allgames || newsettings.generation == 7)
+			ImGui::CheckboxFlags("Bubbling Spots", &methodflags, MethodFilterFlags_BubblingSpots);
+
+		newsettings.methodflags = methodflags;
+	}
+
 	static bool printtext = false;
 	ImGui::Checkbox("Text Output", &printtext);
 	newsettings.printtext = printtext;
@@ -1141,6 +1348,26 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		settings->repellevel = newsettings.repellevel;
 		settings->maxlevel = newsettings.maxlevel;
 		settings->printtext = newsettings.printtext;
+		settings->methodflags = newsettings.methodflags;
+
+		/*
+		cout << "firstfolder" << to_string(newsettings.firstfolder) << "\n";
+		cout << "lastfolder" << to_string(newsettings.lastfolder) << "\n";
+		cout << "wantedgame" << newsettings.wantedgame << "\n";
+		cout << "wantedtime" << newsettings.wantedtime << "\n";
+		cout << "wantedseason" << newsettings.wantedseason << "\n";
+		cout << "wantswarm" << (newsettings.wantswarm ? "TRUE" : "FALSE") << "\n";
+		cout << "wantradar" << (newsettings.wantradar ? "TRUE" : "FALSE") << "\n";
+		cout << "wantedslot2game" << newsettings.wantedslot2game << "\n";
+		cout << "wantedradiostation" << newsettings.wantedradiostation << "\n";
+		cout << "expfile" << newsettings.expfile << "\n";
+		cout << "generation" << to_string(newsettings.generation) << "\n";
+		cout << "repellevel" << to_string(newsettings.repellevel) << "\n";
+		cout << "maxlevel" << to_string(newsettings.maxlevel) << "\n";
+		cout << "printtext" << (newsettings.printtext ? "TRUE" : "FALSE") << "\n";
+		PrintMethodFlags(newsettings.methodflags);
+		*/
+
 		ReadTables(settings, maintables, basepath);
 		sort(maintables->begin(), maintables->end(), compareByExp);
 		settingswindowdata->running = false;
@@ -1151,6 +1378,9 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		string imgoing = "Searching through " + to_string(newsettings.lastfolder - newsettings.firstfolder) + " files.";
 		ImGui::SameLine(); ImGui::Text(imgoing.c_str());
 		maintables->clear();
+#ifdef _DEBUG
+		g_debugdata.clear();
+#endif //_DEBUG
 		settingswindowdata->running = true;
 	}
 
@@ -1167,7 +1397,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		settings->expfile != newsettings.expfile ||
 		settings->generation != newsettings.generation ||
 		settings->repellevel != newsettings.repellevel ||
-		settings->maxlevel != newsettings.maxlevel)
+		settings->maxlevel != newsettings.maxlevel ||
+		settings->methodflags != newsettings.methodflags)
 	{
 		if (!maintables->empty())
 		{
