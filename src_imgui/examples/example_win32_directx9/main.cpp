@@ -243,32 +243,6 @@ static bool isEqualBool(json_value* initial, json_value* compare)
 	assert(initial->type == json_boolean);
 	return initial->u.boolean == compare->u.boolean;
 }
-/*
-static int FindObjectInArrayByKeyValueChar(json_value* initialArray, char* key, char* value)
-{
-	assert(initialArray->type == json_array);
-	int arrayLength = initialArray->u.array.length;
-	cout << "FindObjectInArrayByKeyValueChar: arrayLength: " << to_string(arrayLength) << "\n";
-	for (int i = 0; i < arrayLength; i++)
-	{
-		json_value* obj = initialArray->u.array.values[i];
-		int objectArrayLength = obj->u.object.length;
-		cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " objectArrayLength: " << to_string(objectArrayLength) << "\n";
-		for (int j = 0; j < objectArrayLength; j++)
-		{
-			json_object_entry val = obj->u.object.values[j];
-			cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " " + to_string(j) + " val name: " << val.name << +" val value: " << val.value << "\n";
-			if (isEqualString(val.name, key))
-			{
-				//return index object is at in array
-				cout << "FindObjectInArrayByKeyValueChar: " + to_string(i) + " " + to_string(j) + " MATCHED\n";
-				return i;
-			}
-		}
-	}
-	return -1;
-}
-*/
 
 static void ExplainJSONValue(json_value* obj)
 {
@@ -436,6 +410,208 @@ static bool isEqual(json_value* initial, json_value* compare)
 	}
 }
 
+static bool InvalidateCondition(Settings* settings, string condition)
+{
+	if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
+	{
+		//time: morning/day/night (all gens except 1, 3)
+		if (settings->wantedtime != condition)
+			return true;
+	}
+	if (condition == "season-spring" || condition == "season-summer" || condition == "season-autumn" || condition == "season-winter")
+	{
+		//season: spring/summer/autumn/winter (gen 5)
+		if (settings->wantedseason != condition)
+			return true;
+	}
+	if (condition == "swarm-yes" || condition == "swarm-no")
+	{
+		//swarm: yes/no (gen 2-5)
+		if (settings->wantswarm != (condition == "swarm-yes"))
+			return true;
+	}
+	if (condition == "radar-on" || condition == "radar-off")
+	{
+		//radar: on/off (DPP)
+		if (settings->wantradar != (condition == "radar-on"))
+			return true;
+	}
+	if (condition == "slot2-none" || condition == "slot2-ruby" || condition == "slot2-sapphire" || condition == "slot2-emerald" || condition == "slot2-firered" || condition == "slot2-leafgreen")
+	{
+		//slot2: none/ruby/sapphire/emerald/firered/leafgreen (FPP)
+		if (settings->wantedslot2game != condition)
+			return true;
+	}
+	if (condition == "radio-off" || condition == "radio-hoenn" || condition == "radio-sinnoh")
+	{
+		//radio: off/hoenn/sinnoh (HGSS)
+		if (settings->wantedradiostation != condition)
+			return true;
+	}
+	return false;
+}
+
+static bool ValidateMethod(Settings* settings, string method)
+{
+	//these encounter methods are not very useful, if even applicable.
+	//sos encounters may come back, if the alola tables are ever fixed.
+	if (method == "gift" || method == "gift-egg" || method == "only-one" || method == "pokeflute"
+		|| method == "squirt-bottle" || method == "wailmer-pail" || method == "devon-scope"
+		|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
+		|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
+		|| method == "roaming-water" || method == "feebas-tile-fishing")
+		return false;
+	bool foundmethod = false;
+	bool methodgood = false;
+	if (method == "walk")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Walk)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "surf")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Surf)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "old-rod")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_RodOld)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "good-rod")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_RodGood)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "super-rod")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_RodSuper)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "rock-smash")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_RockSmash)
+			methodgood = true;
+	}
+	if (!foundmethod && (method == "headbutt-low" || method == "headbutt-normal" || method == "headbutt-high"))
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Headbutt)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "seaweed")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Seaweed)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "dark-grass")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_DarkGrass)
+			methodgood = true;
+	}
+	if (!foundmethod && (method == "grass-spots" || method == "cave-spots" || method == "bridge-spots" || method == "super-rod-spots" || method == "surf-spots"))
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Phenomena)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "red-flowers")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_FlowersRed)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "yellow-flowers")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_FlowersYellow)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "purple-flowers")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_FlowersPurple)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "rough-terrain")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_RoughTerrain)
+			methodgood = true;
+	}
+	if (!foundmethod && method == "bubbling-spots")
+	{
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_BubblingSpots)
+			methodgood = true;
+	}
+	if (!foundmethod)
+		assert(0);//this encounter method is unaccounted for
+	else if (!methodgood)
+		return false;//bad method
+	return true;
+}
+
+static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int iFile)
+{
+	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
+
+	if (conditionvalues)
+	{
+		bool encounterinvalid = false;
+
+		for (int conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
+		{
+			if (encounterinvalid)
+				break;
+
+			json_value* condobj = conditionvalues->u.array.values[conditionIdx];
+			string condition = FindValueInObjectByKey(condobj, "name")->u.string.ptr;
+#ifdef _DEBUG
+			RecordCustomData(condition);
+#endif //_DEBUG
+			//make sure encounter meets applicable parameters
+			if (InvalidateCondition(settings, condition))
+				encounterinvalid = true;
+		}
+
+		if (encounterinvalid)
+			return false;
+	}
+	else
+	{
+		assert(0);
+		return false;
+	}
+
+	json_value* methodobj = FindObjectInObjectByName(encdetailblock, "method");
+
+	if (!methodobj)
+	{
+		assert(0);
+		return false;
+	}
+
+	string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
+	if (!ValidateMethod(settings, method))
+		return false;
+
+	//all good
+	int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
+	int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
+	int minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
+	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, iFile);
+	return true;
+}
+
 static int ParseLocationDataFile(string basepath, int iFile, Settings* settings, vector<EncounterTable>* maintables)
 {
 	//if (iFile != 57)
@@ -448,7 +624,6 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 	char* file_contents;
 	json_char* json;
 	json_value* file;
-
 	if (stat(path.c_str(), &filestatus) != 0)
 	{
 		//cout << "File " + path + " not found\n";
@@ -458,18 +633,14 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		//return quietly
 		return 1;
 	}
-
 	file_size = filestatus.st_size;
 	file_contents = (char*)malloc(filestatus.st_size);
-
 	if (!file_contents)
 	{
 		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		return 0;
 	}
-
 	fp = fopen(path.c_str(), "rt");
-
 	if (!fp)
 	{
 		cout << "Unable to open " + path + "\n";
@@ -477,7 +648,6 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		free(file_contents);
 		return 0;
 	}
-
 	if (fread(file_contents, file_size, 1, fp) != 1)
 	{
 		cout << "Unable to read content of " + path + "\n";
@@ -485,327 +655,107 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		free(file_contents);
 		return 0;
 	}
-
 	fclose(fp);
 	json = (json_char*)file_contents;
 	file = json_parse(json, file_size);
-
 	if (file == NULL)
 	{
 		cout << "Unable to parse data\n";
 		free(file_contents);
 		return 0;
 	}
-
+	//find place name
 	json_value* names = FindArrayInObjectByName(file, "names");
-
 	if (!names)
 	{
 		assert(0);
 		return 0;
 	}
-
-	//cout << "found names\n";
 	for (int nameIdx = 0; nameIdx < names->u.array.length; nameIdx++)
 	{
-		//cout << "found localized name block\n";
 		json_value* localname = names->u.array.values[nameIdx];
-
 		if (!localname)
 		{
 			assert(0);
 			return 0;
 		}
-
 		json_value* language = FindObjectInObjectByName(localname, "language");
-
 		if (!language)
 		{
 			assert(0);
 			return 0;
 		}
-
 		json_value* langname = FindValueInObjectByKey(language, "name");
-		//cout << "langname: " << langname->u.string.ptr << "\n";
 		if (isEqualString(langname->u.string.ptr, "en"))
-		{
-			//cout << "language is en\n";
 			placename = FindValueInObjectByKey(localname, "name")->u.string.ptr;
-			//cout << "place name: " << placename << "\n";
-		}
 	}
-
+	//get encounter info
 	json_value* encounters = FindArrayInObjectByName(file, "pokemon_encounters");
-
 	if (!encounters)
 	{
 		assert(0);
 		return 0;
 	}
-
-	//cout << "found encounters\n";
 	for (int encounterIdx = 0; encounterIdx < encounters->u.array.length; encounterIdx++)
 	{
-		//cout << "found encounter block\n";
 		json_value* encounterblock = encounters->u.array.values[encounterIdx];
-
 		if (!encounterblock)
 		{
 			assert(0);
 			return 0;
 		}
-
-		//ensure this pokemon is in our game version before doing anything else
+		//version details block
 		json_value* versiondetails = FindArrayInObjectByName(encounterblock, "version_details");
-
 		if (!versiondetails)
 		{
 			assert(0);
 			return 0;
 		}
-
 		for (int verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
 		{
 			json_value* verdetailblock = versiondetails->u.array.values[verdetailsIdx];
-
 			if (!verdetailblock)
 			{
 				assert(0);
 				return 0;
 			}
-
+			//version
 			json_value* version = FindObjectInObjectByName(verdetailblock, "version");
-
 			if (!version)
 			{
 				assert(0);
 				return 0;
 			}
-
 			string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
+			//ensure this pokemon is in our game version before doing anything else
 			if (givengame == settings->wantedgame || settings->wantedgame == "all")
 			{
-				//okay, now read the encounter data
+				//it was. get pokemon name
 				string pokemonname;
 				json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
-
 				if (!pokemon)
 				{
 					assert(0);
 					return 0;
 				}
-
 				pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
-				//cout << "pokemonname: " << pokemonname << "\n";
+				//go back up to version details to get encounter details block
 				json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
-
 				if (!encounterdetails)
 				{
 					assert(0);
 					return 0;
 				}
-
 				for (int encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
 				{
 					json_value* encdetailblock = encounterdetails->u.array.values[encdetailsIdx];
-
 					if (!encdetailblock)
 					{
 						assert(0);
 						return 0;
 					}
-
-					json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
-
-					if (conditionvalues)
-					{
-						bool encounterinvalid = false;
-
-						for (int conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
-						{
-							json_value* condobj = conditionvalues->u.array.values[conditionIdx];
-							string condition = FindValueInObjectByKey(condobj, "name")->u.string.ptr;
-#ifdef _DEBUG
-							RecordCustomData(condition);
-#endif //_DEBUG
-							//make sure encounter meets applicable parameters
-							
-							//time: morning/day/night (all gens except 1, 3)
-							if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
-								if (settings->wantedtime != condition)
-									encounterinvalid = true;
-
-							//season: spring/summer/autumn/winter (gen 5)
-							if (condition == "season-spring" || condition == "season-summer" || condition == "season-autumn" || condition == "season-winter")
-								if (settings->wantedseason != condition)
-									encounterinvalid = true;
-
-							//swarm: yes/no (gen 2-5)
-							if (condition == "swarm-yes" || condition == "swarm-no")
-								if (settings->wantswarm != (condition == "swarm-yes"))
-									encounterinvalid = true;
-
-							//radar: on/off (DPP, XY)
-							if (condition == "radar-on" || condition == "radar-off")
-								if (settings->wantradar != (condition == "radar-on"))
-									encounterinvalid = true;
-
-							//slot2: none/ruby/sapphire/emerald/firered/leafgreen (gen 4)
-							if (condition == "slot2-none" || condition == "slot2-ruby" || condition == "slot2-sapphire" || condition == "slot2-emerald" || condition == "slot2-firered" || condition == "slot2-leafgreen")
-								if (settings->wantedslot2game != condition)
-									encounterinvalid = true;
-
-							//radio: off/hoenn/sinnoh (HGSS)
-							if (condition == "radio-off" || condition == "radio-hoenn" || condition == "radio-sinnoh")
-								if (settings->wantedradiostation != condition)
-									encounterinvalid = true;
-						}
-
-						if (encounterinvalid)
-							continue;
-					}
-					else
-					{
-						assert(0);
-						return 0;
-					}
-
-					json_value* methodobj = FindObjectInObjectByName(encdetailblock, "method");
-
-					if (!methodobj)
-					{
-						assert(0);
-						return 0;
-					}
-
-					//these encounter methods are not very useful, if even applicable.
-					//sos encounters may come back, if the alola tables are ever fixed.
-					string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
-					if (method == "gift" || method == "gift-egg" || method == "only-one" || method == "pokeflute"
-						|| method == "squirt-bottle" || method == "wailmer-pail" || method == "devon-scope"
-						|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
-						|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
-						|| method == "roaming-water" || method == "feebas-tile-fishing")
-						continue;
-
-					bool foundmethod = false;
-					bool methodgood = false;
-
-					if (method == "walk")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_Walk)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "surf")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_Surf)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "old-rod")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_RodOld)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "good-rod")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_RodGood)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "super-rod")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_RodSuper)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "rock-smash")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_RockSmash)
-							methodgood = true;
-					}
-
-					if (!foundmethod && (method == "headbutt-low" || method == "headbutt-normal" || method == "headbutt-high"))
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_Headbutt)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "seaweed")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_Seaweed)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "dark-grass")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_DarkGrass)
-							methodgood = true;
-					}
-
-					if (!foundmethod && (method == "grass-spots" || method == "cave-spots" || method == "bridge-spots" || method == "super-rod-spots" || method == "surf-spots"))
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_Phenomena)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "red-flowers")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_FlowersRed)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "yellow-flowers")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_FlowersYellow)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "purple-flowers")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_FlowersPurple)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "rough-terrain")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_RoughTerrain)
-							methodgood = true;
-					}
-
-					if (!foundmethod && method == "bubbling-spots")
-					{
-						foundmethod = true;
-						if (settings->methodflags & MethodFilterFlags_BubblingSpots)
-							methodgood = true;
-					}
-
-					if (!foundmethod)
-						assert(0);//this encounter method is unaccounted for
-					else if (!methodgood)
-						continue;//bad method
-
-					//all good
-					int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
-					int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
-					int minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-					RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, iFile);
+					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, iFile))
+						continue;//encounter was bad for some reason
 				}
 			}
 			else
