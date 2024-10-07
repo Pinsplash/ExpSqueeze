@@ -59,10 +59,15 @@ enum MethodFilterFlags
 	MethodFilterFlags_Last = 1 << 15,
 };
 
-struct Settings
+struct FolderRange
 {
 	int firstfolder = 0;
 	int lastfolder = 0;
+};
+
+struct Settings
+{
+	vector<FolderRange> folderRanges;
 	string wantedgame;
 	string wantedtime;
 	string wantedseason;
@@ -782,18 +787,21 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
 	string tablepath = basepath + "location-area";
-	int notch = 1;
-	double range = settings->lastfolder - settings->firstfolder;
-	if (settings->printtext) cout << "|     PROGRESS     |\n";
-	for (int i = settings->firstfolder; i <= settings->lastfolder; i++)
+	for (FolderRange folderrange : settings->folderRanges)
 	{
-		if ((i - settings->firstfolder) / range >= (notch * 0.05))
+		int notch = 1;
+		double range = folderrange.lastfolder - folderrange.firstfolder;
+		if (settings->printtext) cout << "|     PROGRESS     |\n";
+		for (int i = folderrange.firstfolder; i <= folderrange.lastfolder; i++)
 		{
-			if (settings->printtext) cout << "-";
-			notch++;
+			if ((i - folderrange.firstfolder) / range >= (notch * 0.05))
+			{
+				if (settings->printtext) cout << "-";
+				notch++;
+			}
+			if (ParseLocationDataFile(tablepath, i, settings, maintables) == 0)
+				return;
 		}
-		if (ParseLocationDataFile(tablepath, i, settings, maintables) == 0)
-			return;
 	}
 	if (settings->printtext) cout << "\n";
 	vector<string> warnings;
@@ -984,30 +992,50 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (newsettings.wantedgame == "blue" || newsettings.wantedgame == "red" || newsettings.wantedgame == "yellow")
 	{
 		newsettings.expfile = "gen1_exp.txt";
-		newsettings.firstfolder = 258;
-		newsettings.lastfolder = 833;
+		newsettings.folderRanges.clear();
+		FolderRange* range = new FolderRange;
+		range->firstfolder = 258;
+		range->lastfolder = 349;
+		newsettings.folderRanges.push_back(*range);
 		newsettings.generation = 1;
 	}
 
 	if (newsettings.wantedgame == "gold" || newsettings.wantedgame == "silver" || newsettings.wantedgame == "crystal")
 	{
 		newsettings.expfile = "gen2_exp.txt";
-		newsettings.firstfolder = 184;
-		newsettings.lastfolder = 841;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 184;
+		range1->lastfolder = 349;
+		newsettings.folderRanges.push_back(*range1);
+		FolderRange* range2 = new FolderRange;
+		range2->firstfolder = 798;
+		range2->lastfolder = 798;
+		newsettings.folderRanges.push_back(*range2);
 		newsettings.generation = 2;
 	}
 
 	if (newsettings.wantedgame == "ruby" || newsettings.wantedgame == "sapphire" || newsettings.wantedgame == "emerald")
 	{
-		newsettings.firstfolder = 350;
-		newsettings.lastfolder = 834;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 350;
+		range1->lastfolder = 449;
+		newsettings.folderRanges.push_back(*range1);
 		rse = true;
 	}
 
 	if (newsettings.wantedgame == "firered" || newsettings.wantedgame == "leafgreen")
 	{
-		newsettings.firstfolder = 258;
-		newsettings.lastfolder = 833;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 258;
+		range1->lastfolder = 572;
+		newsettings.folderRanges.push_back(*range1);
+		FolderRange* range2 = new FolderRange;
+		range2->firstfolder = 825;
+		range2->lastfolder = 825;
+		newsettings.folderRanges.push_back(*range2);
 		frlg = true;
 	}
 
@@ -1019,15 +1047,21 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 
 	if (newsettings.wantedgame == "diamond" || newsettings.wantedgame == "pearl" || newsettings.wantedgame == "platinum")
 	{
-		newsettings.firstfolder = 1;
-		newsettings.lastfolder = 840;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 1;
+		range1->lastfolder = 183;
+		newsettings.folderRanges.push_back(*range1);
 		dpp = true;
 	}
 
 	if (newsettings.wantedgame == "heartgold" || newsettings.wantedgame == "soulsilver")
 	{
-		newsettings.firstfolder = 184;
-		newsettings.lastfolder = 842;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 184;
+		range1->lastfolder = 349;
+		newsettings.folderRanges.push_back(*range1);
 		hgss = true;
 	}
 
@@ -1040,16 +1074,22 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (newsettings.wantedgame == "black" || newsettings.wantedgame == "white")
 	{
 		newsettings.expfile = "gen5bw1_exp.txt";
-		newsettings.firstfolder = 576;
-		newsettings.lastfolder = 775;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 576;
+		range1->lastfolder = 655;
+		newsettings.folderRanges.push_back(*range1);
 		bw1 = true;
 	}
 
 	if (newsettings.wantedgame == "black-2" || newsettings.wantedgame == "white-2")
 	{
 		newsettings.expfile = "gen5bw2_exp.txt";
-		newsettings.firstfolder = 576;
-		newsettings.lastfolder = 792;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 576;
+		range1->lastfolder = 707;
+		newsettings.folderRanges.push_back(*range1);
 		bw2 = true;
 	}
 
@@ -1059,8 +1099,11 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (newsettings.wantedgame == "x" || newsettings.wantedgame == "y")
 	{
 		newsettings.expfile = "gen6_exp.txt";
-		newsettings.firstfolder = 708;
-		newsettings.lastfolder = 780;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 708;
+		range1->lastfolder = 760;
+		newsettings.folderRanges.push_back(*range1);
 		newsettings.generation = 6;
 		xy = true;
 	}
@@ -1076,18 +1119,24 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		newsettings.expfile = "gen7usum_exp.txt";
 		usum = true;
 	}
-
+	//TODO: optimize gen 7 folder ranges
 	if (sm || usum)
 	{
-		newsettings.firstfolder = 1035;
-		newsettings.lastfolder = 1164;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 1035;
+		range1->lastfolder = 1164;
+		newsettings.folderRanges.push_back(*range1);
 		newsettings.generation = 7;
 	}
 
 	if (newsettings.wantedgame == "all")
 	{
-		newsettings.firstfolder = 1;
-		newsettings.lastfolder = 1164;
+		newsettings.folderRanges.clear();
+		FolderRange* range1 = new FolderRange;
+		range1->firstfolder = 1;
+		range1->lastfolder = 1164;
+		newsettings.folderRanges.push_back(*range1);
 		allgames = true;
 	}
 
@@ -1284,8 +1333,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (settingswindowdata->running)
 	{
 		//only save the new settings once the button is pressed. this prevents changing the settings mid-iteration.
-		settings->firstfolder = newsettings.firstfolder;
-		settings->lastfolder = newsettings.lastfolder;
+		settings->folderRanges = newsettings.folderRanges;
 		settings->wantedgame = newsettings.wantedgame;
 		settings->wantedtime = newsettings.wantedtime;
 		settings->wantedseason = newsettings.wantedseason;
@@ -1325,7 +1373,12 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 
 	if (ImGui::Button("Go!"))
 	{
-		string imgoing = "Searching through " + to_string(newsettings.lastfolder - newsettings.firstfolder) + " files.";
+		int totalrange = 0;
+		for (FolderRange fr : newsettings.folderRanges)
+		{
+			totalrange += fr.lastfolder - fr.firstfolder;
+		}
+		string imgoing = "Searching through " + to_string(totalrange) + " tables.";
 		ImGui::SameLine(); ImGui::Text(imgoing.c_str());
 		maintables->clear();
 #ifdef _DEBUG
@@ -1335,9 +1388,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	}
 
 	//detect when settings have changed
-	if (settings->firstfolder != newsettings.firstfolder ||
-		settings->lastfolder != newsettings.lastfolder ||
-		settings->wantedgame != newsettings.wantedgame ||
+	if (settings->wantedgame != newsettings.wantedgame ||
 		settings->wantedtime != newsettings.wantedtime ||
 		settings->wantedseason != newsettings.wantedseason ||
 		settings->wantswarm != newsettings.wantswarm ||
