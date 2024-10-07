@@ -1249,7 +1249,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		if (allgames || newsettings.generation == 2 || newsettings.generation == 3 || newsettings.generation == 6 || hgss)
 			ImGui::CheckboxFlags("Rock Smash", &methodflags, MethodFilterFlags_RockSmash);
 
-		if (allgames || newsettings.generation == 2 || hgss)
+		if (allgames || newsettings.generation == 2/* || hgss*/)
 			ImGui::CheckboxFlags("Headbutt", &methodflags, MethodFilterFlags_Headbutt);
 
 		if (allgames || rse)
