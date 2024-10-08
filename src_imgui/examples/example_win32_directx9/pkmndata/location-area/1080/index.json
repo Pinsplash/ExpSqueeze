@@ -7,7 +7,15 @@
         "url": "/api/v2/location/794/"
     },
     "name": "exeggutor-island-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Exeggutor Island"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

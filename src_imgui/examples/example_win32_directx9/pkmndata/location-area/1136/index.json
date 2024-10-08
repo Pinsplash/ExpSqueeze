@@ -7,7 +7,15 @@
         "url": "/api/v2/location/723/"
     },
     "name": "ten-carat-hill-inside",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Ten Carat Hill (inside)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

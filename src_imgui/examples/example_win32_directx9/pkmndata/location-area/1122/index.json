@@ -7,7 +7,15 @@
         "url": "/api/v2/location/781/"
     },
     "name": "poni-wilds-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Poni Wilds"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

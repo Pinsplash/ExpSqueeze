@@ -1085,7 +1085,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.folderRanges.clear();
 		newsettings.folderRanges.push_back(1035);
-		newsettings.folderRanges.push_back(1164);
+		newsettings.folderRanges.push_back(1156);
 		newsettings.generation = 7;
 	}
 
@@ -1093,7 +1093,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		newsettings.folderRanges.clear();
 		newsettings.folderRanges.push_back(1);
-		newsettings.folderRanges.push_back(1164);
+		newsettings.folderRanges.push_back(1156);
 		allgames = true;
 	}
 
@@ -1249,7 +1249,9 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 			ImGui::CheckboxFlags("Good Rod", &methodflags, MethodFilterFlags_RodGood);
 		}
 
-		if (newsettings.generation != 7)
+		if (newsettings.generation == 7)
+			ImGui::CheckboxFlags("Fishing at regular rock", &methodflags, MethodFilterFlags_RodSuper);
+		else
 			ImGui::CheckboxFlags("Super Rod", &methodflags, MethodFilterFlags_RodSuper);
 
 		if (allgames || newsettings.generation == 2 || newsettings.generation == 3 || newsettings.generation == 6 || hgss)
@@ -1278,7 +1280,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		}
 
 		if (allgames || newsettings.generation == 7)
-			ImGui::CheckboxFlags("Bubbling Spots", &methodflags, MethodFilterFlags_BubblingSpots);
+			ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
 
 		newsettings.methodflags = methodflags;
 	}

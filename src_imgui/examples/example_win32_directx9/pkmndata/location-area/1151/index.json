@@ -7,7 +7,15 @@
         "url": "/api/v2/location/789/"
     },
     "name": "vast-poni-canyon-inside",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Vast Poni Canyon (inside)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

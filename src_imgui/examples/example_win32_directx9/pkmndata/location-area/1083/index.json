@@ -7,7 +7,15 @@
         "url": "/api/v2/location/725/"
     },
     "name": "hauoli-cemetery-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Hau'oli Cemetery"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

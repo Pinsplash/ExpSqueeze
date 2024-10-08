@@ -7,7 +7,15 @@
         "url": "/api/v2/location/782/"
     },
     "name": "ancient-poni-path-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Ancient Poni Path/Poni Breaker Coast"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

@@ -7,7 +7,15 @@
         "url": "/api/v2/location/784/"
     },
     "name": "poni-grove-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Poni Grove"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

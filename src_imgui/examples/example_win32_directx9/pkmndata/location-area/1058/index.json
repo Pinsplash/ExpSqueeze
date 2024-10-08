@@ -7,7 +7,15 @@
         "url": "/api/v2/location/758/"
     },
     "name": "alola-route-13-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Route 13"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

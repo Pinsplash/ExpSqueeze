@@ -7,7 +7,15 @@
         "url": "/api/v2/location/766/"
     },
     "name": "ulaula-meadow-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Ula'ula Meadow"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

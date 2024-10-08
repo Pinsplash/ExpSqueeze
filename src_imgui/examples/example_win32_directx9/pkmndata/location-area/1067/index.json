@@ -7,7 +7,15 @@
         "url": "/api/v2/location/796/"
     },
     "name": "aether-paradise-2f",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Aether Paradise 2F"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

@@ -7,7 +7,15 @@
         "url": "/api/v2/location/788/"
     },
     "name": "seafolk-village-main",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Seafolk Village"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

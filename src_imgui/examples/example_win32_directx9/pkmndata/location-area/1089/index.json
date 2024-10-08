@@ -7,7 +7,15 @@
         "url": "/api/v2/location/719/"
     },
     "name": "iki-town-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Iki Town"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

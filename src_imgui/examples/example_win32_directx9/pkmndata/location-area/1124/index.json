@@ -7,7 +7,15 @@
         "url": "/api/v2/location/743/"
     },
     "name": "royal-avenue-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Royal Avenue"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

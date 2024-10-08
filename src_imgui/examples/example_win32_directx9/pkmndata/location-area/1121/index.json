@@ -7,7 +7,15 @@
         "url": "/api/v2/location/785/"
     },
     "name": "poni-plains-west",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Poni Plains (west)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

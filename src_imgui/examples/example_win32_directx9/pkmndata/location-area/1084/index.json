@@ -7,7 +7,15 @@
         "url": "/api/v2/location/1042/"
     },
     "name": "hauoli-city-main",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Hau'oli City"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

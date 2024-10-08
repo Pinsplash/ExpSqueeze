@@ -7,7 +7,15 @@
         "url": "/api/v2/location/792/"
     },
     "name": "ruins-of-hope-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Ruins of Hope"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

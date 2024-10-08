@@ -7,7 +7,15 @@
         "url": "/api/v2/location/731/"
     },
     "name": "alola-route-4-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Route 4"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

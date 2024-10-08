@@ -7,7 +7,15 @@
         "url": "/api/v2/location/770/"
     },
     "name": "mount-hokulani-east",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Mount Hokulani (east)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

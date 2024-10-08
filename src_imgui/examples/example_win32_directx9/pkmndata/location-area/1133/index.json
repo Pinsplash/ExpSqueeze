@@ -7,7 +7,15 @@
         "url": "/api/v2/location/757/"
     },
     "name": "secluded-shore-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Secluded Shore"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

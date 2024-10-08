@@ -7,7 +7,15 @@
         "url": "/api/v2/location/787/"
     },
     "name": "poni-gauntlet-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Poni Gauntlet"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

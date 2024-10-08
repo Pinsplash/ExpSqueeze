@@ -7,7 +7,15 @@
         "url": "/api/v2/location/751/"
     },
     "name": "ruins-of-life-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Ruins of Life"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

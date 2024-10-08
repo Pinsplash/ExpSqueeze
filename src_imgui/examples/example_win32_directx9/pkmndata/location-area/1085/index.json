@@ -7,7 +7,15 @@
         "url": "/api/v2/location/1042/"
     },
     "name": "hauoli-city-shopping-district",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Hau'oli City (Shopping District)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

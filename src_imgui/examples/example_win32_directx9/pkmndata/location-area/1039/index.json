@@ -7,7 +7,15 @@
         "url": "/api/v2/location/711/"
     },
     "name": "alola-route-1-west",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Route 1 (near Iki Town and west path)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

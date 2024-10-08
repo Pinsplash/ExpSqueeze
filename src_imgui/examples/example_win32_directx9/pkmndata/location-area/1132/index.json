@@ -7,7 +7,15 @@
         "url": "/api/v2/location/727/"
     },
     "name": "seaward-cave-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Seaward Cave"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

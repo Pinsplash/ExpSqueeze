@@ -7,7 +7,15 @@
         "url": "/api/v2/location/712/"
     },
     "name": "alola-route-3-main",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Route 3"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

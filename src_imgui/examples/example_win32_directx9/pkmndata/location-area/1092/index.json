@@ -7,7 +7,15 @@
         "url": "/api/v2/location/774/"
     },
     "name": "lake-of-the-moone-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Lake of the Moone"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

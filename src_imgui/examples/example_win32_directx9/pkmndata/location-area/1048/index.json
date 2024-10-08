@@ -7,7 +7,15 @@
         "url": "/api/v2/location/733/"
     },
     "name": "alola-route-6-north",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Route 6 (north)"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

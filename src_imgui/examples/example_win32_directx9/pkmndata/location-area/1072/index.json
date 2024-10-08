@@ -7,7 +7,15 @@
         "url": "/api/v2/location/728/"
     },
     "name": "berry-fields-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Berry Fields"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

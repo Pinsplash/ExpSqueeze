@@ -7,7 +7,15 @@
         "url": "/api/v2/location/715/"
     },
     "name": "melemele-sea-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Melemele Sea"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {

@@ -7,7 +7,15 @@
         "url": "/api/v2/location/771/"
     },
     "name": "blush-mountain-area",
-    "names": [],
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Blush Mountain"
+        }
+    ],
     "pokemon_encounters": [
         {
             "pokemon": {
