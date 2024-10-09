@@ -30,7 +30,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 21
@@ -59,7 +59,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 21
@@ -88,7 +88,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 22
@@ -127,7 +127,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 22
@@ -174,7 +174,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 21
@@ -193,7 +193,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 21
@@ -212,7 +212,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 22
@@ -231,7 +231,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 22
@@ -492,7 +492,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 21
@@ -511,7 +511,7 @@
                             "condition_values": [],
                             "max_level": 24,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 21
@@ -530,7 +530,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 22
@@ -549,7 +549,7 @@
                             "condition_values": [],
                             "max_level": 25,
                             "method": {
-                                "name": "walk",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 22

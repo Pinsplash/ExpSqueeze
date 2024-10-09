@@ -158,9 +158,28 @@
                         {
                             "chance": 100,
                             "condition_values": [],
+                            "max_level": 11,
+                            "method": {
+                                "name": "ambush-dirt",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 11
+                        }
+                    ],
+                    "max_chance": 100,
+                    "version": {
+                        "name": "sun",
+                        "url": "/api/v2/version/27/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 100,
+                            "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 10
@@ -187,26 +206,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "bubbling-spots",
-                                "url": "/api/v2/encounter-method/34/"
-                            },
-                            "min_level": 11
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 11,
-                            "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 11
@@ -225,7 +225,7 @@
                             "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 10

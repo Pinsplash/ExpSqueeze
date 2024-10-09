@@ -1220,7 +1220,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "only-one",
+                                "name": "ambush-chase",
                                 "url": "/api/v2/encounter-method/20/"
                             },
                             "min_level": 40
@@ -1239,7 +1239,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "only-one",
+                                "name": "ambush-chase",
                                 "url": "/api/v2/encounter-method/20/"
                             },
                             "min_level": 40

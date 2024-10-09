@@ -950,7 +950,7 @@
                             "condition_values": [],
                             "max_level": 21,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 18
@@ -979,7 +979,7 @@
                             "condition_values": [],
                             "max_level": 21,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 18
@@ -1204,7 +1204,7 @@
                             "condition_values": [],
                             "max_level": 22,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-grass",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 19
@@ -1233,7 +1233,7 @@
                             "condition_values": [],
                             "max_level": 22,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-grass",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 19
@@ -1373,7 +1373,7 @@
                             "condition_values": [],
                             "max_level": 22,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-grass",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 19
@@ -1429,7 +1429,7 @@
                             "condition_values": [],
                             "max_level": 22,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-grass",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 19

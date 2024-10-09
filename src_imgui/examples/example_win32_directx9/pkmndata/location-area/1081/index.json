@@ -30,7 +30,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -49,7 +49,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -68,7 +68,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32
@@ -87,7 +87,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32
@@ -509,7 +509,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -538,7 +538,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -575,7 +575,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32
@@ -604,7 +604,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32
@@ -708,7 +708,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -737,7 +737,7 @@
                             "condition_values": [],
                             "max_level": 31,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 28
@@ -766,7 +766,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32
@@ -795,7 +795,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-sand",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 32

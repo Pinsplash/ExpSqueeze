@@ -56,7 +56,8 @@ enum MethodFilterFlags
 	MethodFilterFlags_FlowersPurple = 1 << 12,
 	MethodFilterFlags_RoughTerrain = 1 << 13,
 	MethodFilterFlags_BubblingSpots = 1 << 14,
-	MethodFilterFlags_Last = 1 << 15,
+	MethodFilterFlags_Ambush = 1 << 15,
+	MethodFilterFlags_Last = 1 << 16,
 };
 
 struct Settings
@@ -154,7 +155,7 @@ static void PrintMethodFlags(int flags)
 	if (flags & MethodFilterFlags_FlowersPurple) cout << "-MethodFilterFlags_FlowersPurple\n";
 	if (flags & MethodFilterFlags_RoughTerrain) cout << "-MethodFilterFlags_RoughTerrain\n";
 	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
-	if (flags & MethodFilterFlags_Last) cout << "-MethodFilterFlags_Last\n";
+	if (flags & MethodFilterFlags_Ambush) cout << "-MethodFilterFlags_Ambush\n";
 }
 
 static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int i)
@@ -551,10 +552,12 @@ static bool ValidateMethod(Settings* settings, string method)
 		if (settings->methodflags & MethodFilterFlags_BubblingSpots)
 			methodgood = true;
 	}
-	if (!foundmethod && (method == "ambush-grass" || method == "ambush-bush" || method == "ambush-splash" || method == "ambush-dirt"))
+	if (!foundmethod && (method == "ambush-grass" || method == "ambush-bush" || method == "ambush-splash" || method == "ambush-tree"
+		|| method == "ambush-dirt" || method == "ambush-shadow" || method == "ambush-chase" || method == "ambush-sand"))
 	{
-		//temporary thing to fix ambush issue while working on time conditions (1118)
-		return false;
+		foundmethod = true;
+		if (settings->methodflags & MethodFilterFlags_Ambush)
+			methodgood = true;
 	}
 	if (!foundmethod)
 		assert(0);//this encounter method is unaccounted for
@@ -1286,7 +1289,11 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		}
 
 		if (allgames || newsettings.generation == 7)
+		{
 			ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
+			ImGui::CheckboxFlags("Ambush", &methodflags, MethodFilterFlags_Ambush);
+			ImGui::SameLine(); HelpMarker("Cases where pokemon have an overworld presence and move, like flying pokemon shadows or rustling grass.");
+		}
 
 		newsettings.methodflags = methodflags;
 	}

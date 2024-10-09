@@ -30,7 +30,7 @@
                             "condition_values": [],
                             "max_level": 20,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-shadow",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 17
@@ -49,7 +49,7 @@
                             "condition_values": [],
                             "max_level": 20,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-shadow",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 17
@@ -76,7 +76,7 @@
                             "condition_values": [],
                             "max_level": 20,
                             "method": {
-                                "name": "only-one",
+                                "name": "ambush-chase",
                                 "url": "/api/v2/encounter-method/20/"
                             },
                             "min_level": 17
@@ -95,7 +95,7 @@
                             "condition_values": [],
                             "max_level": 20,
                             "method": {
-                                "name": "only-one",
+                                "name": "ambush-chase",
                                 "url": "/api/v2/encounter-method/20/"
                             },
                             "min_level": 17

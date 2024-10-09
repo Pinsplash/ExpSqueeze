@@ -76,7 +76,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 24
@@ -105,7 +105,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 24
@@ -134,7 +134,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
@@ -163,7 +163,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
@@ -408,7 +408,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
@@ -427,7 +427,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
@@ -454,7 +454,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 24
@@ -483,7 +483,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 24
@@ -512,7 +512,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
@@ -541,7 +541,7 @@
                             "condition_values": [],
                             "max_level": 29,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-tree",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 26
