@@ -110,6 +110,16 @@
                 {
                     "encounter_details": [
                         {
+                            "chance": 20,
+                            "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
+                        {
                             "chance": 1,
                             "condition_values": [],
                             "max_level": 19,
@@ -128,6 +138,16 @@
                 },
                 {
                     "encounter_details": [
+                        {
+                            "chance": 20,
+                            "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
                         {
                             "chance": 1,
                             "condition_values": [],
@@ -318,6 +338,16 @@
                 {
                     "encounter_details": [
                         {
+                            "chance": 60,
+                            "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
+                        {
                             "chance": 79,
                             "condition_values": [],
                             "max_level": 19,
@@ -336,6 +366,16 @@
                 },
                 {
                     "encounter_details": [
+                        {
+                            "chance": 60,
+                            "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
                         {
                             "chance": 79,
                             "condition_values": [],
@@ -780,6 +820,16 @@
                         {
                             "chance": 20,
                             "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
+                        {
+                            "chance": 20,
+                            "condition_values": [],
                             "max_level": 19,
                             "method": {
                                 "name": "super-rod",
@@ -796,6 +846,16 @@
                 },
                 {
                     "encounter_details": [
+                        {
+                            "chance": 20,
+                            "condition_values": [],
+                            "max_level": 23,
+                            "method": {
+                                "name": "bubbling-spots",
+                                "url": "/api/v2/encounter-method/34/"
+                            },
+                            "min_level": 10
+                        },
                         {
                             "chance": 20,
                             "condition_values": [],
@@ -970,7 +1030,7 @@
                             "condition_values": [],
                             "max_level": 19,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 16
@@ -989,7 +1049,7 @@
                             "condition_values": [],
                             "max_level": 19,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 16
@@ -1008,7 +1068,7 @@
                             "condition_values": [],
                             "max_level": 19,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 16
@@ -1027,7 +1087,7 @@
                             "condition_values": [],
                             "max_level": 19,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 16

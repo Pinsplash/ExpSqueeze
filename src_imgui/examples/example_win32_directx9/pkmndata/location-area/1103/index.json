@@ -417,7 +417,12 @@
                     "encounter_details": [
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -427,7 +432,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -456,7 +466,12 @@
                     "encounter_details": [
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -466,7 +481,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -739,7 +759,12 @@
                     "encounter_details": [
                         {
                             "chance": 35,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -749,7 +774,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -778,7 +808,12 @@
                     "encounter_details": [
                         {
                             "chance": 35,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -788,7 +823,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "bubbling-spots",
@@ -825,7 +865,12 @@
                     "encounter_details": [
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 17,
                             "method": {
                                 "name": "sos-encounter",
@@ -835,7 +880,12 @@
                         },
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "sos-from-bubbling-spot",
@@ -854,7 +904,12 @@
                     "encounter_details": [
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 17,
                             "method": {
                                 "name": "sos-encounter",
@@ -864,7 +919,12 @@
                         },
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "sos-from-bubbling-spot",
@@ -891,7 +951,12 @@
                     "encounter_details": [
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 17,
                             "method": {
                                 "name": "sos-encounter",
@@ -901,7 +966,12 @@
                         },
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "sos-from-bubbling-spot",
@@ -920,7 +990,12 @@
                     "encounter_details": [
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 17,
                             "method": {
                                 "name": "sos-encounter",
@@ -930,7 +1005,12 @@
                         },
                         {
                             "chance": 15,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 22,
                             "method": {
                                 "name": "sos-from-bubbling-spot",

@@ -613,33 +613,6 @@
         },
         {
             "pokemon": {
-                "name": "buzzwole",
-                "url": "/api/v2/pokemon/794/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 65,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 65
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
                 "name": "oricorio-pom-pom",
                 "url": "/api/v2/pokemon/10123/"
             },

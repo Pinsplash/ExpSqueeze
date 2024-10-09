@@ -28,12 +28,12 @@
                         {
                             "chance": 30,
                             "condition_values": [],
-                            "max_level": 45,
+                            "max_level": 48,
                             "method": {
                                 "name": "walk",
                                 "url": "/api/v2/encounter-method/1/"
                             },
-                            "min_level": 42
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 30,
@@ -112,12 +112,12 @@
                         {
                             "chance": 20,
                             "condition_values": [],
-                            "max_level": 45,
+                            "max_level": 48,
                             "method": {
                                 "name": "walk",
                                 "url": "/api/v2/encounter-method/1/"
                             },
-                            "min_level": 42
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 20,
@@ -194,14 +194,14 @@
                 {
                     "encounter_details": [
                         {
-                            "chance": 10,
+                            "chance": 20,
                             "condition_values": [],
-                            "max_level": 45,
+                            "max_level": 48,
                             "method": {
                                 "name": "walk",
                                 "url": "/api/v2/encounter-method/1/"
                             },
-                            "min_level": 42
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 10,
@@ -280,12 +280,12 @@
                         {
                             "chance": 30,
                             "condition_values": [],
-                            "max_level": 45,
+                            "max_level": 48,
                             "method": {
                                 "name": "walk",
                                 "url": "/api/v2/encounter-method/1/"
                             },
-                            "min_level": 42
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 30,
@@ -326,12 +326,12 @@
                         {
                             "chance": 15,
                             "condition_values": [],
-                            "max_level": 45,
+                            "max_level": 48,
                             "method": {
                                 "name": "sos-encounter",
                                 "url": "/api/v2/encounter-method/33/"
                             },
-                            "min_level": 42
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 15,

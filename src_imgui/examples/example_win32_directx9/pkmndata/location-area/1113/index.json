@@ -664,7 +664,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41
@@ -703,7 +703,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41
@@ -808,7 +808,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41
@@ -847,7 +847,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41
@@ -1052,7 +1052,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41
@@ -1079,7 +1079,7 @@
                             "condition_values": [],
                             "max_level": 44,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 41

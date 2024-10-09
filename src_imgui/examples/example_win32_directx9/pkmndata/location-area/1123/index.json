@@ -299,52 +299,6 @@
         },
         {
             "pokemon": {
-                "name": "guzzlord",
-                "url": "/api/v2/pokemon/799/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 70,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 70
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 70,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 70
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "moon",
-                        "url": "/api/v2/version/28/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
                 "name": "dugtrio-alola",
                 "url": "/api/v2/pokemon/10106/"
             },

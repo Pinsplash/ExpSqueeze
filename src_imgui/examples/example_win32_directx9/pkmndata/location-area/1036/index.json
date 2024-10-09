@@ -149,52 +149,6 @@
         },
         {
             "pokemon": {
-                "name": "magnemite",
-                "url": "/api/v2/pokemon/81/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 50,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 50,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 50,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 50,
-                    "version": {
-                        "name": "moon",
-                        "url": "/api/v2/version/28/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
                 "name": "wingull",
                 "url": "/api/v2/pokemon/278/"
             },
@@ -399,7 +353,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 7,
                             "method": {
                                 "name": "walk",
@@ -418,7 +377,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 7,
                             "method": {
                                 "name": "walk",
@@ -445,7 +409,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 7,
                             "method": {
                                 "name": "walk",
@@ -464,7 +433,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 7,
                             "method": {
                                 "name": "walk",
@@ -474,98 +448,6 @@
                         }
                     ],
                     "max_chance": 30,
-                    "version": {
-                        "name": "moon",
-                        "url": "/api/v2/version/28/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
-                "name": "meowth-alola",
-                "url": "/api/v2/pokemon/10107/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 30,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 30,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 30,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 30,
-                    "version": {
-                        "name": "moon",
-                        "url": "/api/v2/version/28/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
-                "name": "grimer-alola",
-                "url": "/api/v2/pokemon/10112/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 20,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 20,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 20,
-                            "condition_values": [],
-                            "max_level": 8,
-                            "method": {
-                                "name": "walk",
-                                "url": "/api/v2/encounter-method/1/"
-                            },
-                            "min_level": 6
-                        }
-                    ],
-                    "max_chance": 20,
                     "version": {
                         "name": "moon",
                         "url": "/api/v2/version/28/"

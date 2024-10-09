@@ -551,6 +551,11 @@ static bool ValidateMethod(Settings* settings, string method)
 		if (settings->methodflags & MethodFilterFlags_BubblingSpots)
 			methodgood = true;
 	}
+	if (!foundmethod && (method == "ambush-grass" || method == "ambush-bush" || method == "ambush-splash" || method == "ambush-dirt"))
+	{
+		//temporary thing to fix ambush issue while working on time conditions (1118)
+		return false;
+	}
 	if (!foundmethod)
 		assert(0);//this encounter method is unaccounted for
 	else if (!methodgood)
@@ -659,10 +664,11 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 	}
 	fclose(fp);
 	json = (json_char*)file_contents;
-	file = json_parse(json, file_size);
+	string error_buf;
+	file = json_parse(json, file_size, &error_buf);
 	if (file == NULL)
 	{
-		cout << "Unable to parse data\n";
+		cout << "File " << to_string(iFile) << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		return 0;
 	}

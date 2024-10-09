@@ -111,7 +111,7 @@
         },
         {
             "pokemon": {
-                "name": "dugtrio",
+                "name": "dugtrio-alola",
                 "url": "/api/v2/pokemon/51/"
             },
             "version_details": [

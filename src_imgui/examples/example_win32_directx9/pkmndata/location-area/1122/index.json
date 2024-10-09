@@ -488,7 +488,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 40
@@ -527,7 +527,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 40
@@ -574,7 +574,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 40
@@ -613,7 +613,7 @@
                             "condition_values": [],
                             "max_level": 43,
                             "method": {
-                                "name": "bubbling-spots",
+                                "name": "ambush-splash",
                                 "url": "/api/v2/encounter-method/34/"
                             },
                             "min_level": 40
@@ -1077,7 +1077,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 43,
                             "method": {
                                 "name": "walk",
@@ -1096,7 +1101,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 43,
                             "method": {
                                 "name": "walk",
@@ -1253,7 +1263,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 43,
                             "method": {
                                 "name": "walk",
@@ -1272,7 +1287,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 43,
                             "method": {
                                 "name": "walk",

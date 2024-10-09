@@ -52,15 +52,7 @@
 #endif
 
 #include <stddef.h>
-
-#ifdef __cplusplus
-
-   #include <string.h>
-
-   extern "C"
-   {
-
-#endif
+#include <string>
 
 typedef struct
 {
@@ -262,7 +254,7 @@ typedef struct _json_value
 } json_value;
 
 json_value * json_parse (const json_char * json,
-                         size_t length);
+                         size_t length, std::string* error_buf);
 
 #define json_error_max 128
 json_value * json_parse_ex (json_settings * settings,
@@ -278,10 +270,5 @@ void json_value_free (json_value *);
  */
 void json_value_free_ex (json_settings * settings,
                          json_value *);
-
-
-#ifdef __cplusplus
-   } /* extern "C" */
-#endif
 
 #endif

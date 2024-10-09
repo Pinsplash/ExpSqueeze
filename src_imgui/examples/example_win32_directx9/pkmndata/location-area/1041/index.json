@@ -261,7 +261,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -271,7 +276,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -281,7 +291,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -291,7 +306,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -310,7 +330,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -320,7 +345,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -330,7 +360,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -340,7 +375,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -535,7 +575,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -545,7 +590,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -555,7 +605,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -565,7 +620,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -584,7 +644,12 @@
                     "encounter_details": [
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -594,7 +659,12 @@
                         },
                         {
                             "chance": 5,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 11,
                             "method": {
                                 "name": "bubbling-spots",
@@ -604,7 +674,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -614,7 +689,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -641,7 +721,12 @@
                     "encounter_details": [
                         {
                             "chance": 70,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "bubbling-spots",
@@ -651,7 +736,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -670,7 +760,12 @@
                     "encounter_details": [
                         {
                             "chance": 70,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "bubbling-spots",
@@ -680,7 +775,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -699,7 +799,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -718,7 +823,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-day",
+                                    "url": "/api/v2/encounter-condition-value/4/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -829,7 +939,12 @@
                     "encounter_details": [
                         {
                             "chance": 70,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "bubbling-spots",
@@ -839,7 +954,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -858,7 +978,12 @@
                     "encounter_details": [
                         {
                             "chance": 70,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "bubbling-spots",
@@ -868,7 +993,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -887,7 +1017,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
@@ -906,7 +1041,12 @@
                     "encounter_details": [
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
                             "max_level": 10,
                             "method": {
                                 "name": "walk",
