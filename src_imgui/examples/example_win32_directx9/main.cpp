@@ -51,13 +51,10 @@ enum MethodFilterFlags
 	MethodFilterFlags_Seaweed = 1 << 7,
 	MethodFilterFlags_DarkGrass = 1 << 8,
 	MethodFilterFlags_Phenomena = 1 << 9,
-	MethodFilterFlags_FlowersRed = 1 << 10,
-	MethodFilterFlags_FlowersYellow = 1 << 11,
-	MethodFilterFlags_FlowersPurple = 1 << 12,
-	MethodFilterFlags_RoughTerrain = 1 << 13,
-	MethodFilterFlags_BubblingSpots = 1 << 14,
-	MethodFilterFlags_Ambush = 1 << 15,
-	MethodFilterFlags_Last = 1 << 16,
+	MethodFilterFlags_RoughTerrain = 1 << 10,
+	MethodFilterFlags_BubblingSpots = 1 << 11,
+	MethodFilterFlags_Ambush = 1 << 12,
+	MethodFilterFlags_Last = 1 << 13,
 };
 
 struct Settings
@@ -150,9 +147,6 @@ static void PrintMethodFlags(int flags)
 	if (flags & MethodFilterFlags_Seaweed) cout << "-MethodFilterFlags_Seaweed\n";
 	if (flags & MethodFilterFlags_DarkGrass) cout << "-MethodFilterFlags_DarkGrass\n";
 	if (flags & MethodFilterFlags_Phenomena) cout << "-MethodFilterFlags_Phenomena\n";
-	if (flags & MethodFilterFlags_FlowersRed) cout << "-MethodFilterFlags_FlowersRed\n";
-	if (flags & MethodFilterFlags_FlowersYellow) cout << "-MethodFilterFlags_FlowersYellow\n";
-	if (flags & MethodFilterFlags_FlowersPurple) cout << "-MethodFilterFlags_FlowersPurple\n";
 	if (flags & MethodFilterFlags_RoughTerrain) cout << "-MethodFilterFlags_RoughTerrain\n";
 	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
 	if (flags & MethodFilterFlags_Ambush) cout << "-MethodFilterFlags_Ambush\n";
@@ -462,7 +456,7 @@ static bool ValidateMethod(Settings* settings, string method)
 		return false;
 	bool foundmethod = false;
 	bool methodgood = false;
-	if (method == "walk")
+	if (method == "walk" || method == "red-flowers" || method == "yellow-flowers" || method == "purple-flowers")
 	{
 		foundmethod = true;
 		if (settings->methodflags & MethodFilterFlags_Walk)
@@ -520,24 +514,6 @@ static bool ValidateMethod(Settings* settings, string method)
 	{
 		foundmethod = true;
 		if (settings->methodflags & MethodFilterFlags_Phenomena)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "red-flowers")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_FlowersRed)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "yellow-flowers")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_FlowersYellow)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "purple-flowers")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_FlowersPurple)
 			methodgood = true;
 	}
 	if (!foundmethod && method == "rough-terrain")
@@ -1281,9 +1257,6 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 
 		if (allgames || xy)
 		{
-			ImGui::CheckboxFlags("Red Flowers", &methodflags, MethodFilterFlags_FlowersRed);
-			ImGui::CheckboxFlags("Yellow Flowers", &methodflags, MethodFilterFlags_FlowersYellow);
-			ImGui::CheckboxFlags("Purple Flowers", &methodflags, MethodFilterFlags_FlowersPurple);
 			ImGui::CheckboxFlags("Rough Terrain", &methodflags, MethodFilterFlags_RoughTerrain);
 			ImGui::SameLine(); HelpMarker("\"Rough Terrain\" encompasses several different kinds of encounters, most of them being unique to a single location, like the snow on Route 17.");
 		}
