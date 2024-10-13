@@ -1828,7 +1828,12 @@
                         },
                         {
                             "chance": 40,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-no",
+                                    "url": "/api/v2/encounter-condition-value/2/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -1838,7 +1843,12 @@
                         },
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-no",
+                                    "url": "/api/v2/encounter-condition-value/2/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -2559,12 +2569,7 @@
                         },
                         {
                             "chance": 35,
-                            "condition_values": [
-                                {
-                                    "name": "swarm-no",
-                                    "url": "/api/v2/encounter-condition-value/2/"
-                                }
-                            ],
+                            "condition_values": [],
                             "max_level": 20,
                             "method": {
                                 "name": "good-rod",
@@ -2658,12 +2663,7 @@
                         },
                         {
                             "chance": 35,
-                            "condition_values": [
-                                {
-                                    "name": "swarm-no",
-                                    "url": "/api/v2/encounter-condition-value/2/"
-                                }
-                            ],
+                            "condition_values": [],
                             "max_level": 20,
                             "method": {
                                 "name": "good-rod",
@@ -2673,7 +2673,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-no",
+                                    "url": "/api/v2/encounter-condition-value/2/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -2752,12 +2757,7 @@
                         },
                         {
                             "chance": 35,
-                            "condition_values": [
-                                {
-                                    "name": "swarm-no",
-                                    "url": "/api/v2/encounter-condition-value/2/"
-                                }
-                            ],
+                            "condition_values": [],
                             "max_level": 20,
                             "method": {
                                 "name": "good-rod",
@@ -4564,7 +4564,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-no",
+                                    "url": "/api/v2/encounter-condition-value/2/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -4574,7 +4579,12 @@
                         },
                         {
                             "chance": 40,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-yes",
+                                    "url": "/api/v2/encounter-condition-value/1/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -4584,7 +4594,12 @@
                         },
                         {
                             "chance": 30,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-yes",
+                                    "url": "/api/v2/encounter-condition-value/1/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -4594,7 +4609,12 @@
                         },
                         {
                             "chance": 20,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-yes",
+                                    "url": "/api/v2/encounter-condition-value/1/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
@@ -4604,7 +4624,12 @@
                         },
                         {
                             "chance": 10,
-                            "condition_values": [],
+                            "condition_values": [
+                                {
+                                    "name": "swarm-yes",
+                                    "url": "/api/v2/encounter-condition-value/1/"
+                                }
+                            ],
                             "max_level": 40,
                             "method": {
                                 "name": "super-rod",
