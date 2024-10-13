@@ -40,21 +40,21 @@ using namespace std;
 
 enum MethodFilterFlags
 {
-	MethodFilterFlags_None = 0,
-	MethodFilterFlags_Walk = 1 << 0,
-	MethodFilterFlags_Surf = 1 << 1,
-	MethodFilterFlags_RodOld = 1 << 2,
-	MethodFilterFlags_RodGood = 1 << 3,
-	MethodFilterFlags_RodSuper = 1 << 4,
-	MethodFilterFlags_RockSmash = 1 << 5,
-	MethodFilterFlags_Headbutt = 1 << 6,
-	MethodFilterFlags_Seaweed = 1 << 7,
-	MethodFilterFlags_DarkGrass = 1 << 8,
-	MethodFilterFlags_Phenomena = 1 << 9,
-	MethodFilterFlags_RoughTerrain = 1 << 10,
+	MethodFilterFlags_None			= 0,
+	MethodFilterFlags_Walk			= 1 << 0,
+	MethodFilterFlags_Surf			= 1 << 1,
+	MethodFilterFlags_RodOld		= 1 << 2,
+	MethodFilterFlags_RodGood		= 1 << 3,
+	MethodFilterFlags_RodSuper		= 1 << 4,
+	MethodFilterFlags_RockSmash		= 1 << 5,
+	MethodFilterFlags_Headbutt		= 1 << 6,
+	MethodFilterFlags_Seaweed		= 1 << 7,
+	MethodFilterFlags_DarkGrass		= 1 << 8,
+	MethodFilterFlags_Phenomena		= 1 << 9,
+	MethodFilterFlags_RoughTerrain	= 1 << 10,
 	MethodFilterFlags_BubblingSpots = 1 << 11,
-	MethodFilterFlags_Ambush = 1 << 12,
-	MethodFilterFlags_Last = 1 << 13,
+	MethodFilterFlags_Ambush		= 1 << 12,
+	MethodFilterFlags_Last			= 1 << 13,
 };
 
 struct Settings
@@ -926,8 +926,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		"Diamond", "Pearl", "Platinum", "HeartGold", "SoulSilver",
 		"Black", "White", "Black 2", "White 2",
 		"X", "Y",
-#ifdef _DEBUG
 		"Sun", "Moon", "Ultra Sun", "Ultra Moon"
+#ifdef _DEBUG
 		, "All"//quick and dirty debug option only, not perfectly functional
 #endif //_DEBUG
 	};
@@ -937,8 +937,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		"diamond", "pearl", "platinum", "heartgold", "soulsilver",
 		"black", "white", "black-2", "white-2",
 		"x", "y",
-#ifdef _DEBUG
 		"sun", "moon", "ultra-sun", "ultra-moon"
+#ifdef _DEBUG
 		, "all"//quick and dirty debug option only, not perfectly functional
 #endif //_DEBUG
 	};
