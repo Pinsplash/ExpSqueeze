@@ -180,7 +180,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		for (EncounterTable& table : *maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-			if (table.placename == placename && table.method == method && (settings->wantedgame_index == 26 || table.version_index == version_index))
+			if (table.placename == placename && table.method == method && (settings->wantedgame_index != 26 || table.version_index == version_index))
 			{
 				if (tablebad)
 				{
@@ -793,6 +793,31 @@ static bool compareByAEW(const Encounter& a, const Encounter& b)
 	return a.avgexpweighted > b.avgexpweighted;
 }
 
+static bool FindBEY(string basepath, string expfile, string pokemonname, int *baseexp)
+{
+	string path = basepath + "exp-gain-stats/" + expfile;
+	ifstream ReadFile(path);
+	string textLine;
+	bool foundmon = false;
+	while (getline(ReadFile, textLine))
+	{
+		size_t s1End = textLine.find('|');
+		string str1 = textLine.substr(0, s1End);
+
+		size_t s2Start = s1End + 1;
+		size_t s2End = textLine.find('|', s2Start + 1);
+		string str2 = textLine.substr(s2Start, s2End - s2Start);
+		//cout << "mon '" << str2 << "'\n";
+		if (str1 == pokemonname)
+		{
+			foundmon = true;
+			*baseexp = stoi(str2);
+			return true;
+		}
+	}
+	return false;
+}
+
 static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
@@ -823,7 +848,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 			continue;
 		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << ", " << g_games[table.version_index]->uiname << "\n";
 		table.totalavgexp = 0;
-		table.totalchance = 0;//sanity check: this number should always = expectedtotalpercent at the end of the table.
+		table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 		for (Encounter &encounter : table.encounters)
 		{
 			if (settings->wantedgame_index == 26)
@@ -833,27 +858,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 			}
 			//get experience yield from stripped down bulba tables
 			int baseexp = 0;
-			string path = basepath + "exp-gain-stats/" + game->expfile;
-			ifstream ReadFile(path);
-			string textLine;
-			bool foundmon = false;
-			while (getline(ReadFile, textLine))
-			{
-				size_t s1End = textLine.find('|');
-				string str1 = textLine.substr(0, s1End);
-
-				size_t s2Start = s1End + 1;
-				size_t s2End = textLine.find('|', s2Start + 1);
-				string str2 = textLine.substr(s2Start, s2End - s2Start);
-				//cout << "mon '" << str2 << "'\n";
-				if (str1 == encounter.pokemonname)
-				{
-					foundmon = true;
-					baseexp = stoi(str2);
-					break;
-				}
-			}
-			if (!foundmon)
+			if (!FindBEY(basepath, game->expfile, encounter.pokemonname, &baseexp))
 			{
 				cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << game->expfile << "\n";
 				continue;
