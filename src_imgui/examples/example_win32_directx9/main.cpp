@@ -180,7 +180,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		for (EncounterTable& table : *maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-			if (table.placename == placename && table.method == method && (settings->wantedgame_index == 26 && table.version_index == version_index))
+			if (table.placename == placename && table.method == method && (settings->wantedgame_index == 26 || table.version_index == version_index))
 			{
 				if (tablebad)
 				{
@@ -205,7 +205,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			newTable.filenumber = i;
 			newTable.expectedtotalpercent = chance;
 			newTable.version_index = version_index;
-			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable.encounters.push_back(newEnc);
 
 			maintables->push_back(newTable);
@@ -797,7 +797,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
-	string tablepath = basepath + "location-area";
+	string tablepath = basepath + "api/v2/location-area";
 	GameObject* game = g_games[settings->wantedgame_index];
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
