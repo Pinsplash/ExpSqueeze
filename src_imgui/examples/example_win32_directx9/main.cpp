@@ -57,6 +57,29 @@ enum MethodFilterFlags
 	MethodFilterFlags_Last			= 1 << 13,
 };
 
+enum TypeFlags
+{
+	TypeFlags_None		= 0,
+	TypeFlags_Normal	= 1 << 0,
+	TypeFlags_Fighting	= 1 << 1,
+	TypeFlags_Flying	= 1 << 2,
+	TypeFlags_Poison	= 1 << 3,
+	TypeFlags_Ground	= 1 << 4,
+	TypeFlags_Rock		= 1 << 5,
+	TypeFlags_Bug		= 1 << 6,
+	TypeFlags_Ghost		= 1 << 7,
+	TypeFlags_Steel		= 1 << 8,
+	TypeFlags_Fire		= 1 << 9,
+	TypeFlags_Water		= 1 << 10,
+	TypeFlags_Grass		= 1 << 11,
+	TypeFlags_Electric	= 1 << 12,
+	TypeFlags_Psychic	= 1 << 13,
+	TypeFlags_Ice		= 1 << 14,
+	TypeFlags_Dragon	= 1 << 15,
+	TypeFlags_Dark		= 1 << 16,
+	TypeFlags_Fairy		= 1 << 17,
+};
+
 struct Settings
 {
 	int wantedgame_index = 0;
@@ -70,6 +93,7 @@ struct Settings
 	int maxlevel = 100;
 	bool printtext = false;
 	int methodflags = MethodFilterFlags_Last - 1;
+	int pkmnfiltertypeflags = 0;
 };
 
 struct SettingsWindowData
@@ -98,7 +122,7 @@ struct EncounterTable
 	int expectedtotalpercent = 0;
 	double totalavgexp = 0;
 	int totalchance = 0;
-	bool overlevellimit = false;
+	bool filterout = false;
 	int version_index = 0;
 	string header;
 };
@@ -162,9 +186,31 @@ static void PrintMethodFlags(int flags)
 	if (flags & MethodFilterFlags_Ambush) cout << "-MethodFilterFlags_Ambush\n";
 }
 
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int version_index, int i)
+static void PrintTypeFlags(int flags)
 {
-	bool tablebad = false;
+	if (flags == 0) cout << "-TypeFlags_None\n";
+	if (flags & TypeFlags_Normal) cout << "-TypeFlags_Normal\n";
+	if (flags & TypeFlags_Fighting) cout << "-TypeFlags_Fighting\n";
+	if (flags & TypeFlags_Flying) cout << "-TypeFlags_Flying\n";
+	if (flags & TypeFlags_Poison) cout << "-TypeFlags_Poison\n";
+	if (flags & TypeFlags_Ground) cout << "-TypeFlags_Ground\n";
+	if (flags & TypeFlags_Rock) cout << "-TypeFlags_Rock\n";
+	if (flags & TypeFlags_Bug) cout << "-TypeFlags_Bug\n";
+	if (flags & TypeFlags_Ghost) cout << "-TypeFlags_Ghost\n";
+	if (flags & TypeFlags_Steel) cout << "-TypeFlags_Steel\n";
+	if (flags & TypeFlags_Fire) cout << "-TypeFlags_Fire\n";
+	if (flags & TypeFlags_Water) cout << "-TypeFlags_Water\n";
+	if (flags & TypeFlags_Grass) cout << "-TypeFlags_Grass\n";
+	if (flags & TypeFlags_Electric) cout << "-TypeFlags_Electric\n";
+	if (flags & TypeFlags_Psychic) cout << "-TypeFlags_Psychic\n";
+	if (flags & TypeFlags_Ice) cout << "-TypeFlags_Ice\n";
+	if (flags & TypeFlags_Dragon) cout << "-TypeFlags_Dragon\n";
+	if (flags & TypeFlags_Dark) cout << "-TypeFlags_Dark\n";
+	if (flags & TypeFlags_Fairy) cout << "-TypeFlags_Fairy\n";
+}
+
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int version_index, int i, bool tablebad)
+{
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
 		tablebad = true;
@@ -183,20 +229,15 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			if (table.placename == placename && table.method == method && (settings->wantedgame_index != 26 || table.version_index == version_index))
 			{
 				if (tablebad)
-				{
-					table.overlevellimit = true;
-				}
-				else
-				{
-					makenewtable = false;
-					//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-					table.encounters.push_back(newEnc);
-					table.expectedtotalpercent += chance;
-					break;
-				}
+					table.filterout = true;
+				makenewtable = false;
+				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+				table.encounters.push_back(newEnc);
+				table.expectedtotalpercent += chance;
+				break;
 			}
 		}
-		if (makenewtable && !tablebad)
+		if (makenewtable)
 		{
 			//cout << "Line " << linenum << ": new table\n";
 			EncounterTable newTable;
@@ -205,6 +246,8 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			newTable.filenumber = i;
 			newTable.expectedtotalpercent = chance;
 			newTable.version_index = version_index;
+			if (tablebad)
+				newTable.filterout = true;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable.encounters.push_back(newEnc);
 
@@ -446,7 +489,7 @@ static bool InvalidateCondition(Settings* settings, string condition, int iFile)
 	}
 	if (condition == "slot2-none" || condition == "slot2-ruby" || condition == "slot2-sapphire" || condition == "slot2-emerald" || condition == "slot2-firered" || condition == "slot2-leafgreen")
 	{
-		//slot2: none/ruby/sapphire/emerald/firered/leafgreen (FPP)
+		//slot2: none/ruby/sapphire/emerald/firered/leafgreen (DPP)
 		if (settings->wantedslot2game != condition)
 			return true;
 	}
@@ -459,7 +502,215 @@ static bool InvalidateCondition(Settings* settings, string condition, int iFile)
 	return false;
 }
 
-static bool ValidateMethod(Settings* settings, string method)
+static void StringFlagsContainStringFlag(string strgiven, int flagsgiven, string strcompare, int flagcompare, int* result)
+{
+	if (strgiven == strcompare)
+	{
+		*result = 1;
+		if (flagsgiven & flagcompare)
+			*result = 2;
+	}
+}
+
+static void StringFlagsContainStringFlag(string strgiven, int flagsgiven, vector<string> strcompare, int flagcompare, int* result)
+{
+	for (string cmp : strcompare)
+	{
+		if (strgiven == cmp)
+		{
+			*result = 1;
+			if (flagsgiven & flagcompare)
+				*result = 2;
+		}
+	}
+}
+
+static bool TypeMatches(int flags, string type)
+{
+	int result = 0;
+	StringFlagsContainStringFlag(type, flags, "normal", TypeFlags_Normal, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "fighting", TypeFlags_Fighting, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "flying", TypeFlags_Flying, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "poison", TypeFlags_Poison, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "ground", TypeFlags_Ground, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "rock", TypeFlags_Rock, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "bug", TypeFlags_Bug, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "ghost", TypeFlags_Ghost, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "steel", TypeFlags_Steel, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "fire", TypeFlags_Fire, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "water", TypeFlags_Water, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "grass", TypeFlags_Grass, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "electric", TypeFlags_Electric, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "psychic", TypeFlags_Psychic, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "ice", TypeFlags_Ice, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "dragon", TypeFlags_Dragon, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "dark", TypeFlags_Dark, &result);
+	if (result == 0) StringFlagsContainStringFlag(type, flags, "fairy", TypeFlags_Fairy, &result);
+
+	if (result == 0)
+		assert(0);//this type is unaccounted for
+	else if (result == 1)
+		return false;//not the type
+	return true;
+}
+
+static bool FindBadType(json_value* containerobj, int flags)
+{
+	bool match = false;
+	json_value* types = FindArrayInObjectByName(containerobj, "types");
+	if (!types)
+	{
+		assert(0);
+		return 0;
+	}
+	for (int typeIdx = 0; typeIdx < types->u.array.length; typeIdx++)
+	{
+		json_value* typeobj = types->u.array.values[typeIdx];
+		if (!typeobj)
+		{
+			assert(0);
+			return 0;
+		}
+		json_value* typeobj2 = FindObjectInObjectByName(typeobj, "type");
+		if (!typeobj2)
+		{
+			assert(0);
+			return 0;
+		}
+		string nameoftype = FindValueInObjectByKey(typeobj2, "name")->u.string.ptr;
+		if (TypeMatches(flags, nameoftype)) match = true;
+	}
+	return match;
+}
+
+static bool IsPokemonBadType(Settings* settings, string path, string version, int flags)
+{
+	FILE* fp;
+	struct stat filestatus;
+	int file_size;
+	char* file_contents;
+	json_char* json;
+	json_value* file;
+	if (stat(path.c_str(), &filestatus) != 0)
+	{
+		//cout << "File " + path + " not found\n";
+		//return quietly
+		assert(0);
+		return 1;
+	}
+	file_size = filestatus.st_size;
+	file_contents = (char*)malloc(filestatus.st_size);
+	if (!file_contents)
+	{
+		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+		assert(0);
+		return 0;
+	}
+	fp = fopen(path.c_str(), "rb");
+	if (!fp)
+	{
+		cout << "Unable to open " + path + "\n";
+		fclose(fp);
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	int readNum = fread(file_contents, 1, file_size, fp);
+	if (readNum != file_size)
+	{
+		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+		cout << "ferror " + to_string(ferror(fp)) + "\n";
+		cout << "feof " + to_string(feof(fp)) + "\n";
+		cout << "file_size " + to_string(file_size) + "\n";
+		fclose(fp);
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	fclose(fp);
+	json = (json_char*)file_contents;
+	string error_buf;
+	file = json_parse(json, file_size, &error_buf);
+	if (file == NULL)
+	{
+		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+
+	json_value* pasttypes = FindArrayInObjectByName(file, "past_types");
+	if (!pasttypes)
+	{
+		assert(0);
+		return 0;
+	}
+	if (pasttypes->u.array.length == 0)
+	{
+		return FindBadType(file, flags);
+	}
+	else
+	{
+		//since pokemon types can vary by generation, make sure we're looking at the data for the correct generation
+		//and change generation we look for based on version we found in json file
+		int gameindex;
+		if (settings->wantedgame_index == 26)
+		{
+			for (gameindex = 0; gameindex < 27; gameindex++)
+			{
+				if (version == g_games[gameindex]->internalname)
+					break;
+			}
+		}
+		else
+		{
+			gameindex = settings->wantedgame_index;
+		}
+		for (int pasttypeIdx = 0; pasttypeIdx < pasttypes->u.array.length; pasttypeIdx++)
+		{
+			json_value* pasttypeobj = pasttypes->u.array.values[pasttypeIdx];
+			if (!pasttypeobj)
+			{
+				assert(0);
+				return 0;
+			}
+			json_value* generation = FindObjectInObjectByName(pasttypeobj, "generation");
+			if (!generation)
+			{
+				assert(0);
+				return 0;
+			}
+			string generationname = FindValueInObjectByKey(generation, "name")->u.string.ptr;
+			bool ok = false;
+			int currentgen = g_games[gameindex]->generation;
+			if (generationname == "generation-i" && currentgen == 1) ok = true;
+			if (generationname == "generation-ii" && currentgen <= 2) ok = true;
+			if (generationname == "generation-iii" && currentgen <= 3) ok = true;
+			if (generationname == "generation-iv" && currentgen <= 4) ok = true;
+			if (generationname == "generation-v" && currentgen <= 5) ok = true;
+			if (generationname == "generation-vi" && currentgen <= 6) ok = true;
+			if (generationname == "generation-vii" && currentgen <= 7) ok = true;
+			//gen 7 was the last time a pokemon's type changed
+			if (ok)
+			{
+				//obey old type
+				return FindBadType(pasttypeobj, flags);
+			}
+			else
+			{
+				//use pokemon's new type instead
+				return FindBadType(file, flags);
+			}
+		}
+	}
+
+	json_value_free(file);
+	free(file_contents);
+	assert(0);
+	return 0;
+}
+
+static bool ValidateMethod(int flags, string method)
 {
 	//these encounter methods are not very useful, if even applicable.
 	//sos encounters may come back, if the alola tables are ever fixed.
@@ -469,95 +720,30 @@ static bool ValidateMethod(Settings* settings, string method)
 		|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
 		|| method == "roaming-water" || method == "feebas-tile-fishing")
 		return false;
-	bool foundmethod = false;
-	bool methodgood = false;
-	if (method == "walk" || method == "red-flowers" || method == "yellow-flowers" || method == "purple-flowers")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Walk)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "surf")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Surf)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "old-rod")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_RodOld)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "good-rod")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_RodGood)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "super-rod")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_RodSuper)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "rock-smash")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_RockSmash)
-			methodgood = true;
-	}
-	if (!foundmethod && (method == "headbutt-low" || method == "headbutt-normal" || method == "headbutt-high"))
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Headbutt)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "seaweed")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Seaweed)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "dark-grass")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_DarkGrass)
-			methodgood = true;
-	}
-	if (!foundmethod && (method == "grass-spots" || method == "cave-spots" || method == "bridge-spots" || method == "super-rod-spots" || method == "surf-spots"))
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Phenomena)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "rough-terrain")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_RoughTerrain)
-			methodgood = true;
-	}
-	if (!foundmethod && method == "bubbling-spots")
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_BubblingSpots)
-			methodgood = true;
-	}
-	if (!foundmethod && (method == "ambush-grass" || method == "ambush-bush" || method == "ambush-splash" || method == "ambush-tree"
-		|| method == "ambush-dirt" || method == "ambush-shadow" || method == "ambush-chase" || method == "ambush-sand"))
-	{
-		foundmethod = true;
-		if (settings->methodflags & MethodFilterFlags_Ambush)
-			methodgood = true;
-	}
-	if (!foundmethod)
+	int result = 0;
+	StringFlagsContainStringFlag(method, flags, "walk", MethodFilterFlags_Walk, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "surf", MethodFilterFlags_Surf, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "old-rod", MethodFilterFlags_RodOld, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "good-rod", MethodFilterFlags_RodGood, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "super-rod", MethodFilterFlags_RodSuper, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "rock-smash", MethodFilterFlags_RockSmash, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "seaweed", MethodFilterFlags_Seaweed, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "dark-grass", MethodFilterFlags_DarkGrass, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "rough-terrain", MethodFilterFlags_RoughTerrain, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, "bubbling-spots", MethodFilterFlags_BubblingSpots, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, { "red-flowers", "yellow-flowers", "purple-flowers" }, MethodFilterFlags_Walk, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, { "headbutt-low", "headbutt-normal", "headbutt-high" }, MethodFilterFlags_Headbutt, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, { "grass-spots", "cave-spots", "bridge-spots", "super-rod-spots", "surf-spots" }, MethodFilterFlags_Phenomena, &result);
+	if (result == 0) StringFlagsContainStringFlag(method, flags, { "ambush-grass", "ambush-bush", "ambush-splash", "ambush-tree", "ambush-dirt", "ambush-shadow", "ambush-chase", "ambush-sand" }, MethodFilterFlags_Ambush, &result);
+
+	if (result == 0)
 		assert(0);//this encounter method is unaccounted for
-	else if (!methodgood)
+	else if (result == 1)
 		return false;//bad method
 	return true;
 }
 
-static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile)
+static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool tablebad)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -598,14 +784,14 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	}
 
 	string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
-	if (!ValidateMethod(settings, method))
+	if (!ValidateMethod(settings->methodflags, method))
 		return false;
 
 	//all good
 	int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	int minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, version_index, iFile);
+	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, version_index, iFile, tablebad);
 	return true;
 }
 
@@ -613,7 +799,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 {
 	//if (iFile != 57)
 	//	return 1;
-	string path = basepath + "\\" + to_string(iFile) + "\\index.json";
+	string path = basepath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
 	GameObject* game = g_games[settings->wantedgame_index];
 	string placename;//only one place name per file
 	FILE* fp;
@@ -734,14 +920,23 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 			if (givengame == game->internalname || settings->wantedgame_index == 26)
 			{
 				//it was. get pokemon name
-				string pokemonname;
 				json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
 				if (!pokemon)
 				{
 					assert(0);
 					return 0;
 				}
-				pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
+				string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
+				bool tablebad = false;
+				if (settings->pkmnfiltertypeflags != 0)
+				{
+					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
+					if (IsPokemonBadType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags))
+					{
+						//pokemon is a type we don't allow
+						tablebad = true;
+					}
+				}
 				//go back up to version details to get encounter details block
 				json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
 				if (!encounterdetails)
@@ -770,7 +965,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					{
 						gameindex = settings->wantedgame_index;
 					}
-					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile))
+					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, tablebad))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -822,7 +1017,6 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
 	//go through every file
-	string tablepath = basepath + "api/v2/location-area";
 	GameObject* game = g_games[settings->wantedgame_index];
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
@@ -836,7 +1030,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 				if (settings->printtext) cout << "-";
 				notch++;
 			}
-			if (ParseLocationDataFile(tablepath, j, settings, maintables) == 0)
+			if (ParseLocationDataFile(basepath, j, settings, maintables) == 0)
 				return;
 		}
 	}
@@ -844,7 +1038,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	for (EncounterTable &table : *maintables)
 	{
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
-		if (table.overlevellimit)
+		if (table.filterout)
 			continue;
 		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << ", " << g_games[table.version_index]->uiname << "\n";
 		table.totalavgexp = 0;
@@ -942,8 +1136,10 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 static void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+#ifndef _DEBUG
 	ImGui::SetNextWindowPos(viewport->Pos);
 	ImGui::SetNextWindowSize(viewport->Size);
+#endif
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	const char* f_games[] = { "Blue", "Red", "Yellow",//2
@@ -1070,8 +1266,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		}
 #pragma warning(suppress: 6384)
 		ImGui::Combo("Time of Day", &settingswindowdata->time_chosen, times, IM_ARRAYSIZE(times));
-		//ImGui::SameLine(); HelpMarker("dobedobedo");
-		newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);//internal_times[settingswindowdata->time_chosen];
+		newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);
 	}
 
 	if (allgames || game->generation == 5)
@@ -1178,6 +1373,46 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		newsettings.methodflags = methodflags;
 	}
 
+	if (ImGui::CollapsingHeader("Filter Pokemon Types", ImGuiTreeNodeFlags_None))
+	{
+		ImGui::Text("Tables with pokemon of the selected types will not be shown.");
+		static int pkmnFilterTypeFlags = 0;
+		if (ImGui::BeginTable("typetable1", 5, ImGuiTableFlags_None))
+		{
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Normal", &pkmnFilterTypeFlags, 1);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fighting", &pkmnFilterTypeFlags, 2);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Flying", &pkmnFilterTypeFlags, 4);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Poison", &pkmnFilterTypeFlags, 8);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ground", &pkmnFilterTypeFlags, 16);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Rock", &pkmnFilterTypeFlags, 32);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Bug", &pkmnFilterTypeFlags, 64);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ghost", &pkmnFilterTypeFlags, 128);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fire", &pkmnFilterTypeFlags, 512);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &pkmnFilterTypeFlags, 32768);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Water", &pkmnFilterTypeFlags, 1024);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Grass", &pkmnFilterTypeFlags, 2048);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Electric", &pkmnFilterTypeFlags, 4096);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Psychic", &pkmnFilterTypeFlags, 8192);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ice", &pkmnFilterTypeFlags, 16384);
+			if (allgames || game->generation >= 2)
+			{
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &pkmnFilterTypeFlags, 65536);
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Steel", &pkmnFilterTypeFlags, 256);
+				if (allgames || game->generation >= 6)
+				{
+					ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fairy", &pkmnFilterTypeFlags, 131072);
+				}
+			}
+		}
+		ImGui::EndTable();
+
+		newsettings.pkmnfiltertypeflags = pkmnFilterTypeFlags;
+	}
+
 	static bool printtext = false;
 	ImGui::Checkbox("Text Output", &printtext);
 	newsettings.printtext = printtext;
@@ -1196,6 +1431,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		settings->maxlevel = newsettings.maxlevel;
 		settings->printtext = newsettings.printtext;
 		settings->methodflags = newsettings.methodflags;
+		settings->pkmnfiltertypeflags = newsettings.pkmnfiltertypeflags;
 
 		/*
 		cout << "firstfolder" << to_string(newsettings.firstfolder) << "\n";
@@ -1213,6 +1449,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		cout << "maxlevel" << to_string(newsettings.maxlevel) << "\n";
 		cout << "printtext" << (newsettings.printtext ? "TRUE" : "FALSE") << "\n";
 		PrintMethodFlags(newsettings.methodflags);
+		cout << "pkmnfiltertypeflags:\n";
+		PrintTypeFlags(newsettings.pkmnfiltertypeflags);
 		*/
 
 		ReadTables(settings, maintables, basepath);
@@ -1251,7 +1489,8 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		settings->wantedradiostation != newsettings.wantedradiostation ||
 		settings->repellevel != newsettings.repellevel ||
 		settings->maxlevel != newsettings.maxlevel ||
-		settings->methodflags != newsettings.methodflags)
+		settings->methodflags != newsettings.methodflags ||
+		settings->pkmnfiltertypeflags != newsettings.pkmnfiltertypeflags)
 	{
 		if (!maintables->empty())
 		{
@@ -1261,9 +1500,11 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 
 	for (EncounterTable table : *maintables)
 	{
+		if (table.filterout)
+			continue;
 		if (ImGui::CollapsingHeader(table.header.c_str()))
 		{
-			if (ImGui::BeginTable("tablee", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
+			if (ImGui::BeginTable("showencountertable", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
 				ImGui::TableSetupColumn("Pokemon");
 				ImGui::TableSetupColumn("Chance");
