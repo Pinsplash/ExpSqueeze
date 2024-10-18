@@ -998,6 +998,43 @@ static bool compareByExp(const EncounterTable& a, const EncounterTable& b)
 	return a.totalavgexp > b.totalavgexp;
 }
 
+static bool compareByPlacename(const EncounterTable& a, const EncounterTable& b)
+{
+	return strcmp(a.placename.c_str(), b.placename.c_str()) < 0;
+}
+
+static bool compareByMethod(const EncounterTable& a, const EncounterTable& b)
+{
+	return strcmp(a.method.c_str(), b.method.c_str()) < 0;
+}
+
+static bool compareByVersion(const EncounterTable& a, const EncounterTable& b)
+{
+	return strcmp(g_games[a.version_index]->internalname.c_str(), g_games[b.version_index]->internalname.c_str()) < 0;
+}
+
+static bool compareByMonName(const Encounter& a, const Encounter& b)
+{
+	return strcmp(a.pokemonname.c_str(), b.pokemonname.c_str()) < 0;
+}
+
+static bool compareByChance(const Encounter& a, const Encounter& b)
+{
+	return a.chance > b.chance;
+}
+
+static bool compareByAvgLevel(const Encounter& a, const Encounter& b)
+{
+	double avglevelA = static_cast<double>(a.maxlevel + a.minlevel) / 2;
+	double avglevelB = static_cast<double>(b.maxlevel + b.minlevel) / 2;
+	return avglevelA > avglevelB;
+}
+
+static bool compareByAvgExp(const Encounter& a, const Encounter& b)
+{
+	return a.avgexp > b.avgexp;
+}
+
 static bool compareByAEW(const Encounter& a, const Encounter& b)
 {
 	return a.avgexpweighted > b.avgexpweighted;
@@ -1077,14 +1114,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 				continue;
 			}
 			encounter.minlevel = max(encounter.minlevel, settings->repellevel);
-			//30-30: 1
-			//30-31: 2
-			//30-40: 11
-			__int64 numlevels = (encounter.maxlevel - encounter.minlevel) + 1;
-			double levelsum = 0;
-			for (int i = 0; i < numlevels; i++)
-				levelsum += encounter.minlevel + i;
-			double avglevel = levelsum / numlevels;
+			double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 			int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 			encounter.avgexp = (baseexp * avglevel) / factor;
 			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
@@ -1395,6 +1425,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	if (ImGui::CollapsingHeader("Filter Pokemon Types", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Tables with pokemon of the selected types will not be shown.");
+		ImGui::Text("This can take a long time!");
 		static int pkmnFilterTypeFlags = 0;
 		if (ImGui::BeginTable("typetable1", 5, ImGuiTableFlags_None))
 		{
@@ -1409,18 +1440,18 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Bug", &pkmnFilterTypeFlags, 64);
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ghost", &pkmnFilterTypeFlags, 128);
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fire", &pkmnFilterTypeFlags, 512);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &pkmnFilterTypeFlags, 32768);
-			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Water", &pkmnFilterTypeFlags, 1024);
+			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Grass", &pkmnFilterTypeFlags, 2048);
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Electric", &pkmnFilterTypeFlags, 4096);
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Psychic", &pkmnFilterTypeFlags, 8192);
 			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ice", &pkmnFilterTypeFlags, 16384);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &pkmnFilterTypeFlags, 32768);
 			if (allgames || game->generation >= 2)
 			{
 				ImGui::TableNextRow();
-				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &pkmnFilterTypeFlags, 65536);
 				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Steel", &pkmnFilterTypeFlags, 256);
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &pkmnFilterTypeFlags, 65536);
 				if (allgames || game->generation >= 6)
 				{
 					ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fairy", &pkmnFilterTypeFlags, 131072);
@@ -1432,9 +1463,52 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		newsettings.pkmnfiltertypeflags = pkmnFilterTypeFlags;
 	}
 
-	static bool printtext = false;
-	ImGui::Checkbox("Text Output", &printtext);
-	newsettings.printtext = printtext;
+	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
+	{
+		ImGui::Text("Sort tables by... (Use after pressing Go!)");
+		if (ImGui::Button("Average Experience"))
+			std::sort(maintables->begin(), maintables->end(), compareByExp);
+		ImGui::SameLine(); ImGui::Text("(Default)");
+
+		if (ImGui::Button("Place Name"))
+			std::sort(maintables->begin(), maintables->end(), compareByPlacename);
+
+		if (ImGui::Button("Method Name"))
+			std::sort(maintables->begin(), maintables->end(), compareByMethod);
+
+		if (ImGui::Button("Game Name"))
+			std::sort(maintables->begin(), maintables->end(), compareByVersion);
+
+		ImGui::Text("Sort encounters within tables by...");
+
+		if (ImGui::Button("Pokemon Name"))
+			for (EncounterTable& table : *maintables)
+				std::sort(table.encounters.begin(), table.encounters.end(), compareByMonName);
+
+		if (ImGui::Button("Chance"))
+			for (EncounterTable& table : *maintables)
+				std::sort(table.encounters.begin(), table.encounters.end(), compareByChance);
+
+		if (ImGui::Button("Average Level"))
+			for (EncounterTable& table : *maintables)
+				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgLevel);
+
+		if (ImGui::Button("Average Experience "))
+			for (EncounterTable& table : *maintables)
+				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgExp);
+
+		if (ImGui::Button("Weighted Average Experience"))
+			for (EncounterTable& table : *maintables)
+				std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
+		ImGui::SameLine(); ImGui::Text("(Default)"); ImGui::SameLine(); HelpMarker("This tells you who is contributing the most experience the most often.");
+	}
+
+	if (ImGui::CollapsingHeader("Misc. Settings", ImGuiTreeNodeFlags_None))
+	{
+		static bool printtext = false;
+		ImGui::Checkbox("Text Output", &printtext);
+		newsettings.printtext = printtext;
+	}
 
 	if (settingswindowdata->running)
 	{
@@ -1531,7 +1605,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 				ImGui::TableSetupColumn("Chance");
 				ImGui::TableSetupColumn("Level");
 				ImGui::TableSetupColumn("Avg. Exp.");
-				ImGui::TableSetupColumn("Avg. Exp. Weighted");
+				ImGui::TableSetupColumn("Weighted Avg. Exp.");
 				ImGui::TableHeadersRow();
 				for (Encounter encounter : table.encounters)
 				{
