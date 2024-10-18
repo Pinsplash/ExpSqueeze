@@ -728,7 +728,7 @@ static bool ValidateMethod(int flags, string method)
 {
 	//these encounter methods are not very useful, if even applicable.
 	//sos encounters may come back, if the alola tables are ever fixed.
-	if (method == "gift" || method == "gift-egg" || method == "only-one" || method == "pokeflute"
+	if (method == "gift" || method == "gift-egg" || method == "headbutt-normal" || method == "only-one" || method == "pokeflute"
 		|| method == "squirt-bottle" || method == "wailmer-pail" || method == "devon-scope"
 		|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
 		|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
@@ -1182,7 +1182,7 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 	return *p ? p : NULL;
 }
 
-static void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
+static void dosettingswindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
 #ifndef _DEBUG
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -1200,18 +1200,17 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26 (ALLGAMES_INDEX)
 	};
 
-	Settings newsettings;
 	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 	static int game_current = 0;
 	ImGui::Combo("Game", &game_current, f_games, IM_ARRAYSIZE(f_games));
-	newsettings.wantedgame_index = game_current;
+	newsettings->wantedgame_index = game_current;
 
 	bool rse = false;
 	bool dpp = false;
 	bool hgss = false;
 	bool allgames = false;
 
-	switch (newsettings.wantedgame_index)
+	switch (newsettings->wantedgame_index)
 	{
 	case 6:
 	case 7:
@@ -1232,7 +1231,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		break;
 	}
 
-	GameObject *game = g_games[newsettings.wantedgame_index];
+	GameObject *game = g_games[newsettings->wantedgame_index];
 
 	if (game->generation == 2)
 	{
@@ -1315,7 +1314,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		}
 #pragma warning(suppress: 6384)
 		ImGui::Combo("Time of Day", &settingswindowdata->time_chosen, times, IM_ARRAYSIZE(times));
-		newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);
+		newsettings->wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);
 	}
 
 	if (allgames || game->generation == 5)
@@ -1324,7 +1323,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		const char* internal_seasons[] = { "season-spring", "season-summer", "season-autumn", "season-winter" };
 		static int season_current = 0;
 		ImGui::Combo("Season", &season_current, seasons, IM_ARRAYSIZE(seasons));
-		newsettings.wantedseason = internal_seasons[season_current];
+		newsettings->wantedseason = internal_seasons[season_current];
 	}
 
 	//mass outbreaks exist in gen 3 and 5, but we have no data for them! braugh!
@@ -1332,21 +1331,21 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		static bool wantswarm = false;
 		ImGui::Checkbox("Mass Outbreaks", &wantswarm);
-		newsettings.wantswarm = wantswarm;
+		newsettings->wantswarm = wantswarm;
 	}
 
 	if (allgames || dpp)
 	{
 		static bool wantradar = false;
 		ImGui::Checkbox("PokeRadar", &wantradar);
-		newsettings.wantradar = wantradar;
+		newsettings->wantradar = wantradar;
 
 		const char* slotgames[] = { "None", "Ruby", "Sapphire", "Emerald", "FireRed", "LeafGreen" };
 		const char* internal_slotgames[] = { "slot2-none", "slot2-ruby", "slot2-sapphire", "slot2-emerald", "slot2-firered", "slot2-leafgreen" };
 		static int slotgame_current = 0;
 		ImGui::Combo("DS Slot 2", &slotgame_current, slotgames, IM_ARRAYSIZE(slotgames));
 		ImGui::SameLine(); HelpMarker("Some DS models have a slot for GameBoy games. Having a Generation 3 game in the slot while playing a Generation 4 game can change some encounter tables. Emulators may or may not have a feature for this.");
-		newsettings.wantedslot2game = internal_slotgames[slotgame_current];
+		newsettings->wantedslot2game = internal_slotgames[slotgame_current];
 	}
 
 	if (allgames || hgss)
@@ -1355,7 +1354,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		const char* internal_stations[] = { "radio-off", "radio-hoenn", "radio-sinnoh" };
 		static int station_current = 0;
 		ImGui::Combo("Radio Station", &station_current, stations, IM_ARRAYSIZE(stations));
-		newsettings.wantedradiostation = internal_stations[station_current];
+		newsettings->wantedradiostation = internal_stations[station_current];
 	}
 
 	static int repellevel = 0;
@@ -1365,12 +1364,12 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		HelpMarker("Repels keep away wild Pokemon who are a lower level than the first NON-FAINTED Pokemon in the party.");
 	else
 		HelpMarker("Repels keep away wild Pokemon who are a lower level than the first Pokemon in the party.");
-	newsettings.repellevel = repellevel;
+	newsettings->repellevel = repellevel;
 
 	static int maxlevel = 100;
 	ImGui::InputInt("Maximum Level", &maxlevel);
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
-	newsettings.maxlevel = maxlevel;
+	newsettings->maxlevel = maxlevel;
 
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
@@ -1394,7 +1393,12 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 			ImGui::CheckboxFlags("Rock Smash", &methodflags, MethodFilterFlags_RockSmash);
 
 		if (allgames || game->generation == 2/* || hgss*/)
+		{
 			ImGui::CheckboxFlags("Headbutt", &methodflags, MethodFilterFlags_Headbutt);
+			ImGui::SameLine(); HelpMarker("GSC headbutt encounters are regarded inconsistently online.\n\n"
+				"\"Headbutt High\" is:\n-\"Moderate chances of battle\" on Bulba individual route pages\n-\"High-encounter trees\" on Bulba's \"Headbutt tree\" page\n-\"Headbutt\" on Serebii\n\n"
+				"\"Headbutt Low\" is:\n-\"Low chances of battle\" on Bulba individual route pages\n-\"Moderate-encounter trees\" on Bulba's \"Headbutt tree\" page\n-\"Headbutt - Special Trees\" on Serebii");
+		}
 
 		if (allgames || rse)
 			ImGui::CheckboxFlags("Seaweed", &methodflags, MethodFilterFlags_Seaweed);
@@ -1419,7 +1423,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 			ImGui::SameLine(); HelpMarker("Cases where pokemon have an overworld presence and move, like flying pokemon shadows or rustling grass.");
 		}
 
-		newsettings.methodflags = methodflags;
+		newsettings->methodflags = methodflags;
 	}
 
 	if (ImGui::CollapsingHeader("Filter Pokemon Types", ImGuiTreeNodeFlags_None))
@@ -1460,7 +1464,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		}
 		ImGui::EndTable();
 
-		newsettings.pkmnfiltertypeflags = pkmnFilterTypeFlags;
+		newsettings->pkmnfiltertypeflags = pkmnFilterTypeFlags;
 	}
 
 	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
@@ -1507,43 +1511,43 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	{
 		static bool printtext = false;
 		ImGui::Checkbox("Text Output", &printtext);
-		newsettings.printtext = printtext;
+		newsettings->printtext = printtext;
 	}
 
 	if (settingswindowdata->running)
 	{
 		//only save the new settings once the button is pressed. this prevents changing the settings mid-iteration.
-		settings->wantedgame_index = newsettings.wantedgame_index;
-		settings->wantedtime = newsettings.wantedtime;
-		settings->wantedseason = newsettings.wantedseason;
-		settings->wantswarm = newsettings.wantswarm;
-		settings->wantradar = newsettings.wantradar;
-		settings->wantedslot2game = newsettings.wantedslot2game;
-		settings->wantedradiostation = newsettings.wantedradiostation;
-		settings->repellevel = newsettings.repellevel;
-		settings->maxlevel = newsettings.maxlevel;
-		settings->printtext = newsettings.printtext;
-		settings->methodflags = newsettings.methodflags;
-		settings->pkmnfiltertypeflags = newsettings.pkmnfiltertypeflags;
+		settings->wantedgame_index = newsettings->wantedgame_index;
+		settings->wantedtime = newsettings->wantedtime;
+		settings->wantedseason = newsettings->wantedseason;
+		settings->wantswarm = newsettings->wantswarm;
+		settings->wantradar = newsettings->wantradar;
+		settings->wantedslot2game = newsettings->wantedslot2game;
+		settings->wantedradiostation = newsettings->wantedradiostation;
+		settings->repellevel = newsettings->repellevel;
+		settings->maxlevel = newsettings->maxlevel;
+		settings->printtext = newsettings->printtext;
+		settings->methodflags = newsettings->methodflags;
+		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
 
 		/*
-		cout << "firstfolder" << to_string(newsettings.firstfolder) << "\n";
-		cout << "lastfolder" << to_string(newsettings.lastfolder) << "\n";
-		cout << "wantedgame" << newsettings.wantedgame << "\n";
-		cout << "wantedtime" << newsettings.wantedtime << "\n";
-		cout << "wantedseason" << newsettings.wantedseason << "\n";
-		cout << "wantswarm" << (newsettings.wantswarm ? "TRUE" : "FALSE") << "\n";
-		cout << "wantradar" << (newsettings.wantradar ? "TRUE" : "FALSE") << "\n";
-		cout << "wantedslot2game" << newsettings.wantedslot2game << "\n";
-		cout << "wantedradiostation" << newsettings.wantedradiostation << "\n";
-		cout << "expfile" << newsettings.expfile << "\n";
-		cout << "generation" << to_string(newsettings.generation) << "\n";
-		cout << "repellevel" << to_string(newsettings.repellevel) << "\n";
-		cout << "maxlevel" << to_string(newsettings.maxlevel) << "\n";
-		cout << "printtext" << (newsettings.printtext ? "TRUE" : "FALSE") << "\n";
-		PrintMethodFlags(newsettings.methodflags);
+		cout << "firstfolder" << to_string(newsettings->firstfolder) << "\n";
+		cout << "lastfolder" << to_string(newsettings->lastfolder) << "\n";
+		cout << "wantedgame" << newsettings->wantedgame << "\n";
+		cout << "wantedtime" << newsettings->wantedtime << "\n";
+		cout << "wantedseason" << newsettings->wantedseason << "\n";
+		cout << "wantswarm" << (newsettings->wantswarm ? "TRUE" : "FALSE") << "\n";
+		cout << "wantradar" << (newsettings->wantradar ? "TRUE" : "FALSE") << "\n";
+		cout << "wantedslot2game" << newsettings->wantedslot2game << "\n";
+		cout << "wantedradiostation" << newsettings->wantedradiostation << "\n";
+		cout << "expfile" << newsettings->expfile << "\n";
+		cout << "generation" << to_string(newsettings->generation) << "\n";
+		cout << "repellevel" << to_string(newsettings->repellevel) << "\n";
+		cout << "maxlevel" << to_string(newsettings->maxlevel) << "\n";
+		cout << "printtext" << (newsettings->printtext ? "TRUE" : "FALSE") << "\n";
+		PrintMethodFlags(newsettings->methodflags);
 		cout << "pkmnfiltertypeflags:\n";
-		PrintTypeFlags(newsettings.pkmnfiltertypeflags);
+		PrintTypeFlags(newsettings->pkmnfiltertypeflags);
 		*/
 
 		ReadTables(settings, maintables, basepath);
@@ -1576,16 +1580,16 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	}
 
 	//detect when settings have changed
-	if (settings->wantedgame_index != newsettings.wantedgame_index ||
-		settings->wantedseason != newsettings.wantedseason ||
-		settings->wantswarm != newsettings.wantswarm ||
-		settings->wantradar != newsettings.wantradar ||
-		settings->wantedslot2game != newsettings.wantedslot2game ||
-		settings->wantedradiostation != newsettings.wantedradiostation ||
-		settings->repellevel != newsettings.repellevel ||
-		settings->maxlevel != newsettings.maxlevel ||
-		settings->methodflags != newsettings.methodflags ||
-		settings->pkmnfiltertypeflags != newsettings.pkmnfiltertypeflags)
+	if (settings->wantedgame_index != newsettings->wantedgame_index ||
+		settings->wantedseason != newsettings->wantedseason ||
+		settings->wantswarm != newsettings->wantswarm ||
+		settings->wantradar != newsettings->wantradar ||
+		settings->wantedslot2game != newsettings->wantedslot2game ||
+		settings->wantedradiostation != newsettings->wantedradiostation ||
+		settings->repellevel != newsettings->repellevel ||
+		settings->maxlevel != newsettings->maxlevel ||
+		settings->methodflags != newsettings->methodflags ||
+		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags)
 	{
 		if (!maintables->empty())
 		{
@@ -1752,7 +1756,7 @@ int main(int, char**)
 
 	vector<EncounterTable> maintables;
 	string basepath = "pkmndata/";
-	Settings settings;
+	Settings settings, newsettings;
 	SettingsWindowData settingswindowdata;
 
     // Main loop
@@ -1805,7 +1809,7 @@ int main(int, char**)
 #endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        dosettingswindow(&settings, &settingswindowdata, &maintables, basepath);
+        dosettingswindow(&settings, &newsettings, &settingswindowdata, &maintables, basepath);
 
         // Rendering
 		ImGui::PopStyleVar();
