@@ -38,6 +38,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 using namespace std;
 
+const int ALLGAMES_INDEX = 26;//make sure this always matches the last switch case in dosettingswindow()!
+const int GAMES_TOTAL = 27;
+
 enum MethodFilterFlags
 {
 	MethodFilterFlags_None			= 0,
@@ -105,9 +108,9 @@ struct SettingsWindowData
 
 struct Encounter
 {
-	int chance = 0;
-	int minlevel = 0;
-	int maxlevel = 0;
+	__int64 chance = 0;
+	__int64 minlevel = 0;
+	__int64 maxlevel = 0;
 	string pokemonname;
 	double avgexp = 0;
 	double avgexpweighted = 0;
@@ -119,9 +122,9 @@ struct EncounterTable
 	string placename;
 	vector<Encounter> encounters;
 	int filenumber = 0;
-	int expectedtotalpercent = 0;
+	__int64 expectedtotalpercent = 0;
 	double totalavgexp = 0;
-	int totalchance = 0;
+	__int64 totalchance = 0;
 	bool filterout = false;
 	int version_index = 0;
 	string header;
@@ -157,7 +160,7 @@ static void RecordCustomData(string condition)
 	}
 }
 
-static void PrintCustomData(Settings* settings)
+static void PrintCustomData(/*Settings* settings*/)
 {
 	//cout << settings->wantedgame << "\n";
 	for (string str : g_debugdata)
@@ -166,7 +169,7 @@ static void PrintCustomData(Settings* settings)
 	}
 }
 #endif //_DEBUG
-
+/*
 static void PrintMethodFlags(int flags)
 {
 	cout << "Method Flags:\n";
@@ -208,8 +211,8 @@ static void PrintTypeFlags(int flags)
 	if (flags & TypeFlags_Dark) cout << "-TypeFlags_Dark\n";
 	if (flags & TypeFlags_Fairy) cout << "-TypeFlags_Fairy\n";
 }
-
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, int chance, int minlevel, int maxlevel, string pokemonname, string placename, string method, int version_index, int i, bool tablebad)
+*/
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string method, int version_index, int i, bool tablebad)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
@@ -226,7 +229,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		for (EncounterTable& table : *maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-			if (table.placename == placename && table.method == method && (settings->wantedgame_index != 26 || table.version_index == version_index))
+			if (table.placename == placename && table.method == method && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 			{
 				if (tablebad)
 					table.filterout = true;
@@ -256,18 +259,12 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 	}
 }
 
-static bool isEqualInt(json_value* initial, json_value* compare)
+static bool isEqualString(char* initial, char* compare)
 {
-	assert(initial->type == json_integer);
-	return (long)initial->u.integer == compare->u.integer;
+	return !strcmp(initial, compare);
 }
 
-static bool isEqualDouble(json_value* initial, json_value* compare)
-{
-	assert(initial->type == json_double);
-	return initial->u.dbl == compare->u.dbl;
-}
-
+/*
 static bool isEqualString(json_value* initial, json_value* compare)
 {
 	assert(initial->type == json_string);
@@ -280,9 +277,16 @@ static bool isEqualString(json_value* initial, char* compare)
 	return initial->u.string.ptr == compare;
 }
 
-static bool isEqualString(char* initial, char* compare)
+static bool isEqualInt(json_value* initial, json_value* compare)
 {
-	return !strcmp(initial, compare);
+	assert(initial->type == json_integer);
+	return (long)initial->u.integer == compare->u.integer;
+}
+
+static bool isEqualDouble(json_value* initial, json_value* compare)
+{
+	assert(initial->type == json_double);
+	return initial->u.dbl == compare->u.dbl;
 }
 
 static bool isEqualBool(json_value* initial, json_value* compare)
@@ -321,7 +325,7 @@ static void ExplainJSONValue(json_value* obj)
 	case json_double:
 		mydub = obj->u.dbl;
 		char dubbuffer[128];
-		snprintf(dubbuffer, sizeof(dubbuffer), " type: double (%ld)", mydub);
+		snprintf(dubbuffer, sizeof(dubbuffer), " type: double (%lf)", mydub);
 		str2 = dubbuffer;
 		break;
 	case json_string:
@@ -342,12 +346,12 @@ static void ExplainJSONValue(json_value* obj)
 
 static void ExplainObjectEntry(json_object_entry obj)
 {
-	string combinestring(string("val name: ") + obj.name);
-	const char* str1 = combinestring.c_str();
+	//string combinestring(string("val name: ") + obj.name);
+	//const char* str1 = combinestring.c_str();
 	//cout << str1;
 	ExplainJSONValue(obj.value);
 }
-
+*/
 static json_value* FindArrayInObjectByName(json_value* initialObject, char* name)
 {
 	assert(initialObject->type == json_object);
@@ -387,7 +391,7 @@ static json_value* FindValueInObjectByKey(json_value* initialObject, char* key)
 	}
 	return NULL;
 }
-
+/*
 static int FindObjectInArrayByName(json_value* initialObject, char* name)
 {
 	assert(initialObject->type == json_array);
@@ -416,7 +420,7 @@ static int FindObjectInArrayByName(json_value* initialObject, char* name)
 	}
 	return -1;
 }
-
+*/
 static json_value* FindObjectInObjectByName(json_value* initialObject, char* name)
 {
 	assert(initialObject->type == json_object);
@@ -435,7 +439,7 @@ static json_value* FindObjectInObjectByName(json_value* initialObject, char* nam
 	}
 	return NULL;
 }
-
+/*
 static bool isEqual(json_value* initial, json_value* compare)
 {
 	switch (initial->type)
@@ -456,7 +460,7 @@ static bool isEqual(json_value* initial, json_value* compare)
 		assert(0);
 	}
 }
-
+*/
 static bool InvalidateCondition(Settings* settings, string condition, int iFile)
 {
 	if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
@@ -556,14 +560,13 @@ static bool TypeMatches(int flags, string type)
 
 static bool FindBadType(json_value* containerobj, int flags)
 {
-	bool match = false;
 	json_value* types = FindArrayInObjectByName(containerobj, "types");
 	if (!types)
 	{
 		assert(0);
 		return 0;
 	}
-	for (int typeIdx = 0; typeIdx < types->u.array.length; typeIdx++)
+	for (size_t typeIdx = 0; typeIdx < types->u.array.length; typeIdx++)
 	{
 		json_value* typeobj = types->u.array.values[typeIdx];
 		if (!typeobj)
@@ -578,9 +581,9 @@ static bool FindBadType(json_value* containerobj, int flags)
 			return 0;
 		}
 		string nameoftype = FindValueInObjectByKey(typeobj2, "name")->u.string.ptr;
-		if (TypeMatches(flags, nameoftype)) match = true;
+		if (TypeMatches(flags, nameoftype)) return true;
 	}
-	return match;
+	return false;
 }
 
 static bool IsPokemonBadType(Settings* settings, string path, string version, int flags)
@@ -610,12 +613,12 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	if (!fp)
 	{
 		cout << "Unable to open " + path + "\n";
-		fclose(fp);
+		//fclose(fp);
 		free(file_contents);
 		assert(0);
 		return 0;
 	}
-	int readNum = fread(file_contents, 1, file_size, fp);
+	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
 		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
@@ -647,26 +650,31 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	}
 	if (pasttypes->u.array.length == 0)
 	{
-		return FindBadType(file, flags);
+		bool result = FindBadType(file, flags);
+		json_value_free(file);
+		free(file_contents);
+		return result;
 	}
 	else
 	{
 		//since pokemon types can vary by generation, make sure we're looking at the data for the correct generation
 		//and change generation we look for based on version we found in json file
-		int gameindex;
-		if (settings->wantedgame_index == 26)
+		int gameindex = 0;
+		if (settings->wantedgame_index == ALLGAMES_INDEX)
 		{
-			for (gameindex = 0; gameindex < 27; gameindex++)
+			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 			{
+				cout << version << " == " << g_games[gameindex]->internalname << "\n";
 				if (version == g_games[gameindex]->internalname)
+				{
 					break;
+				}
 			}
 		}
 		else
-		{
 			gameindex = settings->wantedgame_index;
-		}
-		for (int pasttypeIdx = 0; pasttypeIdx < pasttypes->u.array.length; pasttypeIdx++)
+		assert(gameindex != GAMES_TOTAL);
+		for (size_t pasttypeIdx = 0; pasttypeIdx < pasttypes->u.array.length; pasttypeIdx++)
 		{
 			json_value* pasttypeobj = pasttypes->u.array.values[pasttypeIdx];
 			if (!pasttypeobj)
@@ -694,12 +702,18 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 			if (ok)
 			{
 				//obey old type
-				return FindBadType(pasttypeobj, flags);
+				bool result = FindBadType(pasttypeobj, flags);
+				json_value_free(file);
+				free(file_contents);
+				return result;
 			}
 			else
 			{
 				//use pokemon's new type instead
-				return FindBadType(file, flags);
+				bool result = FindBadType(file, flags);
+				json_value_free(file);
+				free(file_contents);
+				return result;
 			}
 		}
 	}
@@ -751,7 +765,7 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	{
 		bool encounterinvalid = false;
 
-		for (int conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
+		for (size_t conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
 		{
 			if (encounterinvalid)
 				break;
@@ -788,9 +802,9 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 		return false;
 
 	//all good
-	int chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
-	int maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
-	int minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
+	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
+	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
+	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
 	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, version_index, iFile, tablebad);
 	return true;
 }
@@ -800,6 +814,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 	//if (iFile != 57)
 	//	return 1;
 	string path = basepath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
+	cout << path << "\n";
 	GameObject* game = g_games[settings->wantedgame_index];
 	string placename;//only one place name per file
 	FILE* fp;
@@ -828,11 +843,11 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 	if (!fp)
 	{
 		cout << "Unable to open " + path + "\n";
-		fclose(fp);
+		//fclose(fp);
 		free(file_contents);
 		return 0;
 	}
-	int readNum = fread(file_contents, 1, file_size, fp);
+	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
 		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
@@ -860,7 +875,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		assert(0);
 		return 0;
 	}
-	for (int nameIdx = 0; nameIdx < names->u.array.length; nameIdx++)
+	for (size_t nameIdx = 0; nameIdx < names->u.array.length; nameIdx++)
 	{
 		json_value* localname = names->u.array.values[nameIdx];
 		if (!localname)
@@ -885,7 +900,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 		assert(0);
 		return 0;
 	}
-	for (int encounterIdx = 0; encounterIdx < encounters->u.array.length; encounterIdx++)
+	for (size_t encounterIdx = 0; encounterIdx < encounters->u.array.length; encounterIdx++)
 	{
 		json_value* encounterblock = encounters->u.array.values[encounterIdx];
 		if (!encounterblock)
@@ -900,7 +915,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 			assert(0);
 			return 0;
 		}
-		for (int verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
+		for (size_t verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
 		{
 			json_value* verdetailblock = versiondetails->u.array.values[verdetailsIdx];
 			if (!verdetailblock)
@@ -917,7 +932,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 			}
 			string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
 			//ensure this pokemon is in our game version before doing anything else
-			if (givengame == game->internalname || settings->wantedgame_index == 26)
+			if (givengame == game->internalname || settings->wantedgame_index == ALLGAMES_INDEX)
 			{
 				//it was. get pokemon name
 				json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
@@ -944,7 +959,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					assert(0);
 					return 0;
 				}
-				for (int encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
+				for (size_t encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
 				{
 					json_value* encdetailblock = encounterdetails->u.array.values[encdetailsIdx];
 					if (!encdetailblock)
@@ -953,9 +968,9 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 						return 0;
 					}
 					int gameindex;
-					if (settings->wantedgame_index == 26)
+					if (settings->wantedgame_index == ALLGAMES_INDEX)
 					{
-						for (gameindex = 0; gameindex < 27; gameindex++)
+						for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 						{
 							if (givengame == g_games[gameindex]->internalname)
 								break;
@@ -1021,9 +1036,10 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
 		int notch = 1;
-		double range = game->folderRanges[i + 1] - game->folderRanges[i];
+		int a = i + 1;
+		double range = game->folderRanges[a] - game->folderRanges[i];
 		if (settings->printtext) cout << "|     PROGRESS     |\n";
-		for (int j = game->folderRanges[i]; j <= game->folderRanges[i + 1]; j++)
+		for (int j = game->folderRanges[i]; j <= game->folderRanges[a]; j++)
 		{
 			if ((j - game->folderRanges[i]) / range >= (notch * 0.05))
 			{
@@ -1045,7 +1061,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 		for (Encounter &encounter : table.encounters)
 		{
-			if (settings->wantedgame_index == 26)
+			if (settings->wantedgame_index == ALLGAMES_INDEX)
 			{
 				//change exp file based on table's game
 				game->expfile = g_games[table.version_index]->expfile;
@@ -1061,7 +1077,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 			//30-30: 1
 			//30-31: 2
 			//30-40: 11
-			int numlevels = (encounter.maxlevel - encounter.minlevel) + 1;
+			__int64 numlevels = (encounter.maxlevel - encounter.minlevel) + 1;
 			double levelsum = 0;
 			for (int i = 0; i < numlevels; i++)
 				levelsum += encounter.minlevel + i;
@@ -1100,7 +1116,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
 	}
 #ifdef _DEBUG
-	PrintCustomData(settings);
+	PrintCustomData(/*settings*/);
 #endif //_DEBUG
 }
 
@@ -1135,8 +1151,8 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 
 static void dosettingswindow(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
-	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 #ifndef _DEBUG
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->Pos);
 	ImGui::SetNextWindowSize(viewport->Size);
 #endif
@@ -1148,7 +1164,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		"Diamond", "Pearl", "Platinum", "HeartGold", "SoulSilver",//15
 		"Black", "White", "Black 2", "White 2",//19
 		"X", "Y",//21
-		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26
+		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26 (ALLGAMES_INDEX)
 	};
 
 	Settings newsettings;
@@ -1178,7 +1194,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	case 15:
 		hgss = true;
 		break;
-	case 26:
+	case 26://should match ALLGAMES_INDEX
 		allgames = true;
 		break;
 	}
@@ -1469,11 +1485,13 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 		int totalrange = 0;
 		for (int i = 0; i < game->folderRanges.size(); i += 2)
 		{
-			totalrange += (game->folderRanges[i + 1] - game->folderRanges[i]) + 1;
+			int a = i + 1;
+			totalrange += (game->folderRanges[a] - game->folderRanges[i]) + 1;
 		}
 		string imgoing = "Searching through " + to_string(totalrange) + " tables.";
 		ImGui::SameLine(); ImGui::Text(imgoing.c_str());
 		maintables->clear();
+		maintables->shrink_to_fit();
 #ifdef _DEBUG
 		g_debugdata.clear();
 #endif //_DEBUG
@@ -1557,7 +1575,7 @@ static void dosettingswindow(Settings* settings, SettingsWindowData* settingswin
 	settingswindowdata->generation_lastframe = game->generation;
 }
 
-void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
+static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
 {
 	GameObject* newGame = new GameObject;
 	newGame->uiname = uiname;
@@ -1575,7 +1593,6 @@ int main(int, char**)
 	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
 	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
 
-	//27 games (26 without "all")
 	RegisterGame("Blue", "blue", "gen1_exp.txt", 1, { 258 , 349 });
 	RegisterGame("Red", "red", "gen1_exp.txt", 1, { 258 , 349 });
 	RegisterGame("Yellow", "yellow", "gen1_exp.txt", 1, { 258 , 349 });
