@@ -664,7 +664,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 		{
 			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 			{
-				cout << version << " == " << g_games[gameindex]->internalname << "\n";
+				//cout << version << " == " << g_games[gameindex]->internalname << "\n";
 				if (version == g_games[gameindex]->internalname)
 				{
 					break;
@@ -814,7 +814,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 	//if (iFile != 57)
 	//	return 1;
 	string path = basepath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
-	cout << path << "\n";
+	//cout << path << "\n";
 	GameObject* game = g_games[settings->wantedgame_index];
 	string placename;//only one place name per file
 	FILE* fp;
@@ -1061,16 +1061,19 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 		table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 		for (Encounter &encounter : table.encounters)
 		{
+			string expfile = game->expfile;
+			int generation = game->generation;
 			if (settings->wantedgame_index == ALLGAMES_INDEX)
 			{
 				//change exp file based on table's game
-				game->expfile = g_games[table.version_index]->expfile;
+				expfile = g_games[table.version_index]->expfile;
+				generation = g_games[table.version_index]->generation;
 			}
 			//get experience yield from stripped down bulba tables
 			int baseexp = 0;
-			if (!FindBEY(basepath, game->expfile, encounter.pokemonname, &baseexp))
+			if (!FindBEY(basepath, expfile, encounter.pokemonname, &baseexp))
 			{
-				cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << game->expfile << "\n";
+				cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 				continue;
 			}
 			encounter.minlevel = max(encounter.minlevel, settings->repellevel);
@@ -1082,7 +1085,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 			for (int i = 0; i < numlevels; i++)
 				levelsum += encounter.minlevel + i;
 			double avglevel = levelsum / numlevels;
-			int factor = (game->generation == 5 || game->generation >= 7) ? 5 : 7;
+			int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 			encounter.avgexp = (baseexp * avglevel) / factor;
 			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
 			if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
