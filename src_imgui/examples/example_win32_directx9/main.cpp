@@ -732,20 +732,23 @@ static int ValidateMethod(int flags, string method)
 		|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
 		|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
 		|| method == "roaming-water" || method == "feebas-tile-fishing")
-		return 0;
+		return -1;
 	int result = 0;
 	int i = 0;
-	for (; i < METHODS_TOTAL; i++)
+	while (i < METHODS_TOTAL)
 	{
+		cout << method << " == " << g_methods[i]->internalname << "\n";
 		StringFlagsContainStringFlag(method, flags, g_methods[i]->internalname, g_methods[i]->flag, &result);
 		if (result != 0)
 			break;
+		i++;
 	}
 
 	if (result == 0)
 		assert(0);//this encounter method is unaccounted for
 	else if (result == 1)
-		return 0;//bad method
+		return -1;//bad method
+	cout << to_string(i) << "\n";
 	return i;
 }
 
@@ -791,7 +794,7 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 
 	string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
 	int method_index = ValidateMethod(settings->methodflags, method);
-	if (method_index == 0)
+	if (method_index == -1)
 		return false;
 
 	//all good
@@ -1749,7 +1752,7 @@ int main(int, char**)
 	//methods
 	//g1
 	RegisterMethod("Walk", "walk", MethodFilterFlags_Walk);
-	RegisterMethod("Fishing", "surf", MethodFilterFlags_Surf);
+	RegisterMethod("Surf", "surf", MethodFilterFlags_Surf);
 	RegisterMethod("Old Rod", "old-rod", MethodFilterFlags_RodOld);
 	RegisterMethod("Good Rod", "good-rod", MethodFilterFlags_RodGood);
 	RegisterMethod("Super Rod", "super-rod", MethodFilterFlags_RodSuper);
