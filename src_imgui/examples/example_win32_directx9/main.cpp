@@ -22,6 +22,7 @@
 #include <vector>
 #include <algorithm>
 #include <complex>
+#include <future>
 
 // Data
 static LPDIRECT3D9              g_pD3D = nullptr;
@@ -104,6 +105,7 @@ struct SettingsWindowData
 	int generation_lastframe = 0;
 	int time_chosen = 0;
 	bool running = false;
+	float progress = 0;
 };
 
 struct Encounter
@@ -949,6 +951,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					if (IsPokemonBadType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags))
 					{
 						//pokemon is a type we don't allow
+						//cout << pokemonname << " is bad type\n";
 						tablebad = true;
 					}
 				}
@@ -1065,31 +1068,53 @@ static bool FindBEY(string basepath, string expfile, string pokemonname, int *ba
 	return false;
 }
 
-static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, string basepath)
+static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
-	//go through every file
 	GameObject* game = g_games[settings->wantedgame_index];
+	
+	//look at ranges to find how many files we're looking through for the progress bar
+	int totalfiles = 0;
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
-		int notch = 1;
 		int a = i + 1;
-		double range = game->folderRanges[a] - game->folderRanges[i];
+		totalfiles += (game->folderRanges[a] - game->folderRanges[i]) + 1;
+	}
+
+	//read files
+	int filesread = 0;
+	int notch = 1;
+	for (int i = 0; i < game->folderRanges.size(); i += 2)
+	{
+		int a = i + 1;
 		if (settings->printtext) cout << "|     PROGRESS     |\n";
 		for (int j = game->folderRanges[i]; j <= game->folderRanges[a]; j++)
 		{
-			if ((j - game->folderRanges[i]) / range >= (notch * 0.05))
+			filesread++;
+			settingswindowdata->progress = (1 - (static_cast<float>(totalfiles) - filesread) / totalfiles) * 0.5;
+			if (settingswindowdata->progress >= (notch * 0.05))
 			{
 				if (settings->printtext) cout << "-";
 				notch++;
 			}
 			if (ParseLocationDataFile(basepath, j, settings, maintables) == 0)
-				return;
+				return true;
 		}
 	}
+
 	if (settings->printtext) cout << "\n";
+	int i = 0;
 	for (EncounterTable &table : *maintables)
 	{
+		//progress bar
+		i++;
+		settingswindowdata->progress = (1 - (static_cast<float>(maintables->size()) - i) / maintables->size()) * 0.5 + 0.5;
+		//cout << to_string(settingswindowdata->progress) << "\n";
+		if (settingswindowdata->progress >= (notch * 0.05))
+		{
+			if (settings->printtext) cout << "-";
+			notch++;
+		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
 		if (table.filterout)
 			continue;
@@ -1139,7 +1164,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 			cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
 			cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
 			cin.get();
-			return;
+			return true;
 		}
 	}
 	if (settings->printtext)
@@ -1151,6 +1176,7 @@ static void ReadTables(Settings* settings, vector<EncounterTable>* maintables, s
 #ifdef _DEBUG
 	PrintCustomData(/*settings*/);
 #endif //_DEBUG
+	return true;
 }
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
@@ -1426,7 +1452,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		newsettings->methodflags = methodflags;
 	}
 
-	if (ImGui::CollapsingHeader("Filter Pokemon Types", ImGuiTreeNodeFlags_None))
+	if (ImGui::CollapsingHeader("Pokemon Types", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Tables with pokemon of the selected types will not be shown.");
 		ImGui::Text("This can take a long time!");
@@ -1516,6 +1542,20 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 	if (settingswindowdata->running)
 	{
+		//cout << to_string(settingswindowdata->progress) << "\n";
+		if (settingswindowdata->progress == 1.00)
+		{
+			settingswindowdata->running = false;
+			std::sort(maintables->begin(), maintables->end(), compareByExp);
+			for (EncounterTable& table : *maintables)
+			{
+				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + table.method + ", " + g_games[table.version_index]->uiname;
+			}
+		}
+	}
+
+	if (ImGui::Button("Go!") && !settingswindowdata->running)
+	{
 		//only save the new settings once the button is pressed. this prevents changing the settings mid-iteration.
 		settings->wantedgame_index = newsettings->wantedgame_index;
 		settings->wantedtime = newsettings->wantedtime;
@@ -1529,7 +1569,6 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->printtext = newsettings->printtext;
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
-
 		/*
 		cout << "firstfolder" << to_string(newsettings->firstfolder) << "\n";
 		cout << "lastfolder" << to_string(newsettings->lastfolder) << "\n";
@@ -1549,19 +1588,17 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		cout << "pkmnfiltertypeflags:\n";
 		PrintTypeFlags(newsettings->pkmnfiltertypeflags);
 		*/
-
-		ReadTables(settings, maintables, basepath);
-		std::sort(maintables->begin(), maintables->end(), compareByExp);
-		settingswindowdata->running = false;
-
-		//cache things for tables instead of computing it live every imgui frame
-		for (EncounterTable &table : *maintables)
-		{
-			table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + table.method + ", " + g_games[table.version_index]->uiname;
-		}
+		maintables->clear();
+		maintables->shrink_to_fit();
+#ifdef _DEBUG
+		g_debugdata.clear();
+#endif //_DEBUG
+		settingswindowdata->running = true;
+		thread task(ReadTables, settings, settingswindowdata, maintables, basepath);
+		task.detach();
 	}
 
-	if (ImGui::Button("Go!"))
+	if (settingswindowdata->running)
 	{
 		int totalrange = 0;
 		for (int i = 0; i < game->folderRanges.size(); i += 2)
@@ -1569,14 +1606,9 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			int a = i + 1;
 			totalrange += (game->folderRanges[a] - game->folderRanges[i]) + 1;
 		}
-		string imgoing = "Searching through " + to_string(totalrange) + " tables.";
-		ImGui::SameLine(); ImGui::Text(imgoing.c_str());
-		maintables->clear();
-		maintables->shrink_to_fit();
-#ifdef _DEBUG
-		g_debugdata.clear();
-#endif //_DEBUG
-		settingswindowdata->running = true;
+		ImGui::SameLine(); ImGui::ProgressBar(settingswindowdata->progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
+		string imgoing = "Searching through " + to_string(totalrange) + " locations.";
+		ImGui::Text(imgoing.c_str());
 	}
 
 	//detect when settings have changed
@@ -1597,58 +1629,61 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		}
 	}
 
-	for (EncounterTable table : *maintables)
+	if (!settingswindowdata->running)
 	{
-		if (table.filterout)
-			continue;
-		if (ImGui::CollapsingHeader(table.header.c_str()))
+		for (EncounterTable table : *maintables)
 		{
-			if (ImGui::BeginTable("showencountertable", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
+			if (table.filterout)
+				continue;
+			if (ImGui::CollapsingHeader(table.header.c_str()))
 			{
-				ImGui::TableSetupColumn("Pokemon");
-				ImGui::TableSetupColumn("Chance");
-				ImGui::TableSetupColumn("Level");
-				ImGui::TableSetupColumn("Avg. Exp.");
-				ImGui::TableSetupColumn("Weighted Avg. Exp.");
-				ImGui::TableHeadersRow();
-				for (Encounter encounter : table.encounters)
+				if (ImGui::BeginTable("showencountertable", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 				{
-					ImGui::TableNextRow();
-
-					//pokemon
-					ImGui::TableNextColumn();
-					ImGui::Text(encounter.pokemonname.c_str());
-
-					//chance
-					ImGui::TableNextColumn();
-					string pct = to_string(encounter.chance) + "%";
-					ImGui::Text(pct.c_str());
-
-					//level
-					if (encounter.minlevel == encounter.maxlevel)
+					ImGui::TableSetupColumn("Pokemon");
+					ImGui::TableSetupColumn("Chance");
+					ImGui::TableSetupColumn("Level");
+					ImGui::TableSetupColumn("Avg. Exp.");
+					ImGui::TableSetupColumn("Weighted Avg. Exp.");
+					ImGui::TableHeadersRow();
+					for (Encounter encounter : table.encounters)
 					{
-						ImGui::TableNextColumn();
-						string level = to_string(encounter.minlevel);
-						ImGui::Text(level.c_str());
-					}
-					else
-					{
-						ImGui::TableNextColumn();
-						string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
-						ImGui::Text(level.c_str());
-					}
+						ImGui::TableNextRow();
 
-					//avg exp
-					ImGui::TableNextColumn();
-					string avgexp = to_string((long)trunc(encounter.avgexp));
-					ImGui::Text(avgexp.c_str());
+						//pokemon
+						ImGui::TableNextColumn();
+						ImGui::Text(encounter.pokemonname.c_str());
 
-					//avg exp weighted
-					ImGui::TableNextColumn();
-					string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
-					ImGui::Text(avgexpweighted.c_str());
+						//chance
+						ImGui::TableNextColumn();
+						string pct = to_string(encounter.chance) + "%";
+						ImGui::Text(pct.c_str());
+
+						//level
+						if (encounter.minlevel == encounter.maxlevel)
+						{
+							ImGui::TableNextColumn();
+							string level = to_string(encounter.minlevel);
+							ImGui::Text(level.c_str());
+						}
+						else
+						{
+							ImGui::TableNextColumn();
+							string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
+							ImGui::Text(level.c_str());
+						}
+
+						//avg exp
+						ImGui::TableNextColumn();
+						string avgexp = to_string((long)trunc(encounter.avgexp));
+						ImGui::Text(avgexp.c_str());
+
+						//avg exp weighted
+						ImGui::TableNextColumn();
+						string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
+						ImGui::Text(avgexpweighted.c_str());
+					}
+					ImGui::EndTable();
 				}
-				ImGui::EndTable();
 			}
 		}
 	}
