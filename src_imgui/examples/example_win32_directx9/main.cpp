@@ -41,6 +41,7 @@ using namespace std;
 
 const int ALLGAMES_INDEX = 26;//make sure this always matches the last switch case in dosettingswindow()!
 const int GAMES_TOTAL = 27;
+const int METHODS_TOTAL = 28;
 
 enum MethodFilterFlags
 {
@@ -120,7 +121,7 @@ struct Encounter
 
 struct EncounterTable
 {
-	string method;
+	int method_index;
 	string placename;
 	vector<Encounter> encounters;
 	int filenumber = 0;
@@ -142,6 +143,15 @@ struct GameObject
 };
 
 vector<GameObject*> g_games;
+
+struct MethodObject
+{
+	string uiname;
+	string internalname;
+	int flag = 0;
+};
+
+vector<MethodObject*> g_methods;
 
 #ifdef _DEBUG
 vector<string> g_debugdata;
@@ -214,7 +224,7 @@ static void PrintTypeFlags(int flags)
 	if (flags & TypeFlags_Fairy) cout << "-TypeFlags_Fairy\n";
 }
 */
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string method, int version_index, int i, bool tablebad)
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, bool tablebad)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
@@ -231,7 +241,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		for (EncounterTable& table : *maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-			if (table.placename == placename && table.method == method && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+			if (table.placename == placename && table.method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 			{
 				if (tablebad)
 					table.filterout = true;
@@ -246,7 +256,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		{
 			//cout << "Line " << linenum << ": new table\n";
 			EncounterTable newTable;
-			newTable.method = method;
+			newTable.method_index = method_index;
 			newTable.placename = placename;
 			newTable.filenumber = i;
 			newTable.expectedtotalpercent = chance;
@@ -518,19 +528,6 @@ static void StringFlagsContainStringFlag(string strgiven, int flagsgiven, string
 	}
 }
 
-static void StringFlagsContainStringFlag(string strgiven, int flagsgiven, vector<string> strcompare, int flagcompare, int* result)
-{
-	for (string cmp : strcompare)
-	{
-		if (strgiven == cmp)
-		{
-			*result = 1;
-			if (flagsgiven & flagcompare)
-				*result = 2;
-		}
-	}
-}
-
 static bool TypeMatches(int flags, string type)
 {
 	int result = 0;
@@ -726,7 +723,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	return 0;
 }
 
-static bool ValidateMethod(int flags, string method)
+static int ValidateMethod(int flags, string method)
 {
 	//these encounter methods are not very useful, if even applicable.
 	//sos encounters may come back, if the alola tables are ever fixed.
@@ -735,28 +732,21 @@ static bool ValidateMethod(int flags, string method)
 		|| method == "island-scan" || method == "sos-encounter" || method == "berry-piles"
 		|| method == "npc-trade" || method == "sos-from-bubbling-spot" || method == "roaming-grass"
 		|| method == "roaming-water" || method == "feebas-tile-fishing")
-		return false;
+		return 0;
 	int result = 0;
-	StringFlagsContainStringFlag(method, flags, "walk", MethodFilterFlags_Walk, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "surf", MethodFilterFlags_Surf, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "old-rod", MethodFilterFlags_RodOld, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "good-rod", MethodFilterFlags_RodGood, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "super-rod", MethodFilterFlags_RodSuper, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "rock-smash", MethodFilterFlags_RockSmash, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "seaweed", MethodFilterFlags_Seaweed, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "dark-grass", MethodFilterFlags_DarkGrass, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "rough-terrain", MethodFilterFlags_RoughTerrain, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, "bubbling-spots", MethodFilterFlags_BubblingSpots, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, { "red-flowers", "yellow-flowers", "purple-flowers" }, MethodFilterFlags_Walk, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, { "headbutt-low", "headbutt-normal", "headbutt-high" }, MethodFilterFlags_Headbutt, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, { "grass-spots", "cave-spots", "bridge-spots", "super-rod-spots", "surf-spots" }, MethodFilterFlags_Phenomena, &result);
-	if (result == 0) StringFlagsContainStringFlag(method, flags, { "ambush-grass", "ambush-bush", "ambush-splash", "ambush-tree", "ambush-dirt", "ambush-shadow", "ambush-chase", "ambush-sand" }, MethodFilterFlags_Ambush, &result);
+	int i = 0;
+	for (; i < METHODS_TOTAL; i++)
+	{
+		StringFlagsContainStringFlag(method, flags, g_methods[i]->internalname, g_methods[i]->flag, &result);
+		if (result != 0)
+			break;
+	}
 
 	if (result == 0)
 		assert(0);//this encounter method is unaccounted for
 	else if (result == 1)
-		return false;//bad method
-	return true;
+		return 0;//bad method
+	return i;
 }
 
 static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool tablebad)
@@ -800,14 +790,15 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	}
 
 	string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
-	if (!ValidateMethod(settings->methodflags, method))
+	int method_index = ValidateMethod(settings->methodflags, method);
+	if (method_index == 0)
 		return false;
 
 	//all good
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method, version_index, iFile, tablebad);
+	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, tablebad);
 	return true;
 }
 
@@ -1008,7 +999,7 @@ static bool compareByPlacename(const EncounterTable& a, const EncounterTable& b)
 
 static bool compareByMethod(const EncounterTable& a, const EncounterTable& b)
 {
-	return strcmp(a.method.c_str(), b.method.c_str()) < 0;
+	return a.method_index > b.method_index;
 }
 
 static bool compareByVersion(const EncounterTable& a, const EncounterTable& b)
@@ -1118,7 +1109,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
 		if (table.filterout)
 			continue;
-		if (settings->printtext) cout << "\n" << table.placename << ", " << table.method << ", " << g_games[table.version_index]->uiname << "\n";
+		if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 		table.totalavgexp = 0;
 		table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 		for (Encounter &encounter : table.encounters)
@@ -1147,7 +1138,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			table.totalavgexp += encounter.avgexpweighted;
 			table.totalchance += encounter.chance;
 		}
-		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << table.method << ", " << g_games[table.version_index]->uiname << "\n";
+		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 		std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 
 		//unless we're using repel or max level, the table's total chance should always be 100.
@@ -1549,7 +1540,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			std::sort(maintables->begin(), maintables->end(), compareByExp);
 			for (EncounterTable& table : *maintables)
 			{
-				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + table.method + ", " + g_games[table.version_index]->uiname;
+				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 		}
 	}
@@ -1702,6 +1693,15 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 	g_games.push_back(newGame);
 }
 
+static void RegisterMethod(const char* uiname, const char* internalname, int flag)
+{
+	MethodObject* newMethod = new MethodObject;
+	newMethod->uiname = uiname;
+	newMethod->internalname = internalname;
+	newMethod->flag = flag;
+	g_methods.push_back(newMethod);
+}
+
 // Main code
 int main(int, char**)
 {
@@ -1709,33 +1709,78 @@ int main(int, char**)
 	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
 	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
 
+	//games
+	//g1
 	RegisterGame("Blue", "blue", "gen1_exp.txt", 1, { 258 , 349 });
 	RegisterGame("Red", "red", "gen1_exp.txt", 1, { 258 , 349 });
 	RegisterGame("Yellow", "yellow", "gen1_exp.txt", 1, { 258 , 349 });
+	//g2
 	RegisterGame("Gold", "gold", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
 	RegisterGame("Silver", "silver", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
 	RegisterGame("Crystal", "crystal", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
+	//g3
 	RegisterGame("Ruby", "ruby", "gen3_exp.txt", 3, { 350, 449 });
 	RegisterGame("Sapphire", "sapphire", "gen3_exp.txt", 3, { 350, 449 });
 	RegisterGame("Emerald", "emerald", "gen3_exp.txt", 3, { 350, 449 });
 	RegisterGame("FireRed", "firered", "gen3_exp.txt", 3, { 258, 572, 825, 825 });
 	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.txt", 3, { 258, 572, 825, 825 });
+	//g4
 	RegisterGame("Diamond", "diamond", "gen4_exp.txt", 4, { 1, 183 });
 	RegisterGame("Pearl", "pearl", "gen4_exp.txt", 4, { 1, 183 });
 	RegisterGame("Platinum", "platinum", "gen4_exp.txt", 4, { 1, 183 });
 	RegisterGame("HeartGold", "heartgold", "gen4_exp.txt", 4, { 184, 349 });
 	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.txt", 4, { 184, 349 });
+	//g5
 	RegisterGame("Black", "black", "gen5bw1_exp.txt", 5, { 576, 655 });
 	RegisterGame("White", "white", "gen5bw1_exp.txt", 5, { 576, 655 });
 	RegisterGame("Black 2", "black-2", "gen5bw2_exp.txt", 5, { 576, 707 });
 	RegisterGame("White 2", "white-2", "gen5bw2_exp.txt", 5, { 576, 707 });
+	//g6
 	RegisterGame("X", "x", "gen6_exp.txt", 6, { 708, 760 });
 	RegisterGame("Y", "y", "gen6_exp.txt", 6, { 708, 760 });
+	//g7
 	RegisterGame("Sun", "sun", "gen7sm_exp.txt", 7, { 1035, 1156 });
 	RegisterGame("Moon", "moon", "gen7sm_exp.txt", 7, { 1035, 1156 });
 	RegisterGame("Ultra Sun", "ultra-sun", "gen7usum_exp.txt", 7, { 1035, 1156 });
 	RegisterGame("Ultra Moon", "ultra-moon", "gen7usum_exp.txt", 7, { 1035, 1156 });
+	//extras
 	RegisterGame("All", "all", "THIS_SHOULDNT_HAPPEN", 0, { 1, 1156 });
+
+	//methods
+	//g1
+	RegisterMethod("Walk", "walk", MethodFilterFlags_Walk);
+	RegisterMethod("Fishing", "surf", MethodFilterFlags_Surf);
+	RegisterMethod("Old Rod", "old-rod", MethodFilterFlags_RodOld);
+	RegisterMethod("Good Rod", "good-rod", MethodFilterFlags_RodGood);
+	RegisterMethod("Super Rod", "super-rod", MethodFilterFlags_RodSuper);
+	//g2
+	RegisterMethod("Rock Smash", "rock-smash", MethodFilterFlags_RockSmash);
+	RegisterMethod("Headbutt (Low)", "headbutt-low", MethodFilterFlags_Headbutt);
+	RegisterMethod("Headbutt (High)", "headbutt-high", MethodFilterFlags_Headbutt);
+	//g3
+	RegisterMethod("Seaweed", "seaweed", MethodFilterFlags_Seaweed);
+	//g5
+	RegisterMethod("Dark Grass", "dark-grass", MethodFilterFlags_DarkGrass);
+	RegisterMethod("Rustling Grass", "grass-spots", MethodFilterFlags_Phenomena);
+	RegisterMethod("Dust Clouds", "cave-spots", MethodFilterFlags_Phenomena);
+	RegisterMethod("Shadows", "bridge-spots", MethodFilterFlags_Phenomena);
+	RegisterMethod("Rippling Water (Fishing)", "super-rod-spots", MethodFilterFlags_Phenomena);
+	RegisterMethod("Rippling Water (Surfing)", "surf-spots", MethodFilterFlags_Phenomena);
+	//g6
+	RegisterMethod("Rough Terrain", "rough-terrain", MethodFilterFlags_RoughTerrain);
+	RegisterMethod("Red Flowers", "red-flowers", MethodFilterFlags_Walk);
+	RegisterMethod("Yellow Flowers", "yellow-flowers", MethodFilterFlags_Walk);
+	RegisterMethod("Purple Flowers", "purple-flowers", MethodFilterFlags_Walk);
+	//g7
+	RegisterMethod("Bubbling Spots", "bubbling-spots", MethodFilterFlags_BubblingSpots);
+	RegisterMethod("Rustling Grass", "ambush-grass", MethodFilterFlags_Ambush);
+	RegisterMethod("Rustling Bushes", "ambush-bush", MethodFilterFlags_Ambush);
+	RegisterMethod("Water Splashes", "ambush-splash", MethodFilterFlags_Ambush);
+	RegisterMethod("Rustling Trees", "ambush-tree", MethodFilterFlags_Ambush);
+	RegisterMethod("Dirt Clouds", "ambush-dirt", MethodFilterFlags_Ambush);
+	RegisterMethod("Shadows", "ambush-shadow", MethodFilterFlags_Ambush);
+	RegisterMethod("Chase", "ambush-chase", MethodFilterFlags_Ambush);
+	RegisterMethod("Sand Clouds", "ambush-sand", MethodFilterFlags_Ambush);
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
