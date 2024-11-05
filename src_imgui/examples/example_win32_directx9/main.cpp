@@ -99,6 +99,7 @@ struct Settings
 	bool printtext = false;
 	int methodflags = MethodFilterFlags_Last - 1;
 	int pkmnfiltertypeflags = 0;
+	//int movefiltertypeflags = 0;
 };
 
 struct SettingsWindowData
@@ -121,7 +122,7 @@ struct Encounter
 
 struct EncounterTable
 {
-	int method_index;
+	int method_index = 0;
 	string placename;
 	vector<Encounter> encounters;
 	int filenumber = 0;
@@ -138,6 +139,7 @@ struct GameObject
 	string uiname;
 	string internalname;
 	string expfile;
+	//string versiongroup;
 	int generation = 0;
 	vector<int> folderRanges;
 };
@@ -644,6 +646,8 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	json_value* pasttypes = FindArrayInObjectByName(file, "past_types");
 	if (!pasttypes)
 	{
+		json_value_free(file);
+		free(file_contents);
 		assert(0);
 		return 0;
 	}
@@ -658,6 +662,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	{
 		//since pokemon types can vary by generation, make sure we're looking at the data for the correct generation
 		//and change generation we look for based on version we found in json file
+		//we only evaluate a pokemon as it pertains to one game at a time
 		int gameindex = 0;
 		if (settings->wantedgame_index == ALLGAMES_INDEX)
 		{
@@ -678,12 +683,16 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 			json_value* pasttypeobj = pasttypes->u.array.values[pasttypeIdx];
 			if (!pasttypeobj)
 			{
+				json_value_free(file);
+				free(file_contents);
 				assert(0);
 				return 0;
 			}
 			json_value* generation = FindObjectInObjectByName(pasttypeobj, "generation");
 			if (!generation)
 			{
+				json_value_free(file);
+				free(file_contents);
 				assert(0);
 				return 0;
 			}
@@ -722,7 +731,143 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	assert(0);
 	return 0;
 }
+/*
+static bool PokemonHasBadMove(Settings* settings, string basepath, string path, int version_index, int flags)
+{
+	path = basepath + path;
+	FILE* fp;
+	struct stat filestatus;
+	int file_size;
+	char* file_contents;
+	json_char* json;
+	json_value* file;
+	if (stat(path.c_str(), &filestatus) != 0)
+	{
+		//cout << "File " + path + " not found\n";
+		//return quietly
+		assert(0);
+		return 1;
+	}
+	file_size = filestatus.st_size;
+	file_contents = (char*)malloc(filestatus.st_size);
+	if (!file_contents)
+	{
+		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+		assert(0);
+		return 0;
+	}
+	fp = fopen(path.c_str(), "rb");
+	if (!fp)
+	{
+		cout << "Unable to open " + path + "\n";
+		//fclose(fp);
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	size_t readNum = fread(file_contents, 1, file_size, fp);
+	if (readNum != file_size)
+	{
+		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+		cout << "ferror " + to_string(ferror(fp)) + "\n";
+		cout << "feof " + to_string(feof(fp)) + "\n";
+		cout << "file_size " + to_string(file_size) + "\n";
+		fclose(fp);
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	fclose(fp);
+	json = (json_char*)file_contents;
+	string error_buf;
+	file = json_parse(json, file_size, &error_buf);
+	if (file == NULL)
+	{
+		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	//there are only 3 attacking moves that have ever changed type. it's 100% not worth checking for altered types dynamically.
+	//2:  karate chop: normal -> fighting
+	//16: gust:		   normal -> flying
+	//44: bite:		   normal -> dark
+	//all 3 were changed in gen 2
+	bool gen1 = (version_index <= 2);
+	//find all level-up moves with a level less than or equal to the encounter's max level
+	json_value* moves = FindArrayInObjectByName(file, "moves");
+	if (!moves)
+	{
+		json_value_free(file);
+		free(file_contents);
+		assert(0);
+		return 0;
+	}
+	for (size_t movesIdx = 0; movesIdx < moves->u.array.length; movesIdx++)
+	{
+		json_value* moveEntry = moves->u.array.values[movesIdx];
+		if (!moveEntry)
+		{
+			json_value_free(file);
+			free(file_contents);
+			assert(0);
+			return 0;
+		}
+		json_value* versionGroupDetails = FindArrayInObjectByName(moveEntry, "version_group_details");
+		if (!versionGroupDetails)
+		{
+			json_value_free(file);
+			free(file_contents);
+			assert(0);
+			return 0;
+		}
+		for (size_t VGDIdx = 0; VGDIdx < versionGroupDetails->u.array.length; VGDIdx++)
+		{
+			json_value* VGDEntry = versionGroupDetails->u.array.values[VGDIdx];
+			if (!VGDEntry)
+			{
+				json_value_free(file);
+				free(file_contents);
+				assert(0);
+				return 0;
+			}
+			__int64 moveLevel = FindValueInObjectByKey(VGDEntry, "level_learned_at")->u.integer;
 
+			//current working model of how movesets are made for wild pokemon:
+			//-4 most recent level up moves
+			//-evolution, egg, tutor, TM/HM, and other more niche move types not included
+			//-the only exceptions are encounters not in the scope of this program (such as USUM necrozma reportedly or dexnav)
+			
+			//old games have a bug where a pokemon will not know a given move if the relevant slot (A) is 2 or 3 slots away from a slot (B) where the pokemon also learns that same move.
+			//There is most likely a caveat where the move will in fact be learned if slot B was affected by this bug earlier.
+			//The working model for the original way the game generated movesets is this:
+			//for (int i = 1; i < chosen_level; i++)
+			//{
+			//  If we want to learn a new move x
+			//	{
+			//    If move x is the same as a move we currently know, don't learn it.
+			// 
+			//    If there are 4 moves learned, forget the oldest move.
+			//	}
+			//}
+			//proof:
+			//https://www.youtube.com/watch?v=8CfVFjQk6Jg yellow, cerulean cave. golbat can be seen using supersonic, confuse ray, wing attack, and haze. they should have bite instead of supersonic.
+			//
+			
+			//easy way to tell if a move is non-level-up.
+			if (moveLevel == 0)
+		}
+	}
+	
+	//sort the list by level (high to low)
+	//ignore everything after four slots once the minimum level is reached
+
+	json_value_free(file);
+	free(file_contents);
+	assert(0);
+	return 0;
+}
+*/
 static int ValidateMethod(int flags, string method)
 {
 	//these encounter methods are not very useful, if even applicable.
@@ -737,7 +882,7 @@ static int ValidateMethod(int flags, string method)
 	int i = 0;
 	while (i < METHODS_TOTAL)
 	{
-		cout << method << " == " << g_methods[i]->internalname << "\n";
+		//cout << method << " == " << g_methods[i]->internalname << "\n";
 		StringFlagsContainStringFlag(method, flags, g_methods[i]->internalname, g_methods[i]->flag, &result);
 		if (result != 0)
 			break;
@@ -748,11 +893,11 @@ static int ValidateMethod(int flags, string method)
 		assert(0);//this encounter method is unaccounted for
 	else if (result == 1)
 		return -1;//bad method
-	cout << to_string(i) << "\n";
+	//cout << to_string(i) << "\n";
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool tablebad)
+static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool tablebad/*, string basepath, string url*/)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -801,6 +946,13 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
+	/*
+	if (!tablebad && settings->movefiltertypeflags != 0)
+		if (PokemonHasBadMove(settings, basepath, url + "index.json", version_index, settings->movefiltertypeflags))
+			//attacking move is a type we don't allow
+			//cout << pokemonname << " has bad move\n";
+			tablebad = true;
+	*/
 	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, tablebad);
 	return true;
 }
@@ -977,7 +1129,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					{
 						gameindex = settings->wantedgame_index;
 					}
-					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, tablebad))
+					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, tablebad/*, basepath, url*/))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1486,7 +1638,48 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 		newsettings->pkmnfiltertypeflags = pkmnFilterTypeFlags;
 	}
+	/*
+	if (ImGui::CollapsingHeader("Move Types", ImGuiTreeNodeFlags_None))
+	{
+		ImGui::Text("Tables with pokemon with ATTACKING MOVES of the selected types will not be shown.");
+		ImGui::Text("This can take a long time!");
+		static int moveFilterTypeFlags = 0;
+		if (ImGui::BeginTable("typetable2", 5, ImGuiTableFlags_None))
+		{
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Normal", &moveFilterTypeFlags, 1);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fighting", &moveFilterTypeFlags, 2);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Flying", &moveFilterTypeFlags, 4);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Poison", &moveFilterTypeFlags, 8);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ground", &moveFilterTypeFlags, 16);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Rock", &moveFilterTypeFlags, 32);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Bug", &moveFilterTypeFlags, 64);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ghost", &moveFilterTypeFlags, 128);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fire", &moveFilterTypeFlags, 512);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Water", &moveFilterTypeFlags, 1024);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Grass", &moveFilterTypeFlags, 2048);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Electric", &moveFilterTypeFlags, 4096);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Psychic", &moveFilterTypeFlags, 8192);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ice", &moveFilterTypeFlags, 16384);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &moveFilterTypeFlags, 32768);
+			if (allgames || game->generation >= 2)
+			{
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Steel", &moveFilterTypeFlags, 256);
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &moveFilterTypeFlags, 65536);
+				if (allgames || game->generation >= 6)
+				{
+					ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fairy", &moveFilterTypeFlags, 131072);
+				}
+			}
+		}
+		ImGui::EndTable();
 
+		newsettings->movefiltertypeflags = moveFilterTypeFlags;
+	}
+	*/
 	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Sort tables by... (Use after pressing Go!)");
@@ -1563,24 +1756,23 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->printtext = newsettings->printtext;
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
+		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
 		/*
-		cout << "firstfolder" << to_string(newsettings->firstfolder) << "\n";
-		cout << "lastfolder" << to_string(newsettings->lastfolder) << "\n";
-		cout << "wantedgame" << newsettings->wantedgame << "\n";
 		cout << "wantedtime" << newsettings->wantedtime << "\n";
 		cout << "wantedseason" << newsettings->wantedseason << "\n";
 		cout << "wantswarm" << (newsettings->wantswarm ? "TRUE" : "FALSE") << "\n";
 		cout << "wantradar" << (newsettings->wantradar ? "TRUE" : "FALSE") << "\n";
 		cout << "wantedslot2game" << newsettings->wantedslot2game << "\n";
 		cout << "wantedradiostation" << newsettings->wantedradiostation << "\n";
-		cout << "expfile" << newsettings->expfile << "\n";
-		cout << "generation" << to_string(newsettings->generation) << "\n";
 		cout << "repellevel" << to_string(newsettings->repellevel) << "\n";
 		cout << "maxlevel" << to_string(newsettings->maxlevel) << "\n";
 		cout << "printtext" << (newsettings->printtext ? "TRUE" : "FALSE") << "\n";
+		cout << "methodflags:\n";
 		PrintMethodFlags(newsettings->methodflags);
 		cout << "pkmnfiltertypeflags:\n";
 		PrintTypeFlags(newsettings->pkmnfiltertypeflags);
+		//cout << "movefiltertypeflags:\n";
+		//PrintTypeFlags(newsettings->movefiltertypeflags);
 		*/
 		maintables->clear();
 		maintables->shrink_to_fit();
@@ -1615,7 +1807,8 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->repellevel != newsettings->repellevel ||
 		settings->maxlevel != newsettings->maxlevel ||
 		settings->methodflags != newsettings->methodflags ||
-		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags)
+		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags/* ||
+		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/)
 	{
 		if (!maintables->empty())
 		{
@@ -1685,7 +1878,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	settingswindowdata->generation_lastframe = game->generation;
 }
 
-static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
+static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, /*const char* versiongroup,*/ int generation, vector<int> folderRanges)
 {
 	GameObject* newGame = new GameObject;
 	newGame->uiname = uiname;
@@ -1693,6 +1886,7 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 	newGame->expfile = expfile;
 	newGame->generation = generation;
 	newGame->folderRanges = folderRanges;
+	//newGame->versiongroup = versiongroup;
 	g_games.push_back(newGame);
 }
 
@@ -1714,40 +1908,40 @@ int main(int, char**)
 
 	//games
 	//g1
-	RegisterGame("Blue", "blue", "gen1_exp.txt", 1, { 258 , 349 });
-	RegisterGame("Red", "red", "gen1_exp.txt", 1, { 258 , 349 });
-	RegisterGame("Yellow", "yellow", "gen1_exp.txt", 1, { 258 , 349 });
+	RegisterGame("Blue", "blue", "gen1_exp.txt", /*"red-blue",*/ 1, { 258 , 349 });
+	RegisterGame("Red", "red", "gen1_exp.txt", /*"red-blue",*/ 1, { 258 , 349 });
+	RegisterGame("Yellow", "yellow", "gen1_exp.txt", /*"yellow",*/ 1, { 258 , 349 });
 	//g2
-	RegisterGame("Gold", "gold", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
-	RegisterGame("Silver", "silver", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
-	RegisterGame("Crystal", "crystal", "gen2_exp.txt", 2, { 184, 349, 798, 798 });
+	RegisterGame("Gold", "gold", "gen2_exp.txt", /*"gold-silver",*/ 2, { 184, 349, 798, 798 });
+	RegisterGame("Silver", "silver", "gen2_exp.txt", /*"gold-silver",*/ 2, { 184, 349, 798, 798 });
+	RegisterGame("Crystal", "crystal", "gen2_exp.txt", /*"crystal",*/ 2, { 184, 349, 798, 798 });
 	//g3
-	RegisterGame("Ruby", "ruby", "gen3_exp.txt", 3, { 350, 449 });
-	RegisterGame("Sapphire", "sapphire", "gen3_exp.txt", 3, { 350, 449 });
-	RegisterGame("Emerald", "emerald", "gen3_exp.txt", 3, { 350, 449 });
-	RegisterGame("FireRed", "firered", "gen3_exp.txt", 3, { 258, 572, 825, 825 });
-	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.txt", 3, { 258, 572, 825, 825 });
+	RegisterGame("Ruby", "ruby", "gen3_exp.txt", /*"ruby-sapphire",*/ 3, { 350, 449 });
+	RegisterGame("Sapphire", "sapphire", "gen3_exp.txt", /*"ruby-sapphire",*/ 3, { 350, 449 });
+	RegisterGame("Emerald", "emerald", "gen3_exp.txt", /*"emerald",*/ 3, { 350, 449 });
+	RegisterGame("FireRed", "firered", "gen3_exp.txt", /*"firered-leafgreen",*/ 3, { 258, 572, 825, 825 });
+	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.txt", /*"firered-leafgreen",*/ 3, { 258, 572, 825, 825 });
 	//g4
-	RegisterGame("Diamond", "diamond", "gen4_exp.txt", 4, { 1, 183 });
-	RegisterGame("Pearl", "pearl", "gen4_exp.txt", 4, { 1, 183 });
-	RegisterGame("Platinum", "platinum", "gen4_exp.txt", 4, { 1, 183 });
-	RegisterGame("HeartGold", "heartgold", "gen4_exp.txt", 4, { 184, 349 });
-	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.txt", 4, { 184, 349 });
+	RegisterGame("Diamond", "diamond", "gen4_exp.txt", /*"diamond-pearl",*/ 4, { 1, 183 });
+	RegisterGame("Pearl", "pearl", "gen4_exp.txt", /*"diamond-pearl",*/ 4, { 1, 183 });
+	RegisterGame("Platinum", "platinum", "gen4_exp.txt", /*"platinum",*/ 4, { 1, 183 });
+	RegisterGame("HeartGold", "heartgold", "gen4_exp.txt", /*"heartgold-soulsilver",*/ 4, { 184, 349 });
+	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.txt", /*"heartgold-soulsilver",*/ 4, { 184, 349 });
 	//g5
-	RegisterGame("Black", "black", "gen5bw1_exp.txt", 5, { 576, 655 });
-	RegisterGame("White", "white", "gen5bw1_exp.txt", 5, { 576, 655 });
-	RegisterGame("Black 2", "black-2", "gen5bw2_exp.txt", 5, { 576, 707 });
-	RegisterGame("White 2", "white-2", "gen5bw2_exp.txt", 5, { 576, 707 });
+	RegisterGame("Black", "black", "gen5bw1_exp.txt", /*"black-white",*/ 5, { 576, 655 });
+	RegisterGame("White", "white", "gen5bw1_exp.txt", /*"black-white",*/ 5, { 576, 655 });
+	RegisterGame("Black 2", "black-2", "gen5bw2_exp.txt", /*"black-2-white-2",*/ 5, { 576, 707 });
+	RegisterGame("White 2", "white-2", "gen5bw2_exp.txt", /*"black-2-white-2",*/ 5, { 576, 707 });
 	//g6
-	RegisterGame("X", "x", "gen6_exp.txt", 6, { 708, 760 });
-	RegisterGame("Y", "y", "gen6_exp.txt", 6, { 708, 760 });
+	RegisterGame("X", "x", "gen6_exp.txt", /*"x-y",*/ 6, { 708, 760 });
+	RegisterGame("Y", "y", "gen6_exp.txt", /*"x-y",*/ 6, { 708, 760 });
 	//g7
-	RegisterGame("Sun", "sun", "gen7sm_exp.txt", 7, { 1035, 1156 });
-	RegisterGame("Moon", "moon", "gen7sm_exp.txt", 7, { 1035, 1156 });
-	RegisterGame("Ultra Sun", "ultra-sun", "gen7usum_exp.txt", 7, { 1035, 1156 });
-	RegisterGame("Ultra Moon", "ultra-moon", "gen7usum_exp.txt", 7, { 1035, 1156 });
+	RegisterGame("Sun", "sun", "gen7sm_exp.txt", /*"sun-moon",*/ 7, { 1035, 1156 });
+	RegisterGame("Moon", "moon", "gen7sm_exp.txt", /*"sun-moon",*/ 7, { 1035, 1156 });
+	RegisterGame("Ultra Sun", "ultra-sun", "gen7usum_exp.txt", /*"ultra-sun-ultra-moon",*/ 7, { 1035, 1156 });
+	RegisterGame("Ultra Moon", "ultra-moon", "gen7usum_exp.txt", /*"ultra-sun-ultra-moon",*/ 7, { 1035, 1156 });
 	//extras
-	RegisterGame("All", "all", "THIS_SHOULDNT_HAPPEN", 0, { 1, 1156 });
+	RegisterGame("All", "all", "ALL_EXPFILE", /*"ALL_VERSIONGROUP",*/ 0, { 1, 1156 });
 
 	//methods
 	//g1
