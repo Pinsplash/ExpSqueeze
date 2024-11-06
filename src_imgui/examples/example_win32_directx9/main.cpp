@@ -100,6 +100,7 @@ struct Settings
 	int methodflags = MethodFilterFlags_Last - 1;
 	int pkmnfiltertypeflags = 0;
 	//int movefiltertypeflags = 0;
+	int scalinglevel = 0;
 };
 
 struct SettingsWindowData
@@ -107,7 +108,7 @@ struct SettingsWindowData
 	int generation_lastframe = 0;
 	int time_chosen = 0;
 	bool running = false;
-	float progress = 0;
+	double progress = 0;
 };
 
 struct Encounter
@@ -1288,6 +1289,16 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 			int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 			encounter.avgexp = (encounter.baseExp * avglevel) / factor;
+			//level scaling
+			if (settings->scalinglevel != 0)
+			{
+				double a = 2 * avglevel + 10;
+				double b = avglevel + settings->scalinglevel + 10;
+				if (generation == 5)
+					encounter.avgexp *= (sqrt(a) * pow(a, 2)) / (sqrt(b) * pow(b, 2));
+				if (generation >= 7)
+					encounter.avgexp *= pow((a) / (b), 2.5);
+			}
 			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
 			if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 			table.totalavgexp += encounter.avgexpweighted;
@@ -1529,6 +1540,16 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		newsettings->wantedradiostation = internal_stations[station_current];
 	}
 
+	if (game->generation == 5 || game->generation >= 7)
+	{
+		static int scalinglevel = 0;
+		ImGui::InputInt("Level for Scaling Math", &scalinglevel);
+		ImGui::SameLine(); HelpMarker("This game scales experience by the difference in levels between the victorious pokemon and defeated pokemon. Enter your pokemon's level to factor in level scaling. Otherwise, use 0.");
+		newsettings->scalinglevel = scalinglevel;
+	}
+	else
+		newsettings->scalinglevel = 0;
+
 	static int repellevel = 0;
 	ImGui::InputInt("Repel Level", &repellevel);
 	ImGui::SameLine();
@@ -1710,7 +1731,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			for (EncounterTable& table : *maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgLevel);
 
-		if (ImGui::Button("Average Experience "))
+		if (ImGui::Button("Average Experience"))
 			for (EncounterTable& table : *maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgExp);
 
@@ -1757,6 +1778,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
 		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
+		settings->scalinglevel = newsettings->scalinglevel;
 		/*
 		cout << "wantedtime" << newsettings->wantedtime << "\n";
 		cout << "wantedseason" << newsettings->wantedseason << "\n";
@@ -1773,6 +1795,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		PrintTypeFlags(newsettings->pkmnfiltertypeflags);
 		//cout << "movefiltertypeflags:\n";
 		//PrintTypeFlags(newsettings->movefiltertypeflags);
+		cout << "scalinglevel" << to_string(newsettings->scalinglevel) << "\n";
 		*/
 		maintables->clear();
 		maintables->shrink_to_fit();
@@ -1808,7 +1831,8 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->maxlevel != newsettings->maxlevel ||
 		settings->methodflags != newsettings->methodflags ||
 		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags/* ||
-		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/)
+		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/ ||
+		settings->scalinglevel != newsettings->scalinglevel)
 	{
 		if (!maintables->empty())
 		{
