@@ -118,6 +118,7 @@ struct Encounter
 	string pokemonname;
 	double avgexp = 0;
 	double avgexpweighted = 0;
+	int baseExp = 0;
 };
 
 struct EncounterTable
@@ -1278,8 +1279,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 				generation = g_games[table.version_index]->generation;
 			}
 			//get experience yield from stripped down bulba tables
-			int baseexp = 0;
-			if (!FindBEY(basepath, expfile, encounter.pokemonname, &baseexp))
+			if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
 			{
 				cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 				continue;
@@ -1287,7 +1287,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			encounter.minlevel = max(encounter.minlevel, settings->repellevel);
 			double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 			int factor = (generation == 5 || generation >= 7) ? 5 : 7;
-			encounter.avgexp = (baseexp * avglevel) / factor;
+			encounter.avgexp = (encounter.baseExp * avglevel) / factor;
 			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
 			if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 			table.totalavgexp += encounter.avgexpweighted;
@@ -1824,11 +1824,12 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 				continue;
 			if (ImGui::CollapsingHeader(table.header.c_str()))
 			{
-				if (ImGui::BeginTable("showencountertable", 5, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
+				if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 				{
 					ImGui::TableSetupColumn("Pokemon");
 					ImGui::TableSetupColumn("Chance");
 					ImGui::TableSetupColumn("Level");
+					ImGui::TableSetupColumn("Base Exp. Yield");
 					ImGui::TableSetupColumn("Avg. Exp.");
 					ImGui::TableSetupColumn("Weighted Avg. Exp.");
 					ImGui::TableHeadersRow();
@@ -1858,6 +1859,11 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 							string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
 							ImGui::Text(level.c_str());
 						}
+
+						//BEY
+						ImGui::TableNextColumn();
+						string baseexp = to_string((long)trunc(encounter.baseExp));
+						ImGui::Text(baseexp.c_str());
 
 						//avg exp
 						ImGui::TableNextColumn();
