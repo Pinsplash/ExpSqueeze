@@ -41,6 +41,7 @@ using namespace std;
 
 const int ALLGAMES_INDEX = 26;//make sure this always matches the last switch case in dosettingswindow()!
 const int GAMES_TOTAL = 27;
+const int SUPERROD_INDEX = 4;
 const int METHODS_TOTAL = 28;
 
 enum MethodFilterFlags
@@ -1757,7 +1758,14 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			std::sort(maintables->begin(), maintables->end(), compareByExp);
 			for (EncounterTable& table : *maintables)
 			{
-				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				string methodnamestring = g_methods[table.method_index]->uiname;
+				if (g_games[table.version_index]->generation == 7 && table.method_index == SUPERROD_INDEX)
+				{
+					//three-rod distinction is gone in gen 7, so we manually change the name here
+					//sucks but i don't see a better way
+					methodnamestring = "Fishing";
+				}
+				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
 			}
 		}
 	}
