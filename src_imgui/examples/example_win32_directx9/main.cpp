@@ -86,6 +86,13 @@ enum TypeFlags
 	TypeFlags_Fairy		= 1 << 17,
 };
 
+enum FilterReasons
+{
+	Reason_None,
+	Reason_BadType,
+	Reason_OverLevelCap
+};
+
 struct Settings
 {
 	int wantedgame_index = 0;
@@ -100,6 +107,7 @@ struct Settings
 	bool printtext = false;
 	int methodflags = MethodFilterFlags_Last - 1;
 	int pkmnfiltertypeflags = 0;
+	bool pkmntypewarn = false;
 	//int movefiltertypeflags = 0;
 	int scalinglevel = 0;
 };
@@ -132,7 +140,7 @@ struct EncounterTable
 	__int64 expectedtotalpercent = 0;
 	double totalavgexp = 0;
 	__int64 totalchance = 0;
-	bool filterout = false;
+	int filterReason = Reason_None;
 	int version_index = 0;
 	string header;
 };
@@ -229,11 +237,36 @@ static void PrintTypeFlags(int flags)
 	if (flags & TypeFlags_Fairy) cout << "-TypeFlags_Fairy\n";
 }
 */
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, bool tablebad)
+
+static void HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::BeginItemTooltip())
+	{
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
+static void WarnMarker(const char* desc)
+{
+	ImGui::TextWarn("(!)");
+	if (ImGui::BeginItemTooltip())
+	{
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
-		tablebad = true;
+		filterReason = Reason_OverLevelCap;
 
 	if (settings->repellevel <= maxlevel)
 	{
@@ -248,8 +281,10 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
 			if (table.placename == placename && table.method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 			{
-				if (tablebad)
-					table.filterout = true;
+				//don't lose our reason just because another encounter was ok
+				//prioritize OverLevelCap because BadType may simply be a warning
+				if (filterReason != Reason_None && table.filterReason != Reason_OverLevelCap)
+					table.filterReason = filterReason;
 				makenewtable = false;
 				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
 				table.encounters.push_back(newEnc);
@@ -266,8 +301,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			newTable.filenumber = i;
 			newTable.expectedtotalpercent = chance;
 			newTable.version_index = version_index;
-			if (tablebad)
-				newTable.filterout = true;
+			newTable.filterReason = filterReason;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable.encounters.push_back(newEnc);
 
@@ -855,7 +889,8 @@ static bool PokemonHasBadMove(Settings* settings, string basepath, string path, 
 			//}
 			//proof:
 			//https://www.youtube.com/watch?v=8CfVFjQk6Jg yellow, cerulean cave. golbat can be seen using supersonic, confuse ray, wing attack, and haze. they should have bite instead of supersonic.
-			//
+			//gen 2: ___
+			//report of this being fixed by gen 3 but still want to personally confirm
 			
 			//easy way to tell if a move is non-level-up.
 			if (moveLevel == 0)
@@ -900,7 +935,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool tablebad/*, string basepath, string url*/)
+static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -956,7 +991,7 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 			//cout << pokemonname << " has bad move\n";
 			tablebad = true;
 	*/
-	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, tablebad);
+	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason);
 	return true;
 }
 
@@ -1093,7 +1128,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					return 0;
 				}
 				string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
-				bool tablebad = false;
+				bool filterReason = Reason_None;
 				if (settings->pkmnfiltertypeflags != 0)
 				{
 					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
@@ -1101,7 +1136,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					{
 						//pokemon is a type we don't allow
 						//cout << pokemonname << " is bad type\n";
-						tablebad = true;
+						filterReason = Reason_BadType;
 					}
 				}
 				//go back up to version details to get encounter details block
@@ -1132,7 +1167,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					{
 						gameindex = settings->wantedgame_index;
 					}
-					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, tablebad/*, basepath, url*/))
+					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1265,64 +1300,65 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			notch++;
 		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
-		if (table.filterout)
-			continue;
-		if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
-		table.totalavgexp = 0;
-		table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
-		for (Encounter &encounter : table.encounters)
+		if (table.filterReason == Reason_None || (settings->pkmntypewarn && table.filterReason == Reason_BadType))
 		{
-			string expfile = game->expfile;
-			int generation = game->generation;
-			if (settings->wantedgame_index == ALLGAMES_INDEX)
+			if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			table.totalavgexp = 0;
+			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
+			for (Encounter& encounter : table.encounters)
 			{
-				//change exp file based on table's game
-				expfile = g_games[table.version_index]->expfile;
-				generation = g_games[table.version_index]->generation;
+				string expfile = game->expfile;
+				int generation = game->generation;
+				if (settings->wantedgame_index == ALLGAMES_INDEX)
+				{
+					//change exp file based on table's game
+					expfile = g_games[table.version_index]->expfile;
+					generation = g_games[table.version_index]->generation;
+				}
+				//get experience yield from stripped down bulba tables
+				if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
+				{
+					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
+					continue;
+				}
+				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
+				double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
+				int factor = (generation == 5 || generation >= 7) ? 5 : 7;
+				encounter.avgexp = (encounter.baseExp * avglevel) / factor;
+				//level scaling
+				if (settings->scalinglevel != 0)
+				{
+					double a = 2 * avglevel + 10;
+					double b = avglevel + settings->scalinglevel + 10;
+					if (generation == 5)
+						encounter.avgexp *= (sqrt(a) * pow(a, 2)) / (sqrt(b) * pow(b, 2));
+					if (generation >= 7)
+						encounter.avgexp *= pow((a) / (b), 2.5);
+				}
+				encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
+				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+				table.totalavgexp += encounter.avgexpweighted;
+				table.totalchance += encounter.chance;
 			}
-			//get experience yield from stripped down bulba tables
-			if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
-			{
-				cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
-				continue;
-			}
-			encounter.minlevel = max(encounter.minlevel, settings->repellevel);
-			double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
-			int factor = (generation == 5 || generation >= 7) ? 5 : 7;
-			encounter.avgexp = (encounter.baseExp * avglevel) / factor;
-			//level scaling
-			if (settings->scalinglevel != 0)
-			{
-				double a = 2 * avglevel + 10;
-				double b = avglevel + settings->scalinglevel + 10;
-				if (generation == 5)
-					encounter.avgexp *= (sqrt(a) * pow(a, 2)) / (sqrt(b) * pow(b, 2));
-				if (generation >= 7)
-					encounter.avgexp *= pow((a) / (b), 2.5);
-			}
-			encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
-			if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
-			table.totalavgexp += encounter.avgexpweighted;
-			table.totalchance += encounter.chance;
-		}
-		if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
-		std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
+			if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 
-		//unless we're using repel or max level, the table's total chance should always be 100.
-		bool errorfound = false;
-		if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100)
-			errorfound = true;
-		//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
-		else if (table.totalchance != table.expectedtotalpercent)
-			errorfound = true;
-		if (errorfound)
-		{
-			cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
-			cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
-			cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
-			cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
-			cin.get();
-			return true;
+			//unless we're using repel or max level, the table's total chance should always be 100.
+			bool errorfound = false;
+			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100)
+				errorfound = true;
+			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
+			else if (table.totalchance != table.expectedtotalpercent)
+				errorfound = true;
+			if (errorfound)
+			{
+				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
+				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
+				cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
+				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
+				cin.get();
+				return true;
+			}
 		}
 	}
 	if (settings->printtext)
@@ -1335,20 +1371,6 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 	PrintCustomData(/*settings*/);
 #endif //_DEBUG
 	return true;
-}
-
-// Helper to display a little (?) mark which shows a tooltip when hovered.
-// In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
-static void HelpMarker(const char* desc)
-{
-	ImGui::TextDisabled("(?)");
-	if (ImGui::BeginItemTooltip())
-	{
-		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(desc);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
 }
 
 static const char* Items_SingleStringGetter(void* data, int idx)
@@ -1659,6 +1681,10 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		ImGui::EndTable();
 
 		newsettings->pkmnfiltertypeflags = pkmnFilterTypeFlags;
+
+		static bool pkmntypewarn = false;
+		ImGui::Checkbox("Don't Hide, Just Warn", &pkmntypewarn);
+		newsettings->pkmntypewarn = pkmntypewarn;
 	}
 	/*
 	if (ImGui::CollapsingHeader("Move Types", ImGuiTreeNodeFlags_None))
@@ -1785,26 +1811,10 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->printtext = newsettings->printtext;
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
+		settings->pkmntypewarn = newsettings->pkmntypewarn;
 		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
 		settings->scalinglevel = newsettings->scalinglevel;
-		/*
-		cout << "wantedtime" << newsettings->wantedtime << "\n";
-		cout << "wantedseason" << newsettings->wantedseason << "\n";
-		cout << "wantswarm" << (newsettings->wantswarm ? "TRUE" : "FALSE") << "\n";
-		cout << "wantradar" << (newsettings->wantradar ? "TRUE" : "FALSE") << "\n";
-		cout << "wantedslot2game" << newsettings->wantedslot2game << "\n";
-		cout << "wantedradiostation" << newsettings->wantedradiostation << "\n";
-		cout << "repellevel" << to_string(newsettings->repellevel) << "\n";
-		cout << "maxlevel" << to_string(newsettings->maxlevel) << "\n";
-		cout << "printtext" << (newsettings->printtext ? "TRUE" : "FALSE") << "\n";
-		cout << "methodflags:\n";
-		PrintMethodFlags(newsettings->methodflags);
-		cout << "pkmnfiltertypeflags:\n";
-		PrintTypeFlags(newsettings->pkmnfiltertypeflags);
-		//cout << "movefiltertypeflags:\n";
-		//PrintTypeFlags(newsettings->movefiltertypeflags);
-		cout << "scalinglevel" << to_string(newsettings->scalinglevel) << "\n";
-		*/
+
 		maintables->clear();
 		maintables->shrink_to_fit();
 #ifdef _DEBUG
@@ -1852,62 +1862,68 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	{
 		for (EncounterTable table : *maintables)
 		{
-			if (table.filterout)
-				continue;
-			if (ImGui::CollapsingHeader(table.header.c_str()))
+			bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
+			if (table.filterReason == Reason_None || showWarning)
 			{
-				if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
+				if (showWarning)
 				{
-					ImGui::TableSetupColumn("Pokemon");
-					ImGui::TableSetupColumn("Chance");
-					ImGui::TableSetupColumn("Level");
-					ImGui::TableSetupColumn("Base Exp. Yield");
-					ImGui::TableSetupColumn("Avg. Exp.");
-					ImGui::TableSetupColumn("Weighted Avg. Exp.");
-					ImGui::TableHeadersRow();
-					for (Encounter encounter : table.encounters)
+					WarnMarker("At least 1 pokemon in this table has a type you wanted to avoid."); ImGui::SameLine();
+				}
+				if (ImGui::CollapsingHeader(table.header.c_str()))
+				{
+					if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 					{
-						ImGui::TableNextRow();
-
-						//pokemon
-						ImGui::TableNextColumn();
-						ImGui::Text(encounter.pokemonname.c_str());
-
-						//chance
-						ImGui::TableNextColumn();
-						string pct = to_string(encounter.chance) + "%";
-						ImGui::Text(pct.c_str());
-
-						//level
-						if (encounter.minlevel == encounter.maxlevel)
+						ImGui::TableSetupColumn("Pokemon");
+						ImGui::TableSetupColumn("Chance");
+						ImGui::TableSetupColumn("Level");
+						ImGui::TableSetupColumn("Base Exp. Yield");
+						ImGui::TableSetupColumn("Avg. Exp.");
+						ImGui::TableSetupColumn("Weighted Avg. Exp.");
+						ImGui::TableHeadersRow();
+						for (Encounter encounter : table.encounters)
 						{
+							ImGui::TableNextRow();
+
+							//pokemon
 							ImGui::TableNextColumn();
-							string level = to_string(encounter.minlevel);
-							ImGui::Text(level.c_str());
-						}
-						else
-						{
+							ImGui::Text(encounter.pokemonname.c_str());
+
+							//chance
 							ImGui::TableNextColumn();
-							string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
-							ImGui::Text(level.c_str());
+							string pct = to_string(encounter.chance) + "%";
+							ImGui::Text(pct.c_str());
+
+							//level
+							if (encounter.minlevel == encounter.maxlevel)
+							{
+								ImGui::TableNextColumn();
+								string level = to_string(encounter.minlevel);
+								ImGui::Text(level.c_str());
+							}
+							else
+							{
+								ImGui::TableNextColumn();
+								string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
+								ImGui::Text(level.c_str());
+							}
+
+							//BEY
+							ImGui::TableNextColumn();
+							string baseexp = to_string((long)trunc(encounter.baseExp));
+							ImGui::Text(baseexp.c_str());
+
+							//avg exp
+							ImGui::TableNextColumn();
+							string avgexp = to_string((long)trunc(encounter.avgexp));
+							ImGui::Text(avgexp.c_str());
+
+							//avg exp weighted
+							ImGui::TableNextColumn();
+							string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
+							ImGui::Text(avgexpweighted.c_str());
 						}
-
-						//BEY
-						ImGui::TableNextColumn();
-						string baseexp = to_string((long)trunc(encounter.baseExp));
-						ImGui::Text(baseexp.c_str());
-
-						//avg exp
-						ImGui::TableNextColumn();
-						string avgexp = to_string((long)trunc(encounter.avgexp));
-						ImGui::Text(avgexp.c_str());
-
-						//avg exp weighted
-						ImGui::TableNextColumn();
-						string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
-						ImGui::Text(avgexpweighted.c_str());
+						ImGui::EndTable();
 					}
-					ImGui::EndTable();
 				}
 			}
 		}

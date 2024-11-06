@@ -304,6 +304,22 @@ void ImGui::TextDisabled(const char* fmt, ...)
     va_end(args);
 }
 
+void ImGui::TextWarn(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    TextWarnV(fmt, args);
+    va_end(args);
+}
+
+void ImGui::TextWarnV(const char* fmt, va_list args)
+{
+    ImGuiContext& g = *GImGui;
+    PushStyleColor(ImGuiCol_Text, g.Style.Colors[ImGuiCol_TextWarn]);
+    TextV(fmt, args);
+    PopStyleColor();
+}
+
 void ImGui::TextDisabledV(const char* fmt, va_list args)
 {
     ImGuiContext& g = *GImGui;
