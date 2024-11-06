@@ -941,13 +941,8 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 
 	if (conditionvalues)
 	{
-		bool encounterinvalid = false;
-
 		for (size_t conditionIdx = 0; conditionIdx < conditionvalues->u.array.length; conditionIdx++)
 		{
-			if (encounterinvalid)
-				break;
-
 			json_value* condobj = conditionvalues->u.array.values[conditionIdx];
 			string condition = FindValueInObjectByKey(condobj, "name")->u.string.ptr;
 #ifdef _DEBUG
@@ -955,11 +950,8 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 #endif //_DEBUG
 			//make sure encounter meets applicable parameters
 			if (InvalidateCondition(settings, condition, iFile))
-				encounterinvalid = true;
+				return false;
 		}
-
-		if (encounterinvalid)
-			return false;
 	}
 	else
 	{
