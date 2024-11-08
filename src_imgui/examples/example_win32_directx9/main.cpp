@@ -110,6 +110,7 @@ struct Settings
 	bool pkmntypewarn = false;
 	//int movefiltertypeflags = 0;
 	int scalinglevel = 0;
+	bool abilitywarn = true;
 };
 
 struct SettingsWindowData
@@ -143,6 +144,7 @@ struct EncounterTable
 	int filterReason = Reason_None;
 	int version_index = 0;
 	string header;
+	string warning;
 };
 
 struct GameObject
@@ -262,7 +264,7 @@ static void WarnMarker(const char* desc)
 	}
 }
 
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason)
+static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
@@ -285,10 +287,23 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 				//prioritize OverLevelCap because BadType may simply be a warning
 				if (filterReason != Reason_None && table.filterReason != Reason_OverLevelCap)
 					table.filterReason = filterReason;
+
 				makenewtable = false;
 				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
 				table.encounters.push_back(newEnc);
 				table.expectedtotalpercent += chance;
+
+				if (!warning.empty())
+				{
+					if (table.warning.empty())
+					{
+						table.warning = warning;
+					}
+					else
+					{
+						table.warning += "\n" + warning;
+					}
+				}
 				break;
 			}
 		}
@@ -302,6 +317,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			newTable.expectedtotalpercent = chance;
 			newTable.version_index = version_index;
 			newTable.filterReason = filterReason;
+			newTable.warning = warning;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable.encounters.push_back(newEnc);
 
@@ -596,13 +612,13 @@ static bool TypeMatches(int flags, string type)
 	return true;
 }
 
-static bool FindBadType(json_value* containerobj, int flags)
+static string FindBadType(json_value* containerobj, int flags)
 {
 	json_value* types = FindArrayInObjectByName(containerobj, "types");
 	if (!types)
 	{
 		assert(0);
-		return 0;
+		return "No types array";
 	}
 	for (size_t typeIdx = 0; typeIdx < types->u.array.length; typeIdx++)
 	{
@@ -610,21 +626,21 @@ static bool FindBadType(json_value* containerobj, int flags)
 		if (!typeobj)
 		{
 			assert(0);
-			return 0;
+			return "No type object (1)";
 		}
 		json_value* typeobj2 = FindObjectInObjectByName(typeobj, "type");
 		if (!typeobj2)
 		{
 			assert(0);
-			return 0;
+			return "No type object (2)";
 		}
 		string nameoftype = FindValueInObjectByKey(typeobj2, "name")->u.string.ptr;
-		if (TypeMatches(flags, nameoftype)) return true;
+		if (TypeMatches(flags, nameoftype)) return nameoftype;
 	}
-	return false;
+	return "";
 }
 
-static bool IsPokemonBadType(Settings* settings, string path, string version, int flags)
+static string IsPokemonBadType(Settings* settings, string path, string version, int flags, string pokemonname)
 {
 	FILE* fp;
 	struct stat filestatus;
@@ -634,10 +650,9 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	json_value* file;
 	if (stat(path.c_str(), &filestatus) != 0)
 	{
-		//cout << "File " + path + " not found\n";
-		//return quietly
+		cout << "File " + path + " not found\n";
 		assert(0);
-		return 1;
+		return "File " + path + " not found";
 	}
 	file_size = filestatus.st_size;
 	file_contents = (char*)malloc(filestatus.st_size);
@@ -645,7 +660,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	{
 		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		assert(0);
-		return 0;
+		return "Memory error: unable to allocate " + to_string(file_size) + " bytes";
 	}
 	fp = fopen(path.c_str(), "rb");
 	if (!fp)
@@ -654,7 +669,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 		//fclose(fp);
 		free(file_contents);
 		assert(0);
-		return 0;
+		return "Unable to open " + path;
 	}
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
@@ -666,7 +681,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 		fclose(fp);
 		free(file_contents);
 		assert(0);
-		return 0;
+		return "Unable to read content of " + path + " ret " + to_string(readNum);
 	}
 	fclose(fp);
 	json = (json_char*)file_contents;
@@ -677,7 +692,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		assert(0);
-		return 0;
+		return "File " + path + ": Unable to parse data: " + error_buf;
 	}
 
 	json_value* pasttypes = FindArrayInObjectByName(file, "past_types");
@@ -686,11 +701,13 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 		json_value_free(file);
 		free(file_contents);
 		assert(0);
-		return 0;
+		return "No past_types array (should be 0 length when no past typing)";
 	}
 	if (pasttypes->u.array.length == 0)
 	{
-		bool result = FindBadType(file, flags);
+		string result = FindBadType(file, flags);
+		if (!result.empty())
+			result = pokemonname + " has at least 1 bad type: " + result;
 		json_value_free(file);
 		free(file_contents);
 		return result;
@@ -723,7 +740,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 				json_value_free(file);
 				free(file_contents);
 				assert(0);
-				return 0;
+				return "No past_types object (we thought there was a past typing)";
 			}
 			json_value* generation = FindObjectInObjectByName(pasttypeobj, "generation");
 			if (!generation)
@@ -731,7 +748,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 				json_value_free(file);
 				free(file_contents);
 				assert(0);
-				return 0;
+				return "No generation object (for past typing)";
 			}
 			string generationname = FindValueInObjectByKey(generation, "name")->u.string.ptr;
 			bool ok = false;
@@ -747,7 +764,9 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 			if (ok)
 			{
 				//obey old type
-				bool result = FindBadType(pasttypeobj, flags);
+				string result = FindBadType(pasttypeobj, flags);
+				if (!result.empty())
+					result = pokemonname + " has at least 1 bad type: " + result;
 				json_value_free(file);
 				free(file_contents);
 				return result;
@@ -755,7 +774,9 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 			else
 			{
 				//use pokemon's new type instead
-				bool result = FindBadType(file, flags);
+				string result = FindBadType(file, flags);
+				if (!result.empty())
+					result = pokemonname + " has at least 1 bad type: " + result;
 				json_value_free(file);
 				free(file_contents);
 				return result;
@@ -766,7 +787,7 @@ static bool IsPokemonBadType(Settings* settings, string path, string version, in
 	json_value_free(file);
 	free(file_contents);
 	assert(0);
-	return 0;
+	return "";
 }
 /*
 static bool PokemonHasBadMove(Settings* settings, string basepath, string path, int version_index, int flags)
@@ -935,7 +956,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/)
+static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -976,14 +997,7 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	/*
-	if (!tablebad && settings->movefiltertypeflags != 0)
-		if (PokemonHasBadMove(settings, basepath, url + "index.json", version_index, settings->movefiltertypeflags))
-			//attacking move is a type we don't allow
-			//cout << pokemonname << " has bad move\n";
-			tablebad = true;
-	*/
-	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason);
+	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning);
 	return true;
 }
 
@@ -1121,10 +1135,12 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 				}
 				string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
 				bool filterReason = Reason_None;
+				string warning = "";
 				if (settings->pkmnfiltertypeflags != 0)
 				{
 					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-					if (IsPokemonBadType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags))
+					warning = IsPokemonBadType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname);
+					if (!warning.empty())
 					{
 						//pokemon is a type we don't allow
 						//cout << pokemonname << " is bad type\n";
@@ -1148,18 +1164,13 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					}
 					int gameindex;
 					if (settings->wantedgame_index == ALLGAMES_INDEX)
-					{
 						for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
-						{
 							if (givengame == g_games[gameindex]->internalname)
 								break;
-						}
-					}
 					else
-					{
 						gameindex = settings->wantedgame_index;
-					}
-					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/))
+
+					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1723,7 +1734,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Sort tables by... (Use after pressing Go!)");
-		if (ImGui::Button("Average Experience"))
+		if (ImGui::Button("Average Experience Per Encounter"))
 			std::sort(maintables->begin(), maintables->end(), compareByExp);
 		ImGui::SameLine(); ImGui::Text("(Default)");
 
@@ -1859,7 +1870,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			{
 				if (showWarning)
 				{
-					WarnMarker("At least 1 pokemon in this table has a type you wanted to avoid."); ImGui::SameLine();
+					WarnMarker(table.warning.c_str()); ImGui::SameLine();
 				}
 				if (ImGui::CollapsingHeader(table.header.c_str()))
 				{
