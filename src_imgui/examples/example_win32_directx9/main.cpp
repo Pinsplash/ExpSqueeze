@@ -1162,11 +1162,14 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 						assert(0);
 						return 0;
 					}
+					//do NOT remove these brackets, or the else statement will be linked up to the wrong if statement
 					int gameindex;
 					if (settings->wantedgame_index == ALLGAMES_INDEX)
+					{
 						for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 							if (givengame == g_games[gameindex]->internalname)
 								break;
+					}
 					else
 						gameindex = settings->wantedgame_index;
 
