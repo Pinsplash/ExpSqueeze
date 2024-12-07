@@ -145,6 +145,8 @@ struct EncounterTable
 	int version_index = 0;
 	string header;
 	string warning;
+	__int64 lowestlevel = 0;
+	__int64 highestlevel = 0;
 };
 
 struct GameObject
@@ -167,6 +169,7 @@ struct MethodObject
 };
 
 vector<MethodObject*> g_methods;
+vector<EncounterTable> maintables;
 
 #ifdef _DEBUG
 vector<string> g_debugdata;
@@ -264,7 +267,7 @@ static void WarnMarker(const char* desc)
 	}
 }
 
-static void RegisterEncounter(Settings* settings, vector<EncounterTable>* maintables, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning)
+static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
@@ -278,7 +281,7 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 		newEnc.minlevel = minlevel;
 		newEnc.pokemonname = pokemonname;
 		bool makenewtable = true;
-		for (EncounterTable& table : *maintables)
+		for (EncounterTable& table : maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
 			if (table.placename == placename && table.method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
@@ -292,6 +295,8 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
 				table.encounters.push_back(newEnc);
 				table.expectedtotalpercent += chance;
+				table.lowestlevel = min(table.lowestlevel, minlevel);
+				table.highestlevel = min(table.highestlevel, maxlevel);
 
 				if (!warning.empty())
 				{
@@ -318,10 +323,12 @@ static void RegisterEncounter(Settings* settings, vector<EncounterTable>* mainta
 			newTable.version_index = version_index;
 			newTable.filterReason = filterReason;
 			newTable.warning = warning;
+			newTable.lowestlevel = minlevel;
+			newTable.highestlevel = maxlevel;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable.encounters.push_back(newEnc);
 
-			maintables->push_back(newTable);
+			maintables.push_back(newTable);
 		}
 	}
 }
@@ -956,7 +963,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* maintables, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning)
+static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -997,11 +1004,11 @@ static bool ParseEncounterDetails(Settings* settings, vector<EncounterTable>* ma
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(settings, maintables, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning);
+	RegisterEncounter(settings, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning);
 	return true;
 }
 
-static int ParseLocationDataFile(string basepath, int iFile, Settings* settings, vector<EncounterTable>* maintables)
+static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 {
 	//if (iFile != 57)
 	//	return 1;
@@ -1173,7 +1180,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 					else
 						gameindex = settings->wantedgame_index;
 
-					if (!ParseEncounterDetails(settings, maintables, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning))
+					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1189,6 +1196,11 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings,
 static bool compareByExp(const EncounterTable& a, const EncounterTable& b)
 {
 	return a.totalavgexp > b.totalavgexp;
+}
+
+static bool compareByLevelRange(const EncounterTable& a, const EncounterTable& b)
+{
+	return a.highestlevel - a.lowestlevel > b.highestlevel - b.lowestlevel;
 }
 
 static bool compareByPlacename(const EncounterTable& a, const EncounterTable& b)
@@ -1258,7 +1270,7 @@ static bool FindBEY(string basepath, string expfile, string pokemonname, int *ba
 	return false;
 }
 
-static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
+static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdata, string basepath)
 {
 	if (settings->printtext) cout << "Reading encounter data\n";
 	GameObject* game = g_games[settings->wantedgame_index];
@@ -1287,18 +1299,19 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 				if (settings->printtext) cout << "-";
 				notch++;
 			}
-			if (ParseLocationDataFile(basepath, j, settings, maintables) == 0)
+			if (ParseLocationDataFile(basepath, j, settings) == 0)
 				return true;
 		}
 	}
 
 	if (settings->printtext) cout << "\n";
 	int i = 0;
-	for (EncounterTable &table : *maintables)
+	for (EncounterTable& table : maintables)
 	{
+		cout << "size: " << maintables.size() << "\n";
 		//progress bar
 		i++;
-		settingswindowdata->progress = (1 - (static_cast<float>(maintables->size()) - i) / maintables->size()) * 0.5 + 0.5;
+		settingswindowdata->progress = (1 - (static_cast<float>(maintables.size()) - i) / maintables.size()) * 0.5 + 0.5;
 		//cout << to_string(settingswindowdata->progress) << "\n";
 		if (settingswindowdata->progress >= (notch * 0.05))
 		{
@@ -1313,6 +1326,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 			for (Encounter& encounter : table.encounters)
 			{
+				if (settings->printtext) cout << table.placename << " (first in encounter loop)\n";
 				string expfile = game->expfile;
 				int generation = game->generation;
 				if (settings->wantedgame_index == ALLGAMES_INDEX)
@@ -1321,16 +1335,19 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					expfile = g_games[table.version_index]->expfile;
 					generation = g_games[table.version_index]->generation;
 				}
+				if (settings->printtext) cout << table.placename << " (about to do FindBEY)\n";
 				//get experience yield from stripped down bulba tables
 				if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
 				{
 					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 					continue;
 				}
+				if (settings->printtext) cout << table.placename << " (EXP math)\n";
 				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
 				double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 				int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 				encounter.avgexp = (encounter.baseExp * avglevel) / factor;
+				if (settings->printtext) cout << table.placename << " (Level scaling)\n";
 				//level scaling
 				if (settings->scalinglevel != 0)
 				{
@@ -1341,8 +1358,14 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					if (generation >= 7)
 						encounter.avgexp *= pow((a) / (b), 2.5);
 				}
+				if (settings->printtext) cout << table.placename << " (before exp weighted)\n";
 				encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
+				if (settings->printtext) cout << table.placename << " (after exp weighted)\n";
 				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+#ifdef _DEBUG
+				if (settings->printtext) cout << "totalavgexp " << table.totalavgexp << " += " << encounter.avgexpweighted << "\n";
+				if (settings->printtext) cout << "totalchance " << table.totalchance << " += " << encounter.chance << "\n\n";
+#endif //_DEBUG
 				table.totalavgexp += encounter.avgexpweighted;
 				table.totalchance += encounter.chance;
 			}
@@ -1394,7 +1417,7 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 	return *p ? p : NULL;
 }
 
-static void dosettingswindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, vector<EncounterTable>* maintables, string basepath)
+static void dosettingswindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, string basepath)
 {
 #ifndef _DEBUG
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -1738,38 +1761,41 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	{
 		ImGui::Text("Sort tables by... (Use after pressing Go!)");
 		if (ImGui::Button("Average Experience Per Encounter"))
-			std::sort(maintables->begin(), maintables->end(), compareByExp);
+			std::sort(maintables.begin(), maintables.end(), compareByExp);
 		ImGui::SameLine(); ImGui::Text("(Default)");
 
 		if (ImGui::Button("Place Name"))
-			std::sort(maintables->begin(), maintables->end(), compareByPlacename);
+			std::sort(maintables.begin(), maintables.end(), compareByPlacename);
 
 		if (ImGui::Button("Method Name"))
-			std::sort(maintables->begin(), maintables->end(), compareByMethod);
+			std::sort(maintables.begin(), maintables.end(), compareByMethod);
 
 		if (ImGui::Button("Game Name"))
-			std::sort(maintables->begin(), maintables->end(), compareByVersion);
+			std::sort(maintables.begin(), maintables.end(), compareByVersion);
+
+		if (ImGui::Button("Level Range"))
+			std::sort(maintables.begin(), maintables.end(), compareByLevelRange);
 
 		ImGui::Text("Sort encounters within tables by...");
 
 		if (ImGui::Button("Pokemon Name"))
-			for (EncounterTable& table : *maintables)
+			for (EncounterTable& table : maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByMonName);
 
 		if (ImGui::Button("Chance"))
-			for (EncounterTable& table : *maintables)
+			for (EncounterTable& table : maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByChance);
 
 		if (ImGui::Button("Average Level"))
-			for (EncounterTable& table : *maintables)
+			for (EncounterTable& table : maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgLevel);
 
 		if (ImGui::Button("Average Experience"))
-			for (EncounterTable& table : *maintables)
+			for (EncounterTable& table : maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgExp);
 
 		if (ImGui::Button("Weighted Average Experience"))
-			for (EncounterTable& table : *maintables)
+			for (EncounterTable& table : maintables)
 				std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 		ImGui::SameLine(); ImGui::Text("(Default)"); ImGui::SameLine(); HelpMarker("This tells you who is contributing the most experience the most often.");
 	}
@@ -1787,8 +1813,8 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		if (settingswindowdata->progress == 1.00)
 		{
 			settingswindowdata->running = false;
-			std::sort(maintables->begin(), maintables->end(), compareByExp);
-			for (EncounterTable& table : *maintables)
+			std::sort(maintables.begin(), maintables.end(), compareByExp);
+			for (EncounterTable& table : maintables)
 			{
 				string methodnamestring = g_methods[table.method_index]->uiname;
 				if (g_games[table.version_index]->generation == 7 && table.method_index == SUPERROD_INDEX)
@@ -1821,13 +1847,13 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
 		settings->scalinglevel = newsettings->scalinglevel;
 
-		maintables->clear();
-		maintables->shrink_to_fit();
+		maintables.clear();
+		maintables.shrink_to_fit();
 #ifdef _DEBUG
 		g_debugdata.clear();
 #endif //_DEBUG
 		settingswindowdata->running = true;
-		thread task(ReadTables, settings, settingswindowdata, maintables, basepath);
+		thread task(ReadTables, settings, settingswindowdata, basepath);
 		task.detach();
 	}
 
@@ -1858,7 +1884,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/ ||
 		settings->scalinglevel != newsettings->scalinglevel)
 	{
-		if (!maintables->empty())
+		if (!maintables.empty())
 		{
 			ImGui::SameLine(); ImGui::Text("Settings changed");
 		}
@@ -1866,7 +1892,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 	if (!settingswindowdata->running)
 	{
-		for (EncounterTable table : *maintables)
+		for (EncounterTable table : maintables)
 		{
 			bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
 			if (table.filterReason == Reason_None || showWarning)
@@ -2091,7 +2117,6 @@ int main(int, char**)
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	vector<EncounterTable> maintables;
 	string basepath = "pkmndata/";
 	Settings settings, newsettings;
 	SettingsWindowData settingswindowdata;
@@ -2146,7 +2171,7 @@ int main(int, char**)
 #endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        dosettingswindow(&settings, &newsettings, &settingswindowdata, &maintables, basepath);
+        dosettingswindow(&settings, &newsettings, &settingswindowdata, basepath);
 
         // Rendering
 		ImGui::PopStyleVar();
