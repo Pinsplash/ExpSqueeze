@@ -169,7 +169,7 @@ struct MethodObject
 };
 
 vector<MethodObject*> g_methods;
-vector<EncounterTable> maintables;
+vector<EncounterTable*> maintables;
 
 #ifdef _DEBUG
 vector<string> g_debugdata;
@@ -281,32 +281,32 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 		newEnc.minlevel = minlevel;
 		newEnc.pokemonname = pokemonname;
 		bool makenewtable = true;
-		for (EncounterTable& table : maintables)
+		for (EncounterTable* table : maintables)
 		{
 			//cout << "Trying table. " << table.placename << " == " << placename << " && " << table.method << " == " << method << "\n";
-			if (table.placename == placename && table.method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+			if (table->placename == placename && table->method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table->version_index == version_index))
 			{
 				//don't lose our reason just because another encounter was ok
 				//prioritize OverLevelCap because BadType may simply be a warning
-				if (filterReason != Reason_None && table.filterReason != Reason_OverLevelCap)
-					table.filterReason = filterReason;
+				if (filterReason != Reason_None && table->filterReason != Reason_OverLevelCap)
+					table->filterReason = filterReason;
 
 				makenewtable = false;
 				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-				table.encounters.push_back(newEnc);
-				table.expectedtotalpercent += chance;
-				table.lowestlevel = min(table.lowestlevel, minlevel);
-				table.highestlevel = min(table.highestlevel, maxlevel);
+				table->encounters.push_back(newEnc);
+				table->expectedtotalpercent += chance;
+				table->lowestlevel = min(table->lowestlevel, minlevel);
+				table->highestlevel = min(table->highestlevel, maxlevel);
 
 				if (!warning.empty())
 				{
-					if (table.warning.empty())
+					if (table->warning.empty())
 					{
-						table.warning = warning;
+						table->warning = warning;
 					}
 					else
 					{
-						table.warning += "\n" + warning;
+						table->warning += "\n" + warning;
 					}
 				}
 				break;
@@ -315,18 +315,18 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 		if (makenewtable)
 		{
 			//cout << "Line " << linenum << ": new table\n";
-			EncounterTable newTable;
-			newTable.method_index = method_index;
-			newTable.placename = placename;
-			newTable.filenumber = i;
-			newTable.expectedtotalpercent = chance;
-			newTable.version_index = version_index;
-			newTable.filterReason = filterReason;
-			newTable.warning = warning;
-			newTable.lowestlevel = minlevel;
-			newTable.highestlevel = maxlevel;
+			EncounterTable* newTable = new EncounterTable;
+			newTable->method_index = method_index;
+			newTable->placename = placename;
+			newTable->filenumber = i;
+			newTable->expectedtotalpercent = chance;
+			newTable->version_index = version_index;
+			newTable->filterReason = filterReason;
+			newTable->warning = warning;
+			newTable->lowestlevel = minlevel;
+			newTable->highestlevel = maxlevel;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
-			newTable.encounters.push_back(newEnc);
+			newTable->encounters.push_back(newEnc);
 
 			maintables.push_back(newTable);
 		}
@@ -1193,29 +1193,29 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 	return 1;
 }
 
-static bool compareByExp(const EncounterTable& a, const EncounterTable& b)
+static bool compareByExp(const EncounterTable* a, const EncounterTable* b)
 {
-	return a.totalavgexp > b.totalavgexp;
+	return a->totalavgexp > b->totalavgexp;
 }
 
-static bool compareByLevelRange(const EncounterTable& a, const EncounterTable& b)
+static bool compareByLevelRange(const EncounterTable* a, const EncounterTable* b)
 {
-	return a.highestlevel - a.lowestlevel > b.highestlevel - b.lowestlevel;
+	return a->highestlevel - a->lowestlevel > b->highestlevel - b->lowestlevel;
 }
 
-static bool compareByPlacename(const EncounterTable& a, const EncounterTable& b)
+static bool compareByPlacename(const EncounterTable* a, const EncounterTable* b)
 {
-	return strcmp(a.placename.c_str(), b.placename.c_str()) < 0;
+	return strcmp(a->placename.c_str(), b->placename.c_str()) < 0;
 }
 
-static bool compareByMethod(const EncounterTable& a, const EncounterTable& b)
+static bool compareByMethod(const EncounterTable* a, const EncounterTable* b)
 {
-	return a.method_index > b.method_index;
+	return a->method_index > b->method_index;
 }
 
-static bool compareByVersion(const EncounterTable& a, const EncounterTable& b)
+static bool compareByVersion(const EncounterTable* a, const EncounterTable* b)
 {
-	return strcmp(g_games[a.version_index]->internalname.c_str(), g_games[b.version_index]->internalname.c_str()) < 0;
+	return strcmp(g_games[a->version_index]->internalname.c_str(), g_games[b->version_index]->internalname.c_str()) < 0;
 }
 
 static bool compareByMonName(const Encounter& a, const Encounter& b)
@@ -1306,7 +1306,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 
 	if (settings->printtext) cout << "\n";
 	int i = 0;
-	for (EncounterTable& table : maintables)
+	for (EncounterTable* table : maintables)
 	{
 		cout << "size: " << maintables.size() << "\n";
 		//progress bar
@@ -1319,35 +1319,35 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			notch++;
 		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
-		if (table.filterReason == Reason_None || (settings->pkmntypewarn && table.filterReason == Reason_BadType))
+		if (table->filterReason == Reason_None || (settings->pkmntypewarn && table->filterReason == Reason_BadType))
 		{
-			if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
-			table.totalavgexp = 0;
-			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
-			for (Encounter& encounter : table.encounters)
+			if (settings->printtext) cout << "\n" << table->placename << ", " << g_methods[table->method_index]->uiname << ", " << g_games[table->version_index]->uiname << "\n";
+			table->totalavgexp = 0;
+			table->totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
+			for (Encounter& encounter : table->encounters)
 			{
-				if (settings->printtext) cout << table.placename << " (first in encounter loop)\n";
+				if (settings->printtext) cout << table->placename << " (first in encounter loop)\n";
 				string expfile = game->expfile;
 				int generation = game->generation;
 				if (settings->wantedgame_index == ALLGAMES_INDEX)
 				{
 					//change exp file based on table's game
-					expfile = g_games[table.version_index]->expfile;
-					generation = g_games[table.version_index]->generation;
+					expfile = g_games[table->version_index]->expfile;
+					generation = g_games[table->version_index]->generation;
 				}
-				if (settings->printtext) cout << table.placename << " (about to do FindBEY)\n";
+				if (settings->printtext) cout << table->placename << " (about to do FindBEY)\n";
 				//get experience yield from stripped down bulba tables
 				if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
 				{
 					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 					continue;
 				}
-				if (settings->printtext) cout << table.placename << " (EXP math)\n";
+				if (settings->printtext) cout << table->placename << " (EXP math)\n";
 				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
 				double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 				int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 				encounter.avgexp = (encounter.baseExp * avglevel) / factor;
-				if (settings->printtext) cout << table.placename << " (Level scaling)\n";
+				if (settings->printtext) cout << table->placename << " (Level scaling)\n";
 				//level scaling
 				if (settings->scalinglevel != 0)
 				{
@@ -1358,33 +1358,33 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					if (generation >= 7)
 						encounter.avgexp *= pow((a) / (b), 2.5);
 				}
-				if (settings->printtext) cout << table.placename << " (before exp weighted)\n";
-				encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
-				if (settings->printtext) cout << table.placename << " (after exp weighted)\n";
+				if (settings->printtext) cout << table->placename << " (before exp weighted)\n";
+				encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table->expectedtotalpercent;
+				if (settings->printtext) cout << table->placename << " (after exp weighted)\n";
 				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 #ifdef _DEBUG
-				if (settings->printtext) cout << "totalavgexp " << table.totalavgexp << " += " << encounter.avgexpweighted << "\n";
-				if (settings->printtext) cout << "totalchance " << table.totalchance << " += " << encounter.chance << "\n\n";
+				if (settings->printtext) cout << "totalavgexp " << table->totalavgexp << " += " << encounter.avgexpweighted << "\n";
+				if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
 #endif //_DEBUG
-				table.totalavgexp += encounter.avgexpweighted;
-				table.totalchance += encounter.chance;
+				table->totalavgexp += encounter.avgexpweighted;
+				table->totalchance += encounter.chance;
 			}
-			if (settings->printtext) cout << table.totalavgexp << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
-			std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
+			if (settings->printtext) cout << table->totalavgexp << " average EXP in " << table->placename << ", " << g_methods[table->method_index]->uiname << ", " << g_games[table->version_index]->uiname << "\n";
+			std::sort(table->encounters.begin(), table->encounters.end(), compareByAEW);
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100)
+			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table->totalchance != 100)
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
-			else if (table.totalchance != table.expectedtotalpercent)
+			else if (table->totalchance != table->expectedtotalpercent)
 				errorfound = true;
 			if (errorfound)
 			{
-				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
-				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
+				cout << "ERROR: Total chance was " << table->totalchance << "! File number " << table->filenumber << "\n";
+				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table->totalchance) << "\n";
 				cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
-				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
+				cout << "expectedtotalpercent: " << to_string(table->expectedtotalpercent) << "\n";
 				cin.get();
 				return true;
 			}
@@ -1779,24 +1779,24 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		ImGui::Text("Sort encounters within tables by...");
 
 		if (ImGui::Button("Pokemon Name"))
-			for (EncounterTable& table : maintables)
-				std::sort(table.encounters.begin(), table.encounters.end(), compareByMonName);
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByMonName);
 
 		if (ImGui::Button("Chance"))
-			for (EncounterTable& table : maintables)
-				std::sort(table.encounters.begin(), table.encounters.end(), compareByChance);
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByChance);
 
 		if (ImGui::Button("Average Level"))
-			for (EncounterTable& table : maintables)
-				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgLevel);
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByAvgLevel);
 
 		if (ImGui::Button("Average Experience"))
-			for (EncounterTable& table : maintables)
-				std::sort(table.encounters.begin(), table.encounters.end(), compareByAvgExp);
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByAvgExp);
 
 		if (ImGui::Button("Weighted Average Experience"))
-			for (EncounterTable& table : maintables)
-				std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByAEW);
 		ImGui::SameLine(); ImGui::Text("(Default)"); ImGui::SameLine(); HelpMarker("This tells you who is contributing the most experience the most often.");
 	}
 
@@ -1814,16 +1814,16 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		{
 			settingswindowdata->running = false;
 			std::sort(maintables.begin(), maintables.end(), compareByExp);
-			for (EncounterTable& table : maintables)
+			for (EncounterTable* table : maintables)
 			{
-				string methodnamestring = g_methods[table.method_index]->uiname;
-				if (g_games[table.version_index]->generation == 7 && table.method_index == SUPERROD_INDEX)
+				string methodnamestring = g_methods[table->method_index]->uiname;
+				if (g_games[table->version_index]->generation == 7 && table->method_index == SUPERROD_INDEX)
 				{
 					//three-rod distinction is gone in gen 7, so we manually change the name here
 					//sucks but i don't see a better way
 					methodnamestring = "Fishing";
 				}
-				table.header = to_string((int)trunc(table.totalavgexp)) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
+				table->header = to_string((int)trunc(table->totalavgexp)) + " EXP, " + table->placename + ", " + methodnamestring + ", " + g_games[table->version_index]->uiname;
 			}
 		}
 	}
@@ -1892,16 +1892,16 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 	if (!settingswindowdata->running)
 	{
-		for (EncounterTable table : maintables)
+		for (EncounterTable* table : maintables)
 		{
-			bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
-			if (table.filterReason == Reason_None || showWarning)
+			bool showWarning = (settings->pkmntypewarn && table->filterReason == Reason_BadType);
+			if (table->filterReason == Reason_None || showWarning)
 			{
 				if (showWarning)
 				{
-					WarnMarker(table.warning.c_str()); ImGui::SameLine();
+					WarnMarker(table->warning.c_str()); ImGui::SameLine();
 				}
-				if (ImGui::CollapsingHeader(table.header.c_str()))
+				if (ImGui::CollapsingHeader(table->header.c_str()))
 				{
 					if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 					{
@@ -1912,7 +1912,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 						ImGui::TableSetupColumn("Avg. Exp.");
 						ImGui::TableSetupColumn("Weighted Avg. Exp.");
 						ImGui::TableHeadersRow();
-						for (Encounter encounter : table.encounters)
+						for (Encounter encounter : table->encounters)
 						{
 							ImGui::TableNextRow();
 
