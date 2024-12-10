@@ -90,7 +90,8 @@ enum FilterReasons
 {
 	Reason_None,
 	Reason_BadType,
-	Reason_OverLevelCap
+	Reason_OverLevelCap,
+	Reason_LackingDuplicateMons
 };
 
 struct Settings
@@ -1308,7 +1309,6 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 	int i = 0;
 	for (EncounterTable* table : maintables)
 	{
-		cout << "size: " << maintables.size() << "\n";
 		//progress bar
 		i++;
 		settingswindowdata->progress = (1 - (static_cast<float>(maintables.size()) - i) / maintables.size()) * 0.5 + 0.5;
@@ -1326,7 +1326,6 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			table->totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 			for (Encounter& encounter : table->encounters)
 			{
-				if (settings->printtext) cout << table->placename << " (first in encounter loop)\n";
 				string expfile = game->expfile;
 				int generation = game->generation;
 				if (settings->wantedgame_index == ALLGAMES_INDEX)
@@ -1335,19 +1334,16 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					expfile = g_games[table->version_index]->expfile;
 					generation = g_games[table->version_index]->generation;
 				}
-				if (settings->printtext) cout << table->placename << " (about to do FindBEY)\n";
 				//get experience yield from stripped down bulba tables
 				if (!FindBEY(basepath, expfile, encounter.pokemonname, &encounter.baseExp))
 				{
 					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 					continue;
 				}
-				if (settings->printtext) cout << table->placename << " (EXP math)\n";
 				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
 				double avglevel = static_cast<double>(encounter.maxlevel + encounter.minlevel) / 2;
 				int factor = (generation == 5 || generation >= 7) ? 5 : 7;
 				encounter.avgexp = (encounter.baseExp * avglevel) / factor;
-				if (settings->printtext) cout << table->placename << " (Level scaling)\n";
 				//level scaling
 				if (settings->scalinglevel != 0)
 				{
@@ -1358,13 +1354,11 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					if (generation >= 7)
 						encounter.avgexp *= pow((a) / (b), 2.5);
 				}
-				if (settings->printtext) cout << table->placename << " (before exp weighted)\n";
 				encounter.avgexpweighted = (encounter.avgexp * encounter.chance) / table->expectedtotalpercent;
-				if (settings->printtext) cout << table->placename << " (after exp weighted)\n";
 				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 #ifdef _DEBUG
-				if (settings->printtext) cout << "totalavgexp " << table->totalavgexp << " += " << encounter.avgexpweighted << "\n";
-				if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
+				//if (settings->printtext) cout << "totalavgexp " << table->totalavgexp << " += " << encounter.avgexpweighted << "\n";
+				//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
 #endif //_DEBUG
 				table->totalavgexp += encounter.avgexpweighted;
 				table->totalchance += encounter.chance;
@@ -1628,7 +1622,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			ImGui::CheckboxFlags("Old Rod", &methodflags, MethodFilterFlags_RodOld);
 			ImGui::CheckboxFlags("Good Rod", &methodflags, MethodFilterFlags_RodGood);
 		}
-
+		
 		if (game->generation == 7)
 			ImGui::CheckboxFlags("Fishing at regular rock", &methodflags, MethodFilterFlags_RodSuper);
 		else
@@ -1805,6 +1799,33 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		static bool printtext = false;
 		ImGui::Checkbox("Text Output", &printtext);
 		newsettings->printtext = printtext;
+
+		if (ImGui::Button("Cull Tables Without Multiple of Species"))
+		{
+			for (EncounterTable* table : maintables)
+				std::sort(table->encounters.begin(), table->encounters.end(), compareByMonName);
+
+			for (EncounterTable* table : maintables)
+			{
+				bool found = false;
+				string lastmonname;
+				for (Encounter encounter : table->encounters)
+				{
+					if (lastmonname == encounter.pokemonname)
+					{
+						//cout << lastmonname << " == " << encounter.pokemonname << "\n";
+						found = true;
+					}
+					lastmonname = encounter.pokemonname;
+				}
+				if (!found)
+				{
+					cout << "Culling table " << table->placename << ", " << g_methods[table->method_index]->uiname << "\n";
+					table->filterReason = Reason_LackingDuplicateMons;
+				}
+			}
+		}
+		ImGui::SameLine(); WarnMarker("This is a one-way operation. Hidden tables will be inaccessible until the Go button is used again.");
 	}
 
 	if (settingswindowdata->running)
