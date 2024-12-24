@@ -91,7 +91,8 @@ enum FilterReasons
 	Reason_None,
 	Reason_BadType,
 	Reason_OverLevelCap,
-	Reason_LackingDuplicateMons
+	Reason_LackingDuplicateMons,
+	Reason_NoGoodTypes
 };
 
 struct Settings
@@ -108,6 +109,7 @@ struct Settings
 	bool printtext = false;
 	int methodflags = MethodFilterFlags_Last - 1;
 	int pkmnfiltertypeflags = 0;
+	int pkmnrequiretypeflags = 0;
 	bool pkmntypewarn = false;
 	//int movefiltertypeflags = 0;
 	int scalinglevel = 0;
@@ -148,6 +150,7 @@ struct EncounterTable
 	string warning;
 	__int64 lowestlevel = 0;
 	__int64 highestlevel = 0;
+	bool goodtype = false;
 };
 
 struct GameObject
@@ -268,7 +271,7 @@ static void WarnMarker(const char* desc)
 	}
 }
 
-static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning)
+static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype)
 {
 	//throw out the whole table
 	if (settings->maxlevel < maxlevel)
@@ -298,6 +301,9 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 				table->expectedtotalpercent += chance;
 				table->lowestlevel = min(table->lowestlevel, minlevel);
 				table->highestlevel = min(table->highestlevel, maxlevel);
+				//if any type is good, the table is good
+				if (goodtype)
+					table->goodtype = true;
 
 				if (!warning.empty())
 				{
@@ -326,6 +332,7 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 			newTable->warning = warning;
 			newTable->lowestlevel = minlevel;
 			newTable->highestlevel = maxlevel;
+			newTable->goodtype = goodtype;
 			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 			newTable->encounters.push_back(newEnc);
 
@@ -620,7 +627,7 @@ static bool TypeMatches(int flags, string type)
 	return true;
 }
 
-static string FindBadType(json_value* containerobj, int flags)
+static string FindMatchingType(json_value* containerobj, int flags, size_t typeIdx)
 {
 	json_value* types = FindArrayInObjectByName(containerobj, "types");
 	if (!types)
@@ -628,7 +635,8 @@ static string FindBadType(json_value* containerobj, int flags)
 		assert(0);
 		return "No types array";
 	}
-	for (size_t typeIdx = 0; typeIdx < types->u.array.length; typeIdx++)
+	assert(typeIdx == 0 || typeIdx == 1);
+	if (typeIdx < types->u.array.length)
 	{
 		json_value* typeobj = types->u.array.values[typeIdx];
 		if (!typeobj)
@@ -648,7 +656,29 @@ static string FindBadType(json_value* containerobj, int flags)
 	return "";
 }
 
-static string IsPokemonBadType(Settings* settings, string path, string version, int flags, string pokemonname)
+static string CreateWarning(json_value* containerobj, string pokemonname, int flags)
+{
+	string result = FindMatchingType(containerobj, flags, 0);
+	if (!result.empty())
+	{
+		return pokemonname + " has a matching type: " + result;
+	}
+	string result2 = FindMatchingType(containerobj, flags, 1);
+	if (!result2.empty())
+	{
+		if (!result.empty())
+		{
+			return pokemonname + " has 2 matching types: " + result + " and " + result2;
+		}
+		else
+		{
+			return pokemonname + " has a matching type: " + result;
+		}
+	}
+	return "";//no match
+}
+
+static bool IsPokemonMatchingType(Settings* settings, string path, string version, int flags, string pokemonname, string* warning)
 {
 	FILE* fp;
 	struct stat filestatus;
@@ -660,7 +690,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 	{
 		cout << "File " + path + " not found\n";
 		assert(0);
-		return "File " + path + " not found";
+		*warning = "File " + path + " not found";
+		return false;
 	}
 	file_size = filestatus.st_size;
 	file_contents = (char*)malloc(filestatus.st_size);
@@ -668,7 +699,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 	{
 		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		assert(0);
-		return "Memory error: unable to allocate " + to_string(file_size) + " bytes";
+		*warning = "Memory error: unable to allocate " + to_string(file_size) + " bytes";
+		return false;
 	}
 	fp = fopen(path.c_str(), "rb");
 	if (!fp)
@@ -677,7 +709,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 		//fclose(fp);
 		free(file_contents);
 		assert(0);
-		return "Unable to open " + path;
+		*warning = "Unable to open " + path;
+		return false;
 	}
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
@@ -689,7 +722,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 		fclose(fp);
 		free(file_contents);
 		assert(0);
-		return "Unable to read content of " + path + " ret " + to_string(readNum);
+		*warning = "Unable to read content of " + path + " ret " + to_string(readNum);
+		return false;
 	}
 	fclose(fp);
 	json = (json_char*)file_contents;
@@ -700,7 +734,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		assert(0);
-		return "File " + path + ": Unable to parse data: " + error_buf;
+		*warning = "File " + path + ": Unable to parse data: " + error_buf;
+		return false;
 	}
 
 	json_value* pasttypes = FindArrayInObjectByName(file, "past_types");
@@ -709,16 +744,16 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 		json_value_free(file);
 		free(file_contents);
 		assert(0);
-		return "No past_types array (should be 0 length when no past typing)";
+		*warning = "No past_types array (should be 0 length when no past typing)";
+		return false;
 	}
 	if (pasttypes->u.array.length == 0)
 	{
-		string result = FindBadType(file, flags);
-		if (!result.empty())
-			result = pokemonname + " has at least 1 bad type: " + result;
+		string result = CreateWarning(file, pokemonname, flags);
 		json_value_free(file);
 		free(file_contents);
-		return result;
+		*warning = result;
+		return !result.empty();
 	}
 	else
 	{
@@ -748,7 +783,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 				json_value_free(file);
 				free(file_contents);
 				assert(0);
-				return "No past_types object (we thought there was a past typing)";
+				*warning = "No past_types object (we thought there was a past typing)";
+				return false;
 			}
 			json_value* generation = FindObjectInObjectByName(pasttypeobj, "generation");
 			if (!generation)
@@ -756,7 +792,8 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 				json_value_free(file);
 				free(file_contents);
 				assert(0);
-				return "No generation object (for past typing)";
+				*warning = "No generation object (for past typing)";
+				return false;
 			}
 			string generationname = FindValueInObjectByKey(generation, "name")->u.string.ptr;
 			bool ok = false;
@@ -772,30 +809,29 @@ static string IsPokemonBadType(Settings* settings, string path, string version, 
 			if (ok)
 			{
 				//obey old type
-				string result = FindBadType(pasttypeobj, flags);
-				if (!result.empty())
-					result = pokemonname + " has at least 1 bad type: " + result;
+				string result = CreateWarning(pasttypeobj, pokemonname, flags);
 				json_value_free(file);
 				free(file_contents);
-				return result;
+				*warning = result;
+				return !result.empty();
 			}
 			else
 			{
 				//use pokemon's new type instead
-				string result = FindBadType(file, flags);
-				if (!result.empty())
-					result = pokemonname + " has at least 1 bad type: " + result;
+				string result = CreateWarning(file, pokemonname, flags);
 				json_value_free(file);
 				free(file_contents);
-				return result;
+				*warning = result;
+				return !result.empty();
 			}
 		}
 	}
-
+	//this should not be possible
 	json_value_free(file);
 	free(file_contents);
 	assert(0);
-	return "";
+	*warning = "";
+	return false;
 }
 /*
 static bool PokemonHasBadMove(Settings* settings, string basepath, string path, int version_index, int flags)
@@ -964,7 +1000,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning)
+static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning, bool goodtype)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -1005,7 +1041,7 @@ static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(settings, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning);
+	RegisterEncounter(settings, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning, goodtype);
 	return true;
 }
 
@@ -1147,13 +1183,18 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 				if (settings->pkmnfiltertypeflags != 0)
 				{
 					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-					warning = IsPokemonBadType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname);
-					if (!warning.empty())
+					if (IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname, &warning))
 					{
 						//pokemon is a type we don't allow
 						//cout << pokemonname << " is bad type\n";
 						filterReason = Reason_BadType;
 					}
+				}
+				bool goodtype = false;
+				if (settings->pkmnrequiretypeflags != 0)
+				{
+					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
+					goodtype = IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnrequiretypeflags, pokemonname, &warning);
 				}
 				//go back up to version details to get encounter details block
 				json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
@@ -1181,7 +1222,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 					else
 						gameindex = settings->wantedgame_index;
 
-					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning))
+					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning, goodtype))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1708,6 +1749,46 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		static bool pkmntypewarn = false;
 		ImGui::Checkbox("Don't Hide, Just Warn", &pkmntypewarn);
 		newsettings->pkmntypewarn = pkmntypewarn;
+
+		//////////////////////////////////////////////////////////////////////////////
+		ImGui::Text("Tables must have at least one pokemon of the selected types.");
+		ImGui::Text("Only one of the selected types will be required per table.\nIf Bug and Water are both selected, a table only needs one\nBug type or one Water type, not necessarily both.");
+		ImGui::Text("This can take a long time!");
+		static int pkmnRequireTypeFlags = 0;
+		if (ImGui::BeginTable("typetable2", 5, ImGuiTableFlags_None))
+		{
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Normal", &pkmnRequireTypeFlags, 1);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fighting", &pkmnRequireTypeFlags, 2);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Flying", &pkmnRequireTypeFlags, 4);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Poison", &pkmnRequireTypeFlags, 8);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ground", &pkmnRequireTypeFlags, 16);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Rock", &pkmnRequireTypeFlags, 32);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Bug", &pkmnRequireTypeFlags, 64);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ghost", &pkmnRequireTypeFlags, 128);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fire", &pkmnRequireTypeFlags, 512);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Water", &pkmnRequireTypeFlags, 1024);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Grass", &pkmnRequireTypeFlags, 2048);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Electric", &pkmnRequireTypeFlags, 4096);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Psychic", &pkmnRequireTypeFlags, 8192);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ice", &pkmnRequireTypeFlags, 16384);
+			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &pkmnRequireTypeFlags, 32768);
+			if (allgames || game->generation >= 2)
+			{
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Steel", &pkmnRequireTypeFlags, 256);
+				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &pkmnRequireTypeFlags, 65536);
+				if (allgames || game->generation >= 6)
+				{
+					ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fairy", &pkmnRequireTypeFlags, 131072);
+				}
+			}
+		}
+		ImGui::EndTable();
+
+		newsettings->pkmnrequiretypeflags = pkmnRequireTypeFlags;
 	}
 	/*
 	if (ImGui::CollapsingHeader("Move Types", ImGuiTreeNodeFlags_None))
@@ -1770,7 +1851,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		if (ImGui::Button("Level Range"))
 			std::sort(maintables.begin(), maintables.end(), compareByLevelRange);
 
-		ImGui::Text("Sort encounters within tables by...");
+		ImGui::Text("Sort slots within tables by...");
 
 		if (ImGui::Button("Pokemon Name"))
 			for (EncounterTable* table : maintables)
@@ -1834,6 +1915,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		if (settingswindowdata->progress == 1.00)
 		{
 			settingswindowdata->running = false;
+			bool requiringtype = settings->pkmnrequiretypeflags;
 			std::sort(maintables.begin(), maintables.end(), compareByExp);
 			for (EncounterTable* table : maintables)
 			{
@@ -1845,6 +1927,8 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 					methodnamestring = "Fishing";
 				}
 				table->header = to_string((int)trunc(table->totalavgexp)) + " EXP, " + table->placename + ", " + methodnamestring + ", " + g_games[table->version_index]->uiname;
+				if (!table->goodtype && requiringtype)
+					table->filterReason = Reason_NoGoodTypes;
 			}
 		}
 	}
@@ -1864,6 +1948,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->printtext = newsettings->printtext;
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
+		settings->pkmnrequiretypeflags = newsettings->pkmnrequiretypeflags;
 		settings->pkmntypewarn = newsettings->pkmntypewarn;
 		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
 		settings->scalinglevel = newsettings->scalinglevel;
@@ -1901,7 +1986,8 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->repellevel != newsettings->repellevel ||
 		settings->maxlevel != newsettings->maxlevel ||
 		settings->methodflags != newsettings->methodflags ||
-		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags/* ||
+		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags ||
+		settings->pkmnrequiretypeflags != newsettings->pkmnrequiretypeflags/* ||
 		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/ ||
 		settings->scalinglevel != newsettings->scalinglevel)
 	{
