@@ -300,7 +300,7 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 				table->encounters.push_back(newEnc);
 				table->expectedtotalpercent += chance;
 				table->lowestlevel = min(table->lowestlevel, minlevel);
-				table->highestlevel = min(table->highestlevel, maxlevel);
+				table->highestlevel = max(table->highestlevel, maxlevel);
 				//if any type is good, the table is good
 				if (goodtype)
 					table->goodtype = true;
@@ -1252,12 +1252,12 @@ static bool compareByPlacename(const EncounterTable* a, const EncounterTable* b)
 
 static bool compareByMethod(const EncounterTable* a, const EncounterTable* b)
 {
-	return a->method_index > b->method_index;
+	return strcmp(g_methods[a->method_index]->uiname.c_str(), g_methods[b->method_index]->uiname.c_str()) < 0;
 }
 
 static bool compareByVersion(const EncounterTable* a, const EncounterTable* b)
 {
-	return strcmp(g_games[a->version_index]->internalname.c_str(), g_games[b->version_index]->internalname.c_str()) < 0;
+	return strcmp(g_games[a->version_index]->uiname.c_str(), g_games[b->version_index]->uiname.c_str()) < 0;
 }
 
 static bool compareByMonName(const Encounter& a, const Encounter& b)
