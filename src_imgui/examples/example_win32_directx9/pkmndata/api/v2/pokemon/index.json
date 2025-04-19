@@ -2984,7 +2984,7 @@
             "url": "/api/v2/pokemon/745/"
         },
         {
-            "name": "wishiwashi-solo",
+            "name": "wishiwashi",
             "url": "/api/v2/pokemon/746/"
         },
         {
@@ -3096,7 +3096,7 @@
             "url": "/api/v2/pokemon/773/"
         },
         {
-            "name": "minior-red-meteor",
+            "name": "minior",
             "url": "/api/v2/pokemon/774/"
         },
         {
@@ -3112,7 +3112,7 @@
             "url": "/api/v2/pokemon/777/"
         },
         {
-            "name": "mimikyu-disguised",
+            "name": "mimikyu",
             "url": "/api/v2/pokemon/778/"
         },
         {
@@ -4606,11 +4606,7 @@
         {
             "name": "lycanroc-midnight",
             "url": "/api/v2/pokemon/10126/"
-        },
-        {
-            "name": "wishiwashi-school",
-            "url": "/api/v2/pokemon/10127/"
-        },
+        }
         {
             "name": "lurantis-totem",
             "url": "/api/v2/pokemon/10128/"
@@ -4620,68 +4616,8 @@
             "url": "/api/v2/pokemon/10129/"
         },
         {
-            "name": "minior-orange-meteor",
-            "url": "/api/v2/pokemon/10130/"
-        },
-        {
-            "name": "minior-yellow-meteor",
-            "url": "/api/v2/pokemon/10131/"
-        },
-        {
-            "name": "minior-green-meteor",
-            "url": "/api/v2/pokemon/10132/"
-        },
-        {
-            "name": "minior-blue-meteor",
-            "url": "/api/v2/pokemon/10133/"
-        },
-        {
-            "name": "minior-indigo-meteor",
-            "url": "/api/v2/pokemon/10134/"
-        },
-        {
-            "name": "minior-violet-meteor",
-            "url": "/api/v2/pokemon/10135/"
-        },
-        {
-            "name": "minior-red",
-            "url": "/api/v2/pokemon/10136/"
-        },
-        {
-            "name": "minior-orange",
-            "url": "/api/v2/pokemon/10137/"
-        },
-        {
-            "name": "minior-yellow",
-            "url": "/api/v2/pokemon/10138/"
-        },
-        {
-            "name": "minior-green",
-            "url": "/api/v2/pokemon/10139/"
-        },
-        {
-            "name": "minior-blue",
-            "url": "/api/v2/pokemon/10140/"
-        },
-        {
-            "name": "minior-indigo",
-            "url": "/api/v2/pokemon/10141/"
-        },
-        {
-            "name": "minior-violet",
-            "url": "/api/v2/pokemon/10142/"
-        },
-        {
-            "name": "mimikyu-busted",
-            "url": "/api/v2/pokemon/10143/"
-        },
-        {
-            "name": "mimikyu-totem-disguised",
+            "name": "mimikyu-totem",
             "url": "/api/v2/pokemon/10144/"
-        },
-        {
-            "name": "mimikyu-totem-busted",
-            "url": "/api/v2/pokemon/10145/"
         },
         {
             "name": "kommo-o-totem",

@@ -16,7 +16,7 @@
     },
     "forms": [
         {
-            "name": "minior-red-meteor",
+            "name": "minior",
             "url": "/api/v2/pokemon-form/774/"
         }
     ],
@@ -2392,7 +2392,7 @@
             ]
         }
     ],
-    "name": "minior-red-meteor",
+    "name": "minior",
     "order": 933,
     "past_abilities": [],
     "past_types": [],

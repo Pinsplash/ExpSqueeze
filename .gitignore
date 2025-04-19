@@ -62,3 +62,4 @@ src_imgui/examples/example_win32_directx9/imgui.ini
 *.ipdb
 src_imgui/examples/example_win32_directx9/Release/example_win32_directx9.vcxproj.FileListAbsolute.txt
 src_imgui/examples/example_win32_directx9/Release/imgui.ini
+/src_imgui/examples/.vs

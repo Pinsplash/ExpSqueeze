@@ -643,7 +643,7 @@
         },
         {
             "pokemon": {
-                "name": "wishiwashi-solo",
+                "name": "wishiwashi",
                 "url": "/api/v2/pokemon/746/"
             },
             "version_details": [

@@ -16,7 +16,7 @@
     },
     "forms": [
         {
-            "name": "wishiwashi-solo",
+            "name": "wishiwashi",
             "url": "/api/v2/pokemon-form/746/"
         }
     ],
@@ -1984,7 +1984,7 @@
             ]
         }
     ],
-    "name": "wishiwashi-solo",
+    "name": "wishiwashi",
     "order": 901,
     "past_abilities": [],
     "past_types": [],

@@ -19,52 +19,6 @@
     "pokemon_encounters": [
         {
             "pokemon": {
-                "name": "graveler",
-                "url": "/api/v2/pokemon/75/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 32,
-                            "method": {
-                                "name": "npc-trade",
-                                "url": "/api/v2/encounter-method/36/"
-                            },
-                            "min_level": 32
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "sun",
-                        "url": "/api/v2/version/27/"
-                    }
-                },
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 32,
-                            "method": {
-                                "name": "npc-trade",
-                                "url": "/api/v2/encounter-method/36/"
-                            },
-                            "min_level": 32
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "moon",
-                        "url": "/api/v2/version/28/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
                 "name": "magikarp",
                 "url": "/api/v2/pokemon/129/"
             },
@@ -1007,7 +961,7 @@
         },
         {
             "pokemon": {
-                "name": "wishiwashi-solo",
+                "name": "wishiwashi",
                 "url": "/api/v2/pokemon/746/"
             },
             "version_details": [

@@ -475,7 +475,7 @@
         },
         {
             "pokemon": {
-                "name": "minior-red-meteor",
+                "name": "minior",
                 "url": "/api/v2/pokemon/774/"
             },
             "version_details": [

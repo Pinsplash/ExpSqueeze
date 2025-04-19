@@ -19,60 +19,6 @@
     "pokemon_encounters": [
         {
             "pokemon": {
-                "name": "raticate",
-                "url": "/api/v2/pokemon/20/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 20,
-                            "method": {
-                                "name": "gift",
-                                "url": "/api/v2/encounter-method/18/"
-                            },
-                            "min_level": 20
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "ultra-moon",
-                        "url": "/api/v2/version/30/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
-                "name": "marowak",
-                "url": "/api/v2/pokemon/105/"
-            },
-            "version_details": [
-                {
-                    "encounter_details": [
-                        {
-                            "chance": 100,
-                            "condition_values": [],
-                            "max_level": 25,
-                            "method": {
-                                "name": "gift",
-                                "url": "/api/v2/encounter-method/18/"
-                            },
-                            "min_level": 25
-                        }
-                    ],
-                    "max_chance": 100,
-                    "version": {
-                        "name": "ultra-sun",
-                        "url": "/api/v2/version/29/"
-                    }
-                }
-            ]
-        },
-        {
-            "pokemon": {
                 "name": "gumshoos",
                 "url": "/api/v2/pokemon/735/"
             },
@@ -262,7 +208,7 @@
         },
         {
             "pokemon": {
-                "name": "mimikyu-disguised",
+                "name": "mimikyu",
                 "url": "/api/v2/pokemon/778/"
             },
             "version_details": [

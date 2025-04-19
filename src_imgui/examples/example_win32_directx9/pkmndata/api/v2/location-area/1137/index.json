@@ -401,7 +401,7 @@
         },
         {
             "pokemon": {
-                "name": "mimikyu-disguised",
+                "name": "mimikyu",
                 "url": "/api/v2/pokemon/778/"
             },
             "version_details": [
