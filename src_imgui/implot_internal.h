@@ -1508,9 +1508,11 @@ static inline ImVec2 Intersection(const ImVec2& a1, const ImVec2& a2, const ImVe
 
 // Fills a buffer with n samples linear interpolated from vmin to vmax
 template <typename T>
-void FillRange(ImVector<T>& buffer, int n, T vmin, T vmax) {
+void FillRange(ImVector<T>& buffer, int n, double vmin, double vmax) {
     buffer.resize(n);
-    T step = (vmax - vmin) / (n - 1);
+    double d1 = vmax - vmin;
+    double d2 = n - 1;
+    double step = d1 / d2;
     for (int i = 0; i < n; ++i) {
         buffer[i] = vmin + i * step;
     }

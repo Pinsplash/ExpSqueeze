@@ -2442,20 +2442,27 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 						}
 						ImGui::EndTable();
 					}
-					static const char* ilabels[] = {"Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total"};
-					static const char* emptylabels[] = {"", "", "", "", "", "", ""};
-					ImPlot::PushColormap(ImPlotColormap_PKMNstats);
-					if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
+					if (game->generation >= 3)
 					{
-						ImPlot::SetupAxisTicks(ImAxis_X1, (double)-0.5, (double)6.5, 0, emptylabels);
-						ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-						for (int i = 0; i < 7; i++)
+						static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
+						static const char* emptylabels[] = { "", "", "", "", "", "", "" };
+						double graphmax = ceil(table.averageEVs[OFFSET_TOTAL - 1]);
+						int ticks = floor(graphmax * 5) + 1;
+						ImPlot::PushColormap(ImPlotColormap_PKMNstats);
+						if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
 						{
-							ImPlot::PlotBars(ilabels[i], &table.averageEVs[i], 1, 1, i);
+							ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, 6.5, 0, emptylabels);
+							ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
+							ImPlot::SetupAxesLimits(-0.5, 6.5, 0, graphmax);
+							ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+							for (int i = 0; i < 7; i++)
+							{
+								ImPlot::PlotBars(ilabels[i], &table.averageEVs[i], 1, 1, i);
+							}
+							ImPlot::EndPlot();
 						}
-						ImPlot::EndPlot();
+						ImPlot::PopColormap();
 					}
-					ImPlot::PopColormap();
 				}
 			}
 		}
