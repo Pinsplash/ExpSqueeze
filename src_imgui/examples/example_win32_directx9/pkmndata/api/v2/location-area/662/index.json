@@ -51,14 +51,14 @@
         "name": "unova-victory-road-2",
         "url": "/api/v2/location/548/"
     },
-    "name": "unova-victory-road-2-unknown-area-72",
+    "name": "unova-victory-road-2-grove",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road 2 (unknown area 72)"
+            "name": "Victory Road (Grove)"
         },
         {
             "language": {

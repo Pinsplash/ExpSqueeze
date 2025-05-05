@@ -95,14 +95,14 @@
         "name": "unova-victory-road-2",
         "url": "/api/v2/location/548/"
     },
-    "name": "unova-victory-road-2-unknown-area-73",
+    "name": "unova-victory-road-2-outside-1",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road 2 (unknown area 73)"
+            "name": "Victory Road (Outside 1)"
         },
         {
             "language": {
