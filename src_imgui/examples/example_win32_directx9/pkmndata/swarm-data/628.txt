@@ -1,0 +1,2 @@
+smeargle,b1,w1
+natu,b2,w2

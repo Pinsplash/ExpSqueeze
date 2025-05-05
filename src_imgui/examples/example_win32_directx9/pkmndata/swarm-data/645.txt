@@ -1,0 +1,3 @@
+paras,w1
+shroomish,b1
+masquerain,b2,w2

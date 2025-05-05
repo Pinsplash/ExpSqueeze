@@ -1,0 +1,3 @@
+houndour,b1
+poochyena,w1
+swalot,b2,w2

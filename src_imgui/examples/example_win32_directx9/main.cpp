@@ -75,8 +75,38 @@ enum
 	ALLGAMES_INDEX,
 	GAMES_TOTAL
 };
-const int SUPERROD_INDEX = 4;
-const int METHODS_TOTAL = 28;
+enum
+{
+	METHOD_WALK,
+	METHOD_SURF,
+	METHOD_OLDROD,
+	METHOD_GOODROD,
+	METHOD_SUPERROD,
+	METHOD_ROCKSMASH,
+	METHOD_HEADBUTTLOW,
+	METHOD_HEADBUTTHIGH,
+	METHOD_SEAWEED,
+	METHOD_DARK_GRASS,
+	METHOD_PHEN_GRASS,
+	METHOD_PHEN_DUST,
+	METHOD_PHEN_SHADOW,
+	METHOD_PHEN_WATER_FISH,
+	METHOD_PHEN_WATER_SURF,
+	METHOD_ROUGH_TERRAIN,
+	METHOD_FLOWER_RED,
+	METHOD_FLOWER_YELLOW,
+	METHOD_FLOWER_PURPLE,
+	METHOD_BUBBLE_ROCK,
+	METHOD_AMBUSH_GRASS,
+	METHOD_AMBUSH_BUSH,
+	METHOD_AMBUSH_SPLASH,
+	METHOD_AMBUSH_TREE,
+	METHOD_AMBUSH_DIRT,
+	METHOD_AMBUSH_SHADOW,
+	METHOD_AMBUSH_CHASE,
+	METHOD_AMBUSH_SAND,
+	METHODS_TOTAL
+};
 
 enum MethodFilterFlags
 {
@@ -173,6 +203,7 @@ struct Encounter
 	double avgexp = 0;
 	double avgexpweighted = 0;
 	int baseExp = 0;
+	bool specialswarm = false;
 };
 
 struct EfficientEVData
@@ -1539,6 +1570,14 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 	int numTablesProcessed = 0;
 	for (EncounterTable& table : maintables)
 	{
+		string expfile = game->expfile;
+		int generation = game->generation;
+		if (settings->wantedgame_index == ALLGAMES_INDEX)
+		{
+			//change exp file based on table's game
+			expfile = g_games[table.version_index]->expfile;
+			generation = g_games[table.version_index]->generation;
+		}
 		//progress bar
 		numTablesProcessed++;
 		//cout << to_string(settingswindowdata->progress) << "\n";
@@ -1553,22 +1592,87 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			table.totalavgexp = 0;
 			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
+
+			bool specialswarm = false;
+			int extrachance = 0;
+			if (settings->wantswarm && table.method_index == METHOD_WALK && (generation == 5 || table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD))
+			{
+				//find gen 3 or 5 swarm encounter. these are different than others because they make the table into X percent the special encounter and 100-X everything else. no slots are overridden.
+				string path = basepath + "swarm-data/" + to_string(table.filenumber) + ".txt";
+				ifstream ReadFile(path);
+				string textLine;
+				while (getline(ReadFile, textLine))
+				{
+					size_t s1End = textLine.find(',');
+					string str1 = textLine.substr(0, s1End);//pokemon's name - not verified yet
+
+					size_t s2Start = s1End + 1;
+					size_t s2End = textLine.find(',', s2Start + 1);
+					string str2 = textLine.substr(s2Start, s2End - s2Start);//level
+
+					if (generation == 5 && str1 == "croagunk" && settings->wantedseason == "season-winter")
+						break;//special case. croagunk will not appear in winter even by swarm. when the game tries to spawn a croagunk swarm in winter, it simply will not do anything.
+
+					string targetgame;
+					if (table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE)
+						targetgame = "rubysapphire";
+					else if (table.version_index == GAME_EMERALD)
+						targetgame = "emerald";
+					else if (table.version_index == GAME_BLACK1)
+						targetgame = "b1";
+					else if (table.version_index == GAME_BLACK2)
+						targetgame = "b2";
+					else if (table.version_index == GAME_WHITE1)
+						targetgame = "w1";
+					else if (table.version_index == GAME_WHITE2)
+						targetgame = "w2";
+					else
+					{
+						cout << "ERROR: tried to get gen 3/5 swarm encounter for invalid game '" << g_games[table.version_index]->uiname << "' file number " << to_string(table.filenumber) << "\n";
+						continue;
+					}
+					if (textLine.find(targetgame) != string::npos)
+					{
+						specialswarm = true;
+						extrachance = (generation == 5) ? 40 : 50;
+
+						Encounter newEnc;
+						newEnc.chance = extrachance;
+						if (table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD)
+						{
+							newEnc.maxlevel = stoi(str2);
+							newEnc.minlevel = stoi(str2);
+						}
+						else if (table.version_index == GAME_BLACK1 || table.version_index == GAME_WHITE1)
+						{
+							newEnc.minlevel = 15;
+							newEnc.maxlevel = 55;
+						}
+						else if (table.version_index == GAME_BLACK2 || table.version_index == GAME_WHITE2)
+						{
+							newEnc.minlevel = 40;
+							newEnc.maxlevel = 55;
+						}
+						newEnc.pokemonname = str1;
+						newEnc.specialswarm = true;
+						table.encounters.push_back(newEnc);
+						break;
+					}
+					//didn't find an encounter? that's ok
+				}
+			}
+
 			for (Encounter& encounter : table.encounters)
 			{
-				string expfile = game->expfile;
-				int generation = game->generation;
-				if (settings->wantedgame_index == ALLGAMES_INDEX)
-				{
-					//change exp file based on table's game
-					expfile = g_games[table.version_index]->expfile;
-					generation = g_games[table.version_index]->generation;
-				}
 				//get experience yield from stripped down bulba tables
 				if (!FindInExpFile(OFFSET_BEY, basepath, expfile, encounter.pokemonname, &encounter.baseExp))
 				{
 					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
 					continue;
 				}
+				double chancescale = 1;
+				if (specialswarm)
+					chancescale = (generation == 5) ? 0.6 : 0.5;
 				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
 				double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
 				encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
@@ -1584,7 +1688,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 					{
 						int stat;
 						FindInExpFile(j, basepath, expfile, encounter.pokemonname, &stat);
-						table.averageEVs[j - 1] += (double)(stat * encounter.chance) / table.expectedtotalpercent;
+						table.averageEVs[j - 1] += (double)(stat * encounter.chance * chancescale) / table.expectedtotalpercent;
 						double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
 						if (stat > 0)
 						{
@@ -1604,7 +1708,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 						}
 					}
 				}
-				encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance) / table.expectedtotalpercent;
+				encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table.expectedtotalpercent;
 				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 #ifdef _DEBUG
 				//if (settings->printtext) cout << "totalavgexp " << table.totalavgexp << " += " << encounter.avgexpweighted << "\n";
@@ -1620,10 +1724,10 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100)
+			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100 + extrachance)
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
-			else if (table.totalchance != table.expectedtotalpercent)
+			else if (table.totalchance != table.expectedtotalpercent + extrachance)
 				errorfound = true;
 			if (errorfound)
 			{
@@ -1772,7 +1876,6 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	}
 
 	//1 and 3 don't have day/night cycles, 5 and 6's are cosmetic for most purposes
-	//missing gen 7 time data
 	if (allgames || (game->generation == 2 || game->generation == 4 || game->generation == 7))
 	{
 		const char* times;
@@ -1808,8 +1911,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		newsettings->wantedseason = internal_seasons[season_current];
 	}
 
-	//mass outbreaks exist in gen 3 and 5, but we have no data for them! braugh!
-	if (allgames || (game->generation == 2 || game->generation == 4))
+	if (allgames || (game->generation == 2 || rse || game->generation == 4 || game->generation == 5))
 	{
 		static bool wantswarm = false;
 		ImGui::Checkbox("Mass Outbreaks", &wantswarm);
@@ -2310,7 +2412,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			for (EncounterTable& table : maintables)
 			{
 				string methodnamestring = g_methods[table.method_index]->uiname;
-				if (g_games[table.version_index]->generation == 7 && table.method_index == SUPERROD_INDEX)
+				if (g_games[table.version_index]->generation == 7 && table.method_index == METHOD_SUPERROD)
 				{
 					//three-rod distinction is gone in gen 7, so we manually change the name here
 					//sucks but i don't see a better way
@@ -2466,8 +2568,16 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 							//avg exp weighted
 							ImGui::TableNextColumn();
-							string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
-							ImGui::Text(avgexpweighted.c_str());
+							if (encounter.avgexpweighted < 10)
+							{
+								string avgexpweighted = to_string(encounter.avgexpweighted);
+								ImGui::Text(avgexpweighted.c_str());
+							}
+							else
+							{
+								string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
+								ImGui::Text(avgexpweighted.c_str());
+							}
 						}
 						ImGui::EndTable();
 					}

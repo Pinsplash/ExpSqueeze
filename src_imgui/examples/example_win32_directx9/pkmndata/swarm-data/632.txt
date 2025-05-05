@@ -1,0 +1,2 @@
+sentret,b1,w1
+furret,b2,w2

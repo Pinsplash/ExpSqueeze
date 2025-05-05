@@ -1,0 +1,2 @@
+exeggcute,b1,w1
+hoppip,b2,w2

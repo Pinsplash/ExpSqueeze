@@ -1,0 +1,2 @@
+mankey,b1,w1
+fearow,b2,w2

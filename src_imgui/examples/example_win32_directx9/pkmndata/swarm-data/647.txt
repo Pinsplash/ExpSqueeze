@@ -1,0 +1,2 @@
+shuppet,b1,w1
+swellow,b2,w2

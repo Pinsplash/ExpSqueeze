@@ -1,0 +1,2 @@
+plusle,b1,b2
+minun,w1,w2

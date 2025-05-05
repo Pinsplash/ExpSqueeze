@@ -1,0 +1,2 @@
+croagunk,b1,w1
+quagsire,b2,w2
