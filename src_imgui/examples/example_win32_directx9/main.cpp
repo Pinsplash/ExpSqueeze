@@ -44,8 +44,37 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 using namespace std;
 
-const int ALLGAMES_INDEX = 26;//make sure this always matches the last switch case in dosettingswindow()!
-const int GAMES_TOTAL = 27;
+enum
+{
+	GAME_RED,
+	GAME_BLUE,
+	GAME_YELLOW,
+	GAME_GOLD,
+	GAME_SILVER,
+	GAME_CRYSTAL,
+	GAME_RUBY,
+	GAME_SAPPHIRE,
+	GAME_EMERALD,
+	GAME_FIRERED,
+	GAME_LEAFGREEN,
+	GAME_DIAMOND,
+	GAME_PEARL,
+	GAME_PLATINUM,
+	GAME_HEARTGOLD,
+	GAME_SOULSILVER,
+	GAME_BLACK1,
+	GAME_WHITE1,
+	GAME_BLACK2,
+	GAME_WHITE2,
+	GAME_X,
+	GAME_Y,
+	GAME_SUN,
+	GAME_MOON,
+	GAME_ULTRASUN,
+	GAME_ULTRAMOON,
+	ALLGAMES_INDEX,
+	GAMES_TOTAL
+};
 const int SUPERROD_INDEX = 4;
 const int METHODS_TOTAL = 28;
 
@@ -1665,21 +1694,21 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 
 	switch (newsettings->wantedgame_index)
 	{
-	case 6:
-	case 7:
-	case 8:
+	case GAME_RUBY:
+	case GAME_SAPPHIRE:
+	case GAME_EMERALD:
 		rse = true;
 		break;
-	case 11:
-	case 12:
-	case 13:
+	case GAME_DIAMOND:
+	case GAME_PEARL:
+	case GAME_PLATINUM:
 		dpp = true;
 		break;
-	case 14:
-	case 15:
+	case GAME_HEARTGOLD:
+	case GAME_SOULSILVER:
 		hgss = true;
 		break;
-	case 26://should match ALLGAMES_INDEX
+	case ALLGAMES_INDEX:
 		allgames = true;
 		break;
 	}
