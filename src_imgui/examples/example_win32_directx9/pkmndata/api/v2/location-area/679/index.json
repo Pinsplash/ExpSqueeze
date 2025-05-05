@@ -29,14 +29,14 @@
         "name": "reversal-mountain",
         "url": "/api/v2/location/546/"
     },
-    "name": "reversal-mountain-unknown-area-50",
+    "name": "reversal-mountain-main",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Reversal Mountain (unknown area 50)"
+            "name": "Reversal Mountain (Interior main)"
         },
         {
             "language": {

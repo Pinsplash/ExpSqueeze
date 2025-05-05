@@ -2204,56 +2204,16 @@
             "url": "/api/v2/location-area/676/"
         },
         {
-            "name": "reversal-mountain-unknown-area-48",
+            "name": "reversal-mountain-exterior",
             "url": "/api/v2/location-area/677/"
         },
         {
-            "name": "reversal-mountain-unknown-area-49",
+            "name": "reversal-mountain-entrances",
             "url": "/api/v2/location-area/678/"
         },
         {
-            "name": "reversal-mountain-unknown-area-50",
+            "name": "reversal-mountain-main",
             "url": "/api/v2/location-area/679/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-51",
-            "url": "/api/v2/location-area/680/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-52",
-            "url": "/api/v2/location-area/681/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-53",
-            "url": "/api/v2/location-area/682/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-54",
-            "url": "/api/v2/location-area/683/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-55",
-            "url": "/api/v2/location-area/684/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-56",
-            "url": "/api/v2/location-area/685/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-57",
-            "url": "/api/v2/location-area/686/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-58",
-            "url": "/api/v2/location-area/687/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-59",
-            "url": "/api/v2/location-area/688/"
-        },
-        {
-            "name": "reversal-mountain-unknown-area-60",
-            "url": "/api/v2/location-area/689/"
         },
         {
             "name": "strange-house-1f",
