@@ -29,14 +29,14 @@
         "name": "unova-victory-road",
         "url": "/api/v2/location/382/"
     },
-    "name": "unova-victory-road-unknown-area-62",
+    "name": "unova-victory-road-4f-2-5f-6f-7f",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road (unknown area 62)"
+            "name": "Victory Road 4F (leftmost and rightmost room), 5F-7F"
         },
         {
             "language": {

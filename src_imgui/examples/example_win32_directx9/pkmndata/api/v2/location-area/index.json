@@ -676,10 +676,6 @@
             "url": "/api/v2/location-area/207/"
         },
         {
-            "name": "unknown-all-bugs-area",
-            "url": "/api/v2/location-area/208/"
-        },
-        {
             "name": "johto-route-36-area",
             "url": "/api/v2/location-area/209/"
         },
@@ -860,10 +856,6 @@
             "url": "/api/v2/location-area/256/"
         },
         {
-            "name": "unknown-all-poliwag-area",
-            "url": "/api/v2/location-area/257/"
-        },
-        {
             "name": "seafoam-islands-1f",
             "url": "/api/v2/location-area/258/"
         },
@@ -926,10 +918,6 @@
         {
             "name": "mt-silver-top",
             "url": "/api/v2/location-area/273/"
-        },
-        {
-            "name": "unknown-all-rattata-area",
-            "url": "/api/v2/location-area/275/"
         },
         {
             "name": "kanto-route-12-area",
@@ -1960,60 +1948,20 @@
             "url": "/api/v2/location-area/598/"
         },
         {
-            "name": "unova-victory-road-unknown-area-53",
+            "name": "unova-victory-road-1f-1",
             "url": "/api/v2/location-area/599/"
         },
         {
-            "name": "unova-victory-road-unknown-area-54",
+            "name": "unova-victory-road-1f-2-2f-3f",
             "url": "/api/v2/location-area/600/"
         },
         {
-            "name": "unova-victory-road-unknown-area-55",
-            "url": "/api/v2/location-area/601/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-56",
+            "name": "unova-victory-road-4f-1",
             "url": "/api/v2/location-area/602/"
         },
         {
-            "name": "unova-victory-road-unknown-area-57",
-            "url": "/api/v2/location-area/603/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-58",
-            "url": "/api/v2/location-area/604/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-59",
-            "url": "/api/v2/location-area/605/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-60",
-            "url": "/api/v2/location-area/606/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-61",
-            "url": "/api/v2/location-area/607/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-62",
+            "name": "unova-victory-road-4f-2-5f-6f-7f",
             "url": "/api/v2/location-area/608/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-63",
-            "url": "/api/v2/location-area/609/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-64",
-            "url": "/api/v2/location-area/610/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-65",
-            "url": "/api/v2/location-area/611/"
-        },
-        {
-            "name": "unova-victory-road-unknown-area-66",
-            "url": "/api/v2/location-area/612/"
         },
         {
             "name": "trial-chamber-area",
