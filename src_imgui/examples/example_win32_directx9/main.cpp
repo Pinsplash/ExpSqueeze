@@ -96,6 +96,7 @@ enum
 	METHOD_FLOWER_RED,
 	METHOD_FLOWER_YELLOW,
 	METHOD_FLOWER_PURPLE,
+	METHOD_SWAMP,
 	METHOD_BUBBLE_ROCK,
 	METHOD_AMBUSH_GRASS,
 	METHOD_AMBUSH_BUSH,
@@ -2004,17 +2005,13 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			ImGui::SameLine(); HelpMarker("Rustling grass, dust clouds, flying pokemon's shadows, and rippling water.");
 		}
 
-		if (allgames || game->generation == 6)
+		if (allgames || game->generation == 6 || game->generation == 7)
 		{
-			ImGui::CheckboxFlags("Rough Terrain", &methodflags, MethodFilterFlags_RoughTerrain);
-			ImGui::SameLine(); HelpMarker("\"Rough Terrain\" encompasses several different kinds of encounters, most of them being unique to a single location, like the snow on Route 17.");
-		}
-
-		if (allgames || game->generation == 7)
-		{
-			ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
 			ImGui::CheckboxFlags("Ambush", &methodflags, MethodFilterFlags_Ambush);
 			ImGui::SameLine(); HelpMarker("Cases where pokemon have an overworld presence and move, like flying pokemon shadows or rustling grass.");
+
+			if (game->generation == 7)
+				ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
 		}
 
 		newsettings->methodflags = methodflags;
@@ -2700,6 +2697,7 @@ int main(int, char**)
 	RegisterMethod("Red Flowers", "red-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Yellow Flowers", "yellow-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Purple Flowers", "purple-flowers", MethodFilterFlags_Walk);
+	RegisterMethod("Swamp", "swamp", MethodFilterFlags_Walk);
 	//g7
 	RegisterMethod("Bubbling Spots", "bubbling-spots", MethodFilterFlags_BubblingSpots);
 	RegisterMethod("Rustling Grass", "ambush-grass", MethodFilterFlags_Ambush);

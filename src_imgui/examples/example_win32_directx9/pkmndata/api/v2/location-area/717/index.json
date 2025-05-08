@@ -37,7 +37,7 @@
                             "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 10
@@ -47,7 +47,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -57,7 +57,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -76,7 +76,7 @@
                             "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 10
@@ -86,7 +86,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -96,7 +96,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -123,7 +123,7 @@
                             "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 10
@@ -133,7 +133,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -152,7 +152,7 @@
                             "condition_values": [],
                             "max_level": 10,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 10
@@ -162,7 +162,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -189,7 +189,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -208,7 +208,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -235,7 +235,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -245,7 +245,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -264,7 +264,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -274,7 +274,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -301,7 +301,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -311,7 +311,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -330,7 +330,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -340,7 +340,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -367,7 +367,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -377,7 +377,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12
@@ -396,7 +396,7 @@
                             "condition_values": [],
                             "max_level": 11,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 11
@@ -406,7 +406,7 @@
                             "condition_values": [],
                             "max_level": 12,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 12

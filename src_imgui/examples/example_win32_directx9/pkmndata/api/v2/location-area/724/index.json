@@ -37,7 +37,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -47,7 +47,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -57,7 +57,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -67,7 +67,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
@@ -86,7 +86,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -96,7 +96,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -106,7 +106,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -116,7 +116,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
@@ -295,7 +295,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -305,7 +305,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -315,7 +315,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -325,7 +325,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
@@ -344,7 +344,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -354,7 +354,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -364,7 +364,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -374,7 +374,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
@@ -401,7 +401,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -411,7 +411,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -421,7 +421,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -431,7 +431,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
@@ -450,7 +450,7 @@
                             "condition_values": [],
                             "max_level": 26,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 26
@@ -460,7 +460,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -470,7 +470,7 @@
                             "condition_values": [],
                             "max_level": 27,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 27
@@ -480,7 +480,7 @@
                             "condition_values": [],
                             "max_level": 28,
                             "method": {
-                                "name": "rough-terrain",
+                                "name": "ambush-dirt",
                                 "url": "/api/v2/encounter-method/17/"
                             },
                             "min_level": 28
