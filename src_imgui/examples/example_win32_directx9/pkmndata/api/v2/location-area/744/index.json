@@ -6,14 +6,14 @@
         "name": "frost-cavern",
         "url": "/api/v2/location/640/"
     },
-    "name": "frost-cavern-unknown-area-315",
+    "name": "frost-cavern-2f-main-area",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Frost Cavern (unknown area 315)"
+            "name": "Frost Cavern 2F (Main area)"
         },
         {
             "language": {

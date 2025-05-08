@@ -6,14 +6,14 @@
         "name": "glittering-cave",
         "url": "/api/v2/location/671/"
     },
-    "name": "glittering-cave-unknown-area-304",
+    "name": "glittering-cave-deep-cave",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Glittering Cave (unknown area 304)"
+            "name": "Glittering Cave (Deep Cave)"
         },
         {
             "language": {

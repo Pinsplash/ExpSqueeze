@@ -2400,71 +2400,51 @@
             "url": "/api/v2/location-area/735/"
         },
         {
-            "name": "glittering-cave-unknown-area-303",
+            "name": "glittering-cave-main-cave",
             "url": "/api/v2/location-area/736/"
         },
         {
-            "name": "glittering-cave-unknown-area-304",
+            "name": "glittering-cave-deep-cave",
             "url": "/api/v2/location-area/737/"
         },
         {
-            "name": "reflection-cave-unknown-area-305",
+            "name": "reflection-cave",
             "url": "/api/v2/location-area/738/"
         },
         {
-            "name": "reflection-cave-unknown-area-306",
-            "url": "/api/v2/location-area/739/"
-        },
-        {
-            "name": "reflection-cave-unknown-area-307",
-            "url": "/api/v2/location-area/740/"
-        },
-        {
-            "name": "reflection-cave-unknown-area-308",
-            "url": "/api/v2/location-area/741/"
-        },
-        {
-            "name": "frost-cavern-unknown-area-313",
+            "name": "frost-cavern-outside",
             "url": "/api/v2/location-area/742/"
         },
         {
-            "name": "frost-cavern-unknown-area-314",
+            "name": "frost-cavern-most",
             "url": "/api/v2/location-area/743/"
         },
         {
-            "name": "frost-cavern-unknown-area-315",
+            "name": "frost-cavern-2f-main-area",
             "url": "/api/v2/location-area/744/"
-        },
-        {
-            "name": "frost-cavern-unknown-area-316",
-            "url": "/api/v2/location-area/745/"
-        },
-        {
-            "name": "frost-cavern-unknown-area-317",
-            "url": "/api/v2/location-area/746/"
         },
         {
             "name": "pokemon-village-area",
             "url": "/api/v2/location-area/747/"
         },
         {
-            "name": "kalos-victory-road-unknown-area-322",
+            "name": "kalos-victory-road-inside-1",
             "url": "/api/v2/location-area/748/"
         },
         {
-            "name": "kalos-victory-road-unknown-area-324",
+            "name": "kalos-victory-road-inside-2",
             "url": "/api/v2/location-area/749/"
         },
         {
-            "name": "kalos-victory-road-unknown-area-326",
+            "name": "kalos-victory-road-inside-3",
             "url": "/api/v2/location-area/750/"
         },
         {
-            "name": "kalos-victory-road-unknown-area-327",
+            "name": "kalos-victory-road-outside",
             "url": "/api/v2/location-area/751/"
         },
         {
-            "name": "kalos-victory-road-unknown-area-328",
+            "name": "kalos-victory-road-inside-4",
             "url": "/api/v2/location-area/752/"
         },
         {
@@ -2472,24 +2452,8 @@
             "url": "/api/v2/location-area/753/"
         },
         {
-            "name": "terminus-cave-unknown-area-343",
+            "name": "terminus-cave",
             "url": "/api/v2/location-area/754/"
-        },
-        {
-            "name": "terminus-cave-unknown-area-344",
-            "url": "/api/v2/location-area/755/"
-        },
-        {
-            "name": "terminus-cave-unknown-area-345",
-            "url": "/api/v2/location-area/756/"
-        },
-        {
-            "name": "terminus-cave-unknown-area-347",
-            "url": "/api/v2/location-area/757/"
-        },
-        {
-            "name": "terminus-cave-unknown-area-348",
-            "url": "/api/v2/location-area/758/"
         },
         {
             "name": "lost-hotel-area",

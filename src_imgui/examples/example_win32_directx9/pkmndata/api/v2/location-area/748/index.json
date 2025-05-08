@@ -6,14 +6,14 @@
         "name": "kalos-victory-road",
         "url": "/api/v2/location/657/"
     },
-    "name": "kalos-victory-road-unknown-area-322",
+    "name": "kalos-victory-road-inside-1",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road (unknown area 322)"
+            "name": "Victory Road (Inside 1)"
         },
         {
             "language": {
