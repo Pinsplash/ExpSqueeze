@@ -92,7 +92,6 @@ enum
 	METHOD_PHEN_SHADOW,
 	METHOD_PHEN_WATER_FISH,
 	METHOD_PHEN_WATER_SURF,
-	METHOD_ROUGH_TERRAIN,
 	METHOD_FLOWER_RED,
 	METHOD_FLOWER_YELLOW,
 	METHOD_FLOWER_PURPLE,
@@ -122,10 +121,9 @@ enum MethodFilterFlags
 	MethodFilterFlags_Seaweed		= 1 << 7,
 	MethodFilterFlags_DarkGrass		= 1 << 8,
 	MethodFilterFlags_Phenomena		= 1 << 9,
-	MethodFilterFlags_RoughTerrain	= 1 << 10,
-	MethodFilterFlags_BubblingSpots = 1 << 11,
-	MethodFilterFlags_Ambush		= 1 << 12,
-	MethodFilterFlags_Last			= 1 << 13,
+	MethodFilterFlags_BubblingSpots = 1 << 10,
+	MethodFilterFlags_Ambush		= 1 << 11,
+	MethodFilterFlags_Last			= 1 << 12,
 };
 
 enum TypeFlags
@@ -299,7 +297,6 @@ static void PrintMethodFlags(int flags)
 	if (flags & MethodFilterFlags_Seaweed) cout << "-MethodFilterFlags_Seaweed\n";
 	if (flags & MethodFilterFlags_DarkGrass) cout << "-MethodFilterFlags_DarkGrass\n";
 	if (flags & MethodFilterFlags_Phenomena) cout << "-MethodFilterFlags_Phenomena\n";
-	if (flags & MethodFilterFlags_RoughTerrain) cout << "-MethodFilterFlags_RoughTerrain\n";
 	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
 	if (flags & MethodFilterFlags_Ambush) cout << "-MethodFilterFlags_Ambush\n";
 }
@@ -2693,7 +2690,6 @@ int main(int, char**)
 	RegisterMethod("Rippling Water (Fishing)", "super-rod-spots", MethodFilterFlags_Phenomena);
 	RegisterMethod("Rippling Water (Surfing)", "surf-spots", MethodFilterFlags_Phenomena);
 	//g6
-	RegisterMethod("Rough Terrain", "rough-terrain", MethodFilterFlags_RoughTerrain);
 	RegisterMethod("Red Flowers", "red-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Yellow Flowers", "yellow-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Purple Flowers", "purple-flowers", MethodFilterFlags_Walk);
