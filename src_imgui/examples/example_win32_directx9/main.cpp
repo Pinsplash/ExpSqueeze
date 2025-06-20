@@ -170,7 +170,7 @@ struct Settings
 	string wantedslot2game;
 	string wantedradiostation;
 	int repellevel = 0;
-	int maxlevel = 100;
+	int maxallowedlevel = 100;
 	bool printtext = false;
 	int methodflags = MethodFilterFlags_Last - 1;
 	int pkmnfiltertypeflags = 0;
@@ -352,7 +352,7 @@ static void WarnMarker(const char* desc)
 static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
 	//throw out the whole table
-	if (settings->maxlevel < maxlevel)
+	if (settings->maxallowedlevel < maxlevel)
 		filterReason = Reason_OverLevelCap;
 
 	if (settings->repellevel <= maxlevel)
@@ -1408,8 +1408,9 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 static bool compareByExp(const EncounterTable a, const EncounterTable b)
 {
 	//cout << a.totalavgexp << " > " << b.totalavgexp << "\n";
-	assert(a.totalavgexp > 0);
-	assert(b.totalavgexp > 0);
+	//if a table is filtered out then totalavgexp is probably 0
+	assert(a.totalavgexp > 0 || a.filterReason != Reason_None);
+	assert(b.totalavgexp > 0 || b.filterReason != Reason_None);
 	return a.totalavgexp > b.totalavgexp;
 }
 
@@ -1722,7 +1723,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((settings->repellevel == 0 && settings->maxlevel == 100) && table.totalchance != 100 + extrachance)
+			if ((settings->repellevel == 0 && settings->maxallowedlevel == 100) && table.totalchance != 100 + extrachance)
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
 			else if (table.totalchance != table.expectedtotalpercent + extrachance)
@@ -1731,7 +1732,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			{
 				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
 				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
-				cout << "repellevel: " << to_string(settings->repellevel) << " maxlevel: " << to_string(settings->maxlevel) << "\n";
+				cout << "repellevel: " << to_string(settings->repellevel) << " maxallowedlevel: " << to_string(settings->maxallowedlevel) << "\n";
 				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
 				cin.get();
 				return true;
@@ -1958,10 +1959,10 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		HelpMarker("Repels keep away wild Pokemon who are a lower level than the first Pokemon in the party.");
 	newsettings->repellevel = repellevel;
 
-	static int maxlevel = 100;
-	ImGui::InputInt("Maximum Level", &maxlevel);
+	static int maxallowedlevel = 100;
+	ImGui::InputInt("Maximum Level", &maxallowedlevel);
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
-	newsettings->maxlevel = maxlevel;
+	newsettings->maxallowedlevel = maxallowedlevel;
 
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
@@ -2440,7 +2441,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->wantedslot2game = newsettings->wantedslot2game;
 		settings->wantedradiostation = newsettings->wantedradiostation;
 		settings->repellevel = newsettings->repellevel;
-		settings->maxlevel = newsettings->maxlevel;
+		settings->maxallowedlevel = newsettings->maxallowedlevel;
 		settings->printtext = newsettings->printtext;
 		settings->methodflags = newsettings->methodflags;
 		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
@@ -2484,7 +2485,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		settings->wantedslot2game != newsettings->wantedslot2game ||
 		settings->wantedradiostation != newsettings->wantedradiostation ||
 		settings->repellevel != newsettings->repellevel ||
-		settings->maxlevel != newsettings->maxlevel ||
+		settings->maxallowedlevel != newsettings->maxallowedlevel ||
 		settings->methodflags != newsettings->methodflags ||
 		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags ||
 		settings->pkmnrequiretypeflags != newsettings->pkmnrequiretypeflags/* ||
