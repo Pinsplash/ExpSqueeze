@@ -2580,8 +2580,9 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 					{
 						static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
 						static const char* emptylabels[] = { "", "", "", "", "", "", "" };
-						double graphmax = ceil(table.averageEVs[OFFSET_TOTAL - 1]);
-						int ticks = floor(graphmax * 5) + 1;
+						//wanted to have graph Y range change to match the highest bar value and round up to next int, but the graph would not expand to fill the entire canvas, which looked really bad
+						double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL - 1]);
+						int ticks = (int)floor(graphmax * 5) + 1;
 						ImPlot::PushColormap(ImPlotColormap_PKMNstats);
 						if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
 						{
