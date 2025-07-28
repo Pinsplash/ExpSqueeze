@@ -2695,14 +2695,14 @@ int main(int, char**)
 	RegisterMethod("Yellow Flowers", "yellow-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Purple Flowers", "purple-flowers", MethodFilterFlags_Walk);
 	RegisterMethod("Swamp", "swamp", MethodFilterFlags_Walk);
+	RegisterMethod("Shadows", "ambush-shadow", MethodFilterFlags_Ambush);
+	RegisterMethod("Rustling Bushes", "ambush-bush", MethodFilterFlags_Ambush);
 	//g7
 	RegisterMethod("Bubbling Spots", "bubbling-spots", MethodFilterFlags_BubblingSpots);
 	RegisterMethod("Rustling Grass", "ambush-grass", MethodFilterFlags_Ambush);
-	RegisterMethod("Rustling Bushes", "ambush-bush", MethodFilterFlags_Ambush);
 	RegisterMethod("Water Splashes", "ambush-splash", MethodFilterFlags_Ambush);
 	RegisterMethod("Rustling Trees", "ambush-tree", MethodFilterFlags_Ambush);
 	RegisterMethod("Dirt Clouds", "ambush-dirt", MethodFilterFlags_Ambush);
-	RegisterMethod("Shadows", "ambush-shadow", MethodFilterFlags_Ambush);
 	RegisterMethod("Chase", "ambush-chase", MethodFilterFlags_Ambush);
 	RegisterMethod("Sand Clouds", "ambush-sand", MethodFilterFlags_Ambush);
 

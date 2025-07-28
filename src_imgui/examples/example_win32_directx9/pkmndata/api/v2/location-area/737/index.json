@@ -175,6 +175,98 @@
                     }
                 }
             ]
+        },
+        {
+            "pokemon": {
+                "name": "woobat",
+                "url": "/api/v2/pokemon/527/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 85,
+                            "condition_values": [],
+                            "max_level": 17,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 15
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 85,
+                            "condition_values": [],
+                            "max_level": 17,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 15
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "ferroseed",
+                "url": "/api/v2/pokemon/597/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 17,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 15
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 15,
+                            "condition_values": [],
+                            "max_level": 17,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 15
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
         }
     ]
 }

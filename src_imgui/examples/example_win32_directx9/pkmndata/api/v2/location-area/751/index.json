@@ -459,6 +459,144 @@
                     }
                 }
             ]
+        },
+        {
+            "pokemon": {
+                "name": "fearow",
+                "url": "/api/v2/pokemon/22/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 77,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 57
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 77,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 57
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "skarmory",
+                "url": "/api/v2/pokemon/227/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 18,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 57
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 18,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 57
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "hydreigon",
+                "url": "/api/v2/pokemon/635/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 59
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 5,
+                            "condition_values": [],
+                            "max_level": 59,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 59
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
         }
     ]
 }

@@ -6,14 +6,14 @@
         "name": "terminus-cave",
         "url": "/api/v2/location/676/"
     },
-    "name": "terminus-cave-unknown-area-343",
+    "name": "terminus-cave",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Terminus Cave (unknown area 343)"
+            "name": "Terminus Cave"
         },
         {
             "language": {
@@ -495,6 +495,98 @@
                         }
                     ],
                     "max_chance": 40,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "ariados",
+                "url": "/api/v2/pokemon/168/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 80,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 44
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 80,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 44
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "y",
+                        "url": "/api/v2/version/24/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "noibat",
+                "url": "/api/v2/pokemon/714/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 20,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 44
+                        }
+                    ],
+                    "max_chance": 10,
+                    "version": {
+                        "name": "x",
+                        "url": "/api/v2/version/23/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 20,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-shadow",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 44
+                        }
+                    ],
+                    "max_chance": 10,
                     "version": {
                         "name": "y",
                         "url": "/api/v2/version/24/"

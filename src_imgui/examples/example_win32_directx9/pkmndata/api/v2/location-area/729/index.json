@@ -695,6 +695,16 @@
                                 "url": "/api/v2/encounter-method/16/"
                             },
                             "min_level": 46
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 45,
+                            "method": {
+                                "name": "ambush-bush",
+                                "url": "/api/v2/encounter-method/16/"
+                            },
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 10,
@@ -744,6 +754,16 @@
                                 "url": "/api/v2/encounter-method/16/"
                             },
                             "min_level": 46
+                        },
+                        {
+                            "chance": 10,
+                            "condition_values": [],
+                            "max_level": 45,
+                            "method": {
+                                "name": "ambush-bush",
+                                "url": "/api/v2/encounter-method/16/"
+                            },
+                            "min_level": 45
                         }
                     ],
                     "max_chance": 10,
@@ -781,6 +801,16 @@
                                 "url": "/api/v2/encounter-method/16/"
                             },
                             "min_level": 44
+                        },
+                        {
+                            "chance": 90,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-bush",
+                                "url": "/api/v2/encounter-method/16/"
+                            },
+                            "min_level": 44
                         }
                     ],
                     "max_chance": 20,
@@ -807,6 +837,16 @@
                             "max_level": 44,
                             "method": {
                                 "name": "red-flowers",
+                                "url": "/api/v2/encounter-method/16/"
+                            },
+                            "min_level": 44
+                        },
+                        {
+                            "chance": 90,
+                            "condition_values": [],
+                            "max_level": 46,
+                            "method": {
+                                "name": "ambush-bush",
                                 "url": "/api/v2/encounter-method/16/"
                             },
                             "min_level": 44
