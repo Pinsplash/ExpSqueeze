@@ -85,7 +85,7 @@ enum
 	METHOD_ROCKSMASH,
 	METHOD_HEADBUTTLOW,
 	METHOD_HEADBUTTHIGH,
-	METHOD_SEAWEED,
+	METHOD_UNUSED,
 	METHOD_DARK_GRASS,
 	METHOD_PHEN_GRASS,
 	METHOD_PHEN_DUST,
@@ -118,7 +118,7 @@ enum MethodFilterFlags
 	MethodFilterFlags_RodSuper		= 1 << 4,
 	MethodFilterFlags_RockSmash		= 1 << 5,
 	MethodFilterFlags_Headbutt		= 1 << 6,
-	MethodFilterFlags_Seaweed		= 1 << 7,
+	MethodFilterFlags_Unused		= 1 << 7,
 	MethodFilterFlags_DarkGrass		= 1 << 8,
 	MethodFilterFlags_Phenomena		= 1 << 9,
 	MethodFilterFlags_BubblingSpots = 1 << 10,
@@ -310,7 +310,6 @@ static void PrintMethodFlags(int flags)
 	if (flags & MethodFilterFlags_RodSuper) cout << "-MethodFilterFlags_RodSuper\n";
 	if (flags & MethodFilterFlags_RockSmash) cout << "-MethodFilterFlags_RockSmash\n";
 	if (flags & MethodFilterFlags_Headbutt) cout << "-MethodFilterFlags_Headbutt\n";
-	if (flags & MethodFilterFlags_Seaweed) cout << "-MethodFilterFlags_Seaweed\n";
 	if (flags & MethodFilterFlags_DarkGrass) cout << "-MethodFilterFlags_DarkGrass\n";
 	if (flags & MethodFilterFlags_Phenomena) cout << "-MethodFilterFlags_Phenomena\n";
 	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
@@ -2061,9 +2060,6 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 				"\"Headbutt Low\" is:\n-\"Low chances of battle\" on Bulba individual route pages\n-\"Moderate-encounter trees\" on Bulba's \"Headbutt tree\" page\n-\"Headbutt - Special Trees\" on Serebii");
 		}
 
-		if (allgames || rse)
-			ImGui::CheckboxFlags("Seaweed", &methodflags, MethodFilterFlags_Seaweed);
-
 		if (allgames || game->generation == 5)
 		{
 			ImGui::CheckboxFlags("Dark Grass", &methodflags, MethodFilterFlags_DarkGrass);
@@ -2875,8 +2871,6 @@ static void RegisterMethods()
 	RegisterMethod("Rock Smash", "rock-smash", MethodFilterFlags_RockSmash);
 	RegisterMethod("Headbutt (Low)", "headbutt-low", MethodFilterFlags_Headbutt);
 	RegisterMethod("Headbutt (High)", "headbutt-high", MethodFilterFlags_Headbutt);
-	//g3
-	RegisterMethod("Seaweed", "seaweed", MethodFilterFlags_Seaweed);
 	//g5
 	RegisterMethod("Dark Grass", "dark-grass", MethodFilterFlags_DarkGrass);
 	RegisterMethod("Rustling Grass", "grass-spots", MethodFilterFlags_Phenomena);
