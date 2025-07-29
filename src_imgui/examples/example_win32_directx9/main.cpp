@@ -1226,6 +1226,203 @@ static bool IsPokemonInEVRangeGen3(Settings* settings, string basepath, string v
 	return true;
 }
 
+static void ProcessStat(Encounter encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale, Settings* settings)
+{
+	if (offset == OFFSET_BEY)
+	{
+		encounter.baseExp = stat;
+		encounter.minlevel = max(encounter.minlevel, settings->repellevel);
+		double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
+		encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
+		//level scaling
+		if (settings->scalinglevel != 0)
+		{
+			encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, settings->scalinglevel, encounter.avgexp);
+		}
+		assert(encounter.avgexp > 0);
+		encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table->expectedtotalpercent;
+		if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+#ifdef _DEBUG
+		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
+		//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
+#endif //_DEBUG
+		table->averageYields[OFFSET_EXP] += encounter.avgexpweighted;
+		assert(table->averageYields[OFFSET_EXP] > 0);
+		assert(encounter.avgexpweighted > 0);
+		table->totalchance += encounter.chance;
+	}
+	else if (generation >= 3)
+	{
+		table->averageYields[offset] += (double)(stat * encounter.chance * chancescale) / table->expectedtotalpercent;
+		double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
+		if (stat > 0)
+		{
+			if (table->efficientEVs[offset].expPerEV == 0.0f)
+			{
+				table->efficientEVs[offset].expPerEV = lowestExp / stat;
+				table->efficientEVs[offset].pokemonname = encounter.pokemonname;
+			}
+			else
+			{
+				if (table->efficientEVs[offset].expPerEV > lowestExp / stat)
+				{
+					table->efficientEVs[offset].expPerEV = lowestExp / stat;
+					table->efficientEVs[offset].pokemonname = encounter.pokemonname;
+				}
+			}
+		}
+	}
+}
+
+//find gen 3 or 5 swarm encounter. these are different than others because they make the table into X percent the special encounter and 100-X everything else. no slots are overridden.
+static int AddHoennUnovaSwarm(string basepath, EncounterTable* table, int generation, Settings* settings)
+{
+	string path = basepath + "swarm-data/" + to_string(table->filenumber) + ".txt";
+	ifstream ReadFile(path);
+	string textLine;
+	while (getline(ReadFile, textLine))
+	{
+		size_t s1End = textLine.find(',');
+		string str1 = textLine.substr(0, s1End);//pokemon's name - not verified yet
+
+		size_t s2Start = s1End + 1;
+		size_t s2End = textLine.find(',', s2Start + 1);
+		string str2 = textLine.substr(s2Start, s2End - s2Start);//level
+
+		if (generation == 5 && str1 == "croagunk" && settings->wantedseason == "season-winter")
+			break;//special case. croagunk will not appear in winter even by swarm. when the game tries to spawn a croagunk swarm in winter, it simply will not do anything.
+
+		string targetgame;
+		if (table->version_index == GAME_RUBY || table->version_index == GAME_SAPPHIRE)
+			targetgame = "rubysapphire";
+		else if (table->version_index == GAME_EMERALD)
+			targetgame = "emerald";
+		else if (table->version_index == GAME_BLACK1)
+			targetgame = "b1";
+		else if (table->version_index == GAME_BLACK2)
+			targetgame = "b2";
+		else if (table->version_index == GAME_WHITE1)
+			targetgame = "w1";
+		else if (table->version_index == GAME_WHITE2)
+			targetgame = "w2";
+		else
+		{
+			cout << "ERROR: tried to get gen 3/5 swarm encounter for invalid game '" << g_games[table->version_index]->uiname << "' file number " << to_string(table->filenumber) << "\n";
+			continue;
+		}
+		if (textLine.find(targetgame) != string::npos)
+		{
+			int extrachance = (generation == 5) ? 40 : 50;
+			Encounter newEnc;
+			newEnc.chance = extrachance;
+			if (table->version_index == GAME_RUBY || table->version_index == GAME_SAPPHIRE || table->version_index == GAME_EMERALD)
+			{
+				newEnc.maxlevel = stoi(str2);
+				newEnc.minlevel = stoi(str2);
+			}
+			else if (table->version_index == GAME_BLACK1 || table->version_index == GAME_WHITE1)
+			{
+				newEnc.minlevel = 15;
+				newEnc.maxlevel = 55;
+			}
+			else if (table->version_index == GAME_BLACK2 || table->version_index == GAME_WHITE2)
+			{
+				newEnc.minlevel = 40;
+				newEnc.maxlevel = 55;
+			}
+			newEnc.pokemonname = str1;
+			newEnc.specialswarm = true;
+			table->encounters.push_back(newEnc);
+			return 1;
+		}
+		//didn't find an encounter? that's ok
+	}
+	return 0;
+}
+
+static int ParseEncounterBlock(Settings* settings, string basepath, json_value* versiondetails, json_value* encounterblock, string placename, int iFile, GameObject* game)
+{
+	for (size_t verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
+	{
+		json_value* verdetailblock = versiondetails->u.array.values[verdetailsIdx];
+		if (!verdetailblock)
+		{
+			assert(0);
+			return 0;
+		}
+		//version
+		json_value* version = FindObjectInObjectByName(verdetailblock, "version");
+		if (!version)
+		{
+			assert(0);
+			return 0;
+		}
+		string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
+
+		//ensure this pokemon is in our game version before doing anything else
+		if (!(givengame == game->internalname || settings->wantedgame_index == ALLGAMES_INDEX))
+			continue;
+
+		//do NOT remove these {} brackets, or the else statement will be linked up to the wrong if statement
+		int gameindex;
+		if (settings->wantedgame_index == ALLGAMES_INDEX)
+		{
+			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
+				if (givengame == g_games[gameindex]->internalname)
+					break;
+		}
+		else
+			gameindex = settings->wantedgame_index;
+		
+		json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
+		if (!pokemon)
+		{
+			assert(0);
+			return 0;
+		}
+		string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
+		bool filterReason = Reason_None;
+		string warning = "";
+		if (settings->pkmnfiltertypeflags != 0)
+		{
+			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
+			if (IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname, &warning))
+			{
+				//pokemon is a type we don't allow
+				//cout << pokemonname << " is bad type\n";
+				filterReason = Reason_BadType;
+			}
+		}
+		bool goodtype = false;
+		if (settings->pkmnrequiretypeflags != 0)
+		{
+			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
+			goodtype = IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnrequiretypeflags, pokemonname, &warning);
+		}
+		bool goodEVs = g_games[gameindex]->generation >= 3 ? IsPokemonInEVRangeGen3(settings, basepath, givengame, pokemonname) : true;
+
+		json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
+		if (!encounterdetails)
+		{
+			assert(0);
+			return 0;
+		}
+		for (size_t encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
+		{
+			json_value* encdetailblock = encounterdetails->u.array.values[encdetailsIdx];
+			if (!encdetailblock)
+			{
+				assert(0);
+				return 0;
+			}
+
+			if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
+				continue;//encounter was bad for some reason
+		}
+	}
+	return 1;
+}
+
 static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 {
 	//if (iFile != 57)
@@ -1332,85 +1529,9 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 			assert(0);
 			return 0;
 		}
-		for (size_t verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
-		{
-			json_value* verdetailblock = versiondetails->u.array.values[verdetailsIdx];
-			if (!verdetailblock)
-			{
-				assert(0);
-				return 0;
-			}
-			//version
-			json_value* version = FindObjectInObjectByName(verdetailblock, "version");
-			if (!version)
-			{
-				assert(0);
-				return 0;
-			}
-			string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
-			//ensure this pokemon is in our game version before doing anything else
-			if (givengame == game->internalname || settings->wantedgame_index == ALLGAMES_INDEX)
-			{
-				//do NOT remove these {} brackets, or the else statement will be linked up to the wrong if statement
-				int gameindex;
-				if (settings->wantedgame_index == ALLGAMES_INDEX)
-				{
-					for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
-						if (givengame == g_games[gameindex]->internalname)
-							break;
-				}
-				else
-					gameindex = settings->wantedgame_index;
-				//it was. get pokemon name
-				json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
-				if (!pokemon)
-				{
-					assert(0);
-					return 0;
-				}
-				string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
-				bool filterReason = Reason_None;
-				string warning = "";
-				if (settings->pkmnfiltertypeflags != 0)
-				{
-					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-					if (IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname, &warning))
-					{
-						//pokemon is a type we don't allow
-						//cout << pokemonname << " is bad type\n";
-						filterReason = Reason_BadType;
-					}
-				}
-				bool goodtype = false;
-				if (settings->pkmnrequiretypeflags != 0)
-				{
-					string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-					goodtype = IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnrequiretypeflags, pokemonname, &warning);
-				}
-				bool goodEVs = g_games[gameindex]->generation >= 3 ? IsPokemonInEVRangeGen3(settings, basepath, givengame, pokemonname) : true;
-				//go back up to version details to get encounter details block
-				json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
-				if (!encounterdetails)
-				{
-					assert(0);
-					return 0;
-				}
-				for (size_t encdetailsIdx = 0; encdetailsIdx < encounterdetails->u.array.length; encdetailsIdx++)
-				{
-					json_value* encdetailblock = encounterdetails->u.array.values[encdetailsIdx];
-					if (!encdetailblock)
-					{
-						assert(0);
-						return 0;
-					}
-
-					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
-						continue;//encounter was bad for some reason
-				}
-			}
-			else
-				continue;
-		}
+		int result = ParseEncounterBlock(settings, basepath, versiondetails, encounterblock, placename, iFile, game);
+		if (result == 0)
+			return 0;
 	}
 	json_value_free(file);
 	free(file_contents);
@@ -1608,68 +1729,10 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			int extrachance = 0;
 			if (settings->wantswarm && table.method_index == METHOD_WALK && (generation == 5 || table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD))
 			{
-				//find gen 3 or 5 swarm encounter. these are different than others because they make the table into X percent the special encounter and 100-X everything else. no slots are overridden.
-				string path = basepath + "swarm-data/" + to_string(table.filenumber) + ".txt";
-				ifstream ReadFile(path);
-				string textLine;
-				while (getline(ReadFile, textLine))
+				if (AddHoennUnovaSwarm(basepath, &table, generation, settings))
 				{
-					size_t s1End = textLine.find(',');
-					string str1 = textLine.substr(0, s1End);//pokemon's name - not verified yet
-
-					size_t s2Start = s1End + 1;
-					size_t s2End = textLine.find(',', s2Start + 1);
-					string str2 = textLine.substr(s2Start, s2End - s2Start);//level
-
-					if (generation == 5 && str1 == "croagunk" && settings->wantedseason == "season-winter")
-						break;//special case. croagunk will not appear in winter even by swarm. when the game tries to spawn a croagunk swarm in winter, it simply will not do anything.
-
-					string targetgame;
-					if (table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE)
-						targetgame = "rubysapphire";
-					else if (table.version_index == GAME_EMERALD)
-						targetgame = "emerald";
-					else if (table.version_index == GAME_BLACK1)
-						targetgame = "b1";
-					else if (table.version_index == GAME_BLACK2)
-						targetgame = "b2";
-					else if (table.version_index == GAME_WHITE1)
-						targetgame = "w1";
-					else if (table.version_index == GAME_WHITE2)
-						targetgame = "w2";
-					else
-					{
-						cout << "ERROR: tried to get gen 3/5 swarm encounter for invalid game '" << g_games[table.version_index]->uiname << "' file number " << to_string(table.filenumber) << "\n";
-						continue;
-					}
-					if (textLine.find(targetgame) != string::npos)
-					{
-						specialswarm = true;
-						extrachance = (generation == 5) ? 40 : 50;
-
-						Encounter newEnc;
-						newEnc.chance = extrachance;
-						if (table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD)
-						{
-							newEnc.maxlevel = stoi(str2);
-							newEnc.minlevel = stoi(str2);
-						}
-						else if (table.version_index == GAME_BLACK1 || table.version_index == GAME_WHITE1)
-						{
-							newEnc.minlevel = 15;
-							newEnc.maxlevel = 55;
-						}
-						else if (table.version_index == GAME_BLACK2 || table.version_index == GAME_WHITE2)
-						{
-							newEnc.minlevel = 40;
-							newEnc.maxlevel = 55;
-						}
-						newEnc.pokemonname = str1;
-						newEnc.specialswarm = true;
-						table.encounters.push_back(newEnc);
-						break;
-					}
-					//didn't find an encounter? that's ok
+					specialswarm = true;
+					extrachance = (generation == 5) ? 40 : 50;
 				}
 			}
 
@@ -1709,51 +1772,7 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 						{
 							str2 = textLine.substr(commaPos + 1, s2End - commaPos - 1);
 						}
-						int stat = stoi(str2);
-						if (j == OFFSET_BEY)
-						{
-							encounter.baseExp = stat;
-							encounter.minlevel = max(encounter.minlevel, settings->repellevel);
-							double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
-							encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
-							//level scaling
-							if (settings->scalinglevel != 0)
-							{
-								encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, settings->scalinglevel, encounter.avgexp);
-							}
-							assert(encounter.avgexp > 0);
-							encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table.expectedtotalpercent;
-							if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
-#ifdef _DEBUG
-							//if (settings->printtext) cout << "total avg exp " << table.averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
-							//if (settings->printtext) cout << "totalchance " << table.totalchance << " += " << encounter.chance << "\n\n";
-#endif //_DEBUG
-							table.averageYields[OFFSET_EXP] += encounter.avgexpweighted;
-							assert(table.averageYields[OFFSET_EXP] > 0);
-							assert(encounter.avgexpweighted > 0);
-							table.totalchance += encounter.chance;
-						}
-						else if (generation >= 3)
-						{
-							table.averageYields[j] += (double)(stat * encounter.chance * chancescale) / table.expectedtotalpercent;
-							double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
-							if (stat > 0)
-							{
-								if (table.efficientEVs[j].expPerEV == 0.0f)
-								{
-									table.efficientEVs[j].expPerEV = lowestExp / stat;
-									table.efficientEVs[j].pokemonname = encounter.pokemonname;
-								}
-								else
-								{
-									if (table.efficientEVs[j].expPerEV > lowestExp / stat)
-									{
-										table.efficientEVs[j].expPerEV = lowestExp / stat;
-										table.efficientEVs[j].pokemonname = encounter.pokemonname;
-									}
-								}
-							}
-						}
+						ProcessStat(encounter, &table, j, stoi(str2), generation, chancescale, settings);
 					}
 				}
 			}
@@ -1806,57 +1825,38 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 	return *p ? p : NULL;
 }
 
-static void dosettingswindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, string basepath)
+static void TablePostProcess(SettingsWindowData* settingswindowdata, Settings* settings)
 {
-#ifndef _DEBUG
-	const ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(viewport->Pos);
-	ImGui::SetNextWindowSize(viewport->Size);
-#endif
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-
-	const char* f_games[] = { "Blue", "Red", "Yellow",//2
-		"Gold", "Silver", "Crystal",//5
-		"Ruby", "Sapphire", "Emerald", "FireRed", "LeafGreen",//10
-		"Diamond", "Pearl", "Platinum", "HeartGold", "SoulSilver",//15
-		"Black", "White", "Black 2", "White 2",//19
-		"X", "Y",//21
-		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26 (ALLGAMES_INDEX)
-	};
-
-	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
-	static int game_current = 0;
-	ImGui::Combo("Game", &game_current, f_games, IM_ARRAYSIZE(f_games));
-	newsettings->wantedgame_index = game_current;
-
-	bool rse = false;
-	bool dpp = false;
-	bool hgss = false;
-	bool allgames = false;
-
-	switch (newsettings->wantedgame_index)
+	settingswindowdata->running = false;
+	bool requiringtype = settings->pkmnrequiretypeflags;
+	std::sort(maintables.begin(), maintables.end(), compareByExp);
+	for (EncounterTable& table : maintables)
 	{
-	case GAME_RUBY:
-	case GAME_SAPPHIRE:
-	case GAME_EMERALD:
-		rse = true;
-		break;
-	case GAME_DIAMOND:
-	case GAME_PEARL:
-	case GAME_PLATINUM:
-		dpp = true;
-		break;
-	case GAME_HEARTGOLD:
-	case GAME_SOULSILVER:
-		hgss = true;
-		break;
-	case ALLGAMES_INDEX:
-		allgames = true;
-		break;
+		string methodnamestring = g_methods[table.method_index]->uiname;
+		if (g_games[table.version_index]->generation == 7 && table.method_index == METHOD_SUPERROD)
+		{
+			//three-rod distinction is gone in gen 7, so we manually change the name here
+			//sucks but i don't see a better way
+			methodnamestring = "Fishing";
+		}
+		table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
+		if (!table.goodtype && requiringtype)
+			table.filterReason = Reason_NoGoodTypes;
+		if (!table.goodEVs)
+			table.filterReason = Reason_NoGoodEVs;
+		for (int i = 0; i < OFFSET_TOTAL + 1; i++)
+		{
+			if (table.averageYields[i] < settings->minAvgEV[i] || table.averageYields[i] > settings->maxAvgEV[i])
+			{
+				table.filterReason = Reason_BadEVs;
+				break;
+			}
+		}
 	}
+}
 
-	GameObject *game = g_games[newsettings->wantedgame_index];
-
+static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowdata, Settings* newsettings, bool allgames, bool rse, bool dpp, bool hgss)
+{
 	if (game->generation == 2)
 	{
 		if (ImGui::BeginTable("gen2timetable", 3))
@@ -2002,7 +2002,10 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	ImGui::InputInt("Maximum Level", &maxallowedlevel);
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
 	newsettings->maxallowedlevel = maxallowedlevel;
+}
 
+static void UISettingSections(GameObject* game, Settings* newsettings, bool allgames, bool rse, bool hgss)
+{
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Choose which encounter methods to include in the analysis.");
@@ -2015,7 +2018,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			ImGui::CheckboxFlags("Old Rod", &methodflags, MethodFilterFlags_RodOld);
 			ImGui::CheckboxFlags("Good Rod", &methodflags, MethodFilterFlags_RodGood);
 		}
-		
+
 		if (game->generation == 7)
 			ImGui::CheckboxFlags("Fishing at regular rock", &methodflags, MethodFilterFlags_RodSuper);
 		else
@@ -2189,11 +2192,11 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			{192.0f / 360, .58f, .96f},
 			{227.0f / 360, .41f, .91f},
 			{313.0f / 360, .52f, .89f},
-			{0.0f, 0.0f, 0.8f}};
+			{0.0f, 0.0f, 0.8f} };
 		ImGui::Text("Average EV range filtering: Tables must have average EV yields\nin the defined ranges. This may allow you to EV train faster by\nfinding places with multiple Pokemon who yield the desired stat.");
-		static std::vector<const char*> avgstatLabels = {"%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal"};
-		static std::vector<float> minAvgEV = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-		static std::vector<float> maxAvgEV = {3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f};
+		static std::vector<const char*> avgstatLabels = { "%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal" };
+		static std::vector<float> minAvgEV = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+		static std::vector<float> maxAvgEV = { 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f };
 		ImGui::BeginTable("averageEVfiltering", 2);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
@@ -2235,9 +2238,9 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		//////////////////////////////////////////////////////////////////
 		ImGui::Text(" ");
 		ImGui::Text("At least one pokemon in each table must have EV yields in these ranges to be shown.\nUse this for more standard EV training.");
-		static std::vector<const char*> singlemonStatLabels = {" %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe", "  %i\nTotal"};
-		static std::vector<int> minSingleMonEV = {0, 0, 0, 0, 0, 0, 0};
-		static std::vector<int> maxSingleMonEV = {3, 3, 3, 3, 3, 3, 3};
+		static std::vector<const char*> singlemonStatLabels = { " %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe", "  %i\nTotal" };
+		static std::vector<int> minSingleMonEV = { 0, 0, 0, 0, 0, 0, 0 };
+		static std::vector<int> maxSingleMonEV = { 3, 3, 3, 3, 3, 3, 3 };
 		ImGui::BeginTable("singleMonEVfiltering", 2);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
@@ -2434,40 +2437,162 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 		}
 		ImGui::SameLine(); WarnMarker("This is a one-way operation. Hidden tables will be inaccessible until the Go button is used again.");
 	}
+}
 
-	if (settingswindowdata->running)
+static void UITableDisplay(Settings* settings, EncounterTable table, GameObject* game)
+{
+	bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
+	if (table.filterReason == Reason_None || showWarning)
 	{
-		//cout << to_string(settingswindowdata->progress) << "\n";
-		if (settingswindowdata->progress == 1.00)
+		if (showWarning)
 		{
-			settingswindowdata->running = false;
-			bool requiringtype = settings->pkmnrequiretypeflags;
-			std::sort(maintables.begin(), maintables.end(), compareByExp);
-			for (EncounterTable& table : maintables)
+			WarnMarker(table.warning.c_str()); ImGui::SameLine();
+		}
+		if (ImGui::CollapsingHeader(table.header.c_str()))
+		{
+			if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
-				string methodnamestring = g_methods[table.method_index]->uiname;
-				if (g_games[table.version_index]->generation == 7 && table.method_index == METHOD_SUPERROD)
+				ImGui::TableSetupColumn("Pokemon");
+				ImGui::TableSetupColumn("Chance");
+				ImGui::TableSetupColumn("Level");
+				ImGui::TableSetupColumn("Base Exp. Yield");
+				ImGui::TableSetupColumn("Avg. Exp.");
+				ImGui::TableSetupColumn("Weighted Avg. Exp.");
+				ImGui::TableHeadersRow();
+				for (Encounter encounter : table.encounters)
 				{
-					//three-rod distinction is gone in gen 7, so we manually change the name here
-					//sucks but i don't see a better way
-					methodnamestring = "Fishing";
-				}
-				table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
-				if (!table.goodtype && requiringtype)
-					table.filterReason = Reason_NoGoodTypes;
-				if (!table.goodEVs)
-					table.filterReason = Reason_NoGoodEVs;
-				for (int i = 0; i < OFFSET_TOTAL + 1; i++)
-				{
-					if (table.averageYields[i] < settings->minAvgEV[i] || table.averageYields[i] > settings->maxAvgEV[i])
+					ImGui::TableNextRow();
+
+					//pokemon
+					ImGui::TableNextColumn();
+					ImGui::Text(encounter.pokemonname.c_str());
+
+					//chance
+					ImGui::TableNextColumn();
+					string pct = to_string(encounter.chance) + "%";
+					ImGui::Text(pct.c_str());
+
+					//level
+					if (encounter.minlevel == encounter.maxlevel)
 					{
-						table.filterReason = Reason_BadEVs;
-						break;
+						ImGui::TableNextColumn();
+						string level = to_string(encounter.minlevel);
+						ImGui::Text(level.c_str());
+					}
+					else
+					{
+						ImGui::TableNextColumn();
+						string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
+						ImGui::Text(level.c_str());
+					}
+
+					//BEY
+					ImGui::TableNextColumn();
+					string baseexp = to_string((long)trunc(encounter.baseExp));
+					ImGui::Text(baseexp.c_str());
+
+					//avg exp
+					ImGui::TableNextColumn();
+					string avgexp = to_string((long)trunc(encounter.avgexp));
+					ImGui::Text(avgexp.c_str());
+
+					//avg exp weighted
+					ImGui::TableNextColumn();
+					if (encounter.avgexpweighted < 10)
+					{
+						string avgexpweighted = to_string(encounter.avgexpweighted);
+						ImGui::Text(avgexpweighted.c_str());
+					}
+					else
+					{
+						string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
+						ImGui::Text(avgexpweighted.c_str());
 					}
 				}
+				ImGui::EndTable();
+			}
+			if (game->generation >= 3)
+			{
+				static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
+				static const char* emptylabels[] = { "", "", "", "", "", "", "" };
+				//wanted to have graph Y range change to match the highest bar value and round up to next int, but the graph would not expand to fill the entire canvas, which looked really bad
+				double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL]);
+				int ticks = (int)floor(graphmax * 5) + 1;
+				ImPlot::PushColormap(ImPlotColormap_PKMNstats);
+				if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
+				{
+					ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, 6.5, 0, emptylabels);
+					ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
+					ImPlot::SetupAxesLimits(-0.5, 6.5, 0, graphmax);
+					ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+					for (int i = 0; i < OFFSET_TOTAL + 1; i++)
+					{
+						ImPlot::PlotBars(ilabels[i], &table.averageYields[i], 1, 1, i);
+					}
+					ImPlot::EndPlot();
+				}
+				ImPlot::PopColormap();
 			}
 		}
 	}
+}
+
+static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, string basepath)
+{
+#ifndef _DEBUG
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+#endif
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+
+	const char* f_games[] = { "Blue", "Red", "Yellow",//2
+		"Gold", "Silver", "Crystal",//5
+		"Ruby", "Sapphire", "Emerald", "FireRed", "LeafGreen",//10
+		"Diamond", "Pearl", "Platinum", "HeartGold", "SoulSilver",//15
+		"Black", "White", "Black 2", "White 2",//19
+		"X", "Y",//21
+		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26 (ALLGAMES_INDEX)
+	};
+
+	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
+	static int game_current = 0;
+	ImGui::Combo("Game", &game_current, f_games, IM_ARRAYSIZE(f_games));
+	newsettings->wantedgame_index = game_current;
+
+	bool rse = false;
+	bool dpp = false;
+	bool hgss = false;
+	bool allgames = false;
+
+	switch (newsettings->wantedgame_index)
+	{
+	case GAME_RUBY:
+	case GAME_SAPPHIRE:
+	case GAME_EMERALD:
+		rse = true;
+		break;
+	case GAME_DIAMOND:
+	case GAME_PEARL:
+	case GAME_PLATINUM:
+		dpp = true;
+		break;
+	case GAME_HEARTGOLD:
+	case GAME_SOULSILVER:
+		hgss = true;
+		break;
+	case ALLGAMES_INDEX:
+		allgames = true;
+		break;
+	}
+
+	GameObject *game = g_games[newsettings->wantedgame_index];
+
+	UIMiscSettings(game, settingswindowdata, newsettings, allgames, rse, dpp, hgss);
+	UISettingSections(game, newsettings, allgames, rse, hgss);
+
+	if (settingswindowdata->running && settingswindowdata->progress == 1.00)
+		TablePostProcess(settingswindowdata, settings);
 
 	if (ImGui::Button("Go!") && !settingswindowdata->running)
 	{
@@ -2542,105 +2667,9 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 	}
 
 	if (!settingswindowdata->running)
-	{
 		for (EncounterTable& table : maintables)
-		{
-			bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
-			if (table.filterReason == Reason_None || showWarning)
-			{
-				if (showWarning)
-				{
-					WarnMarker(table.warning.c_str()); ImGui::SameLine();
-				}
-				if (ImGui::CollapsingHeader(table.header.c_str()))
-				{
-					if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
-					{
-						ImGui::TableSetupColumn("Pokemon");
-						ImGui::TableSetupColumn("Chance");
-						ImGui::TableSetupColumn("Level");
-						ImGui::TableSetupColumn("Base Exp. Yield");
-						ImGui::TableSetupColumn("Avg. Exp.");
-						ImGui::TableSetupColumn("Weighted Avg. Exp.");
-						ImGui::TableHeadersRow();
-						for (Encounter encounter : table.encounters)
-						{
-							ImGui::TableNextRow();
+			UITableDisplay(settings, table, game);
 
-							//pokemon
-							ImGui::TableNextColumn();
-							ImGui::Text(encounter.pokemonname.c_str());
-
-							//chance
-							ImGui::TableNextColumn();
-							string pct = to_string(encounter.chance) + "%";
-							ImGui::Text(pct.c_str());
-
-							//level
-							if (encounter.minlevel == encounter.maxlevel)
-							{
-								ImGui::TableNextColumn();
-								string level = to_string(encounter.minlevel);
-								ImGui::Text(level.c_str());
-							}
-							else
-							{
-								ImGui::TableNextColumn();
-								string level = to_string(encounter.minlevel) + " - " + to_string(encounter.maxlevel);
-								ImGui::Text(level.c_str());
-							}
-
-							//BEY
-							ImGui::TableNextColumn();
-							string baseexp = to_string((long)trunc(encounter.baseExp));
-							ImGui::Text(baseexp.c_str());
-
-							//avg exp
-							ImGui::TableNextColumn();
-							string avgexp = to_string((long)trunc(encounter.avgexp));
-							ImGui::Text(avgexp.c_str());
-
-							//avg exp weighted
-							ImGui::TableNextColumn();
-							if (encounter.avgexpweighted < 10)
-							{
-								string avgexpweighted = to_string(encounter.avgexpweighted);
-								ImGui::Text(avgexpweighted.c_str());
-							}
-							else
-							{
-								string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
-								ImGui::Text(avgexpweighted.c_str());
-							}
-						}
-						ImGui::EndTable();
-					}
-					if (game->generation >= 3)
-					{
-						static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
-						static const char* emptylabels[] = { "", "", "", "", "", "", "" };
-						//wanted to have graph Y range change to match the highest bar value and round up to next int, but the graph would not expand to fill the entire canvas, which looked really bad
-						double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL]);
-						int ticks = (int)floor(graphmax * 5) + 1;
-						ImPlot::PushColormap(ImPlotColormap_PKMNstats);
-						if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
-						{
-							ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, 6.5, 0, emptylabels);
-							ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
-							ImPlot::SetupAxesLimits(-0.5, 6.5, 0, graphmax);
-							ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-							for (int i = 0; i < OFFSET_TOTAL + 1; i++)
-							{
-								ImPlot::PlotBars(ilabels[i], &table.averageYields[i], 1, 1, i);
-							}
-							ImPlot::EndPlot();
-						}
-						ImPlot::PopColormap();
-					}
-				}
-			}
-		}
-	}
 	ImGui::End();
 	settingswindowdata->generation_lastframe = game->generation;
 }
@@ -2657,6 +2686,45 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 	g_games.push_back(newGame);
 }
 
+static void RegisterGames()
+{
+	//g1
+	RegisterGame("Blue", "blue", "gen123_exp.csv", 1, { 258 , 349 });
+	RegisterGame("Red", "red", "gen123_exp.csv", 1, { 258 , 349 });
+	RegisterGame("Yellow", "yellow", "gen123_exp.csv", 1, { 258 , 349 });
+	//g2
+	RegisterGame("Gold", "gold", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
+	RegisterGame("Silver", "silver", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
+	RegisterGame("Crystal", "crystal", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
+	//g3
+	RegisterGame("Ruby", "ruby", "gen123_exp.csv", 3, { 350, 449 });
+	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", 3, { 350, 449 });
+	RegisterGame("Emerald", "emerald", "gen123_exp.csv", 3, { 350, 449 });
+	RegisterGame("FireRed", "firered", "gen123_exp.csv", 3, { 258, 572, 825, 825 });
+	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", 3, { 258, 572, 825, 825 });
+	//g4
+	RegisterGame("Diamond", "diamond", "gen4_exp.csv", 4, { 1, 183 });
+	RegisterGame("Pearl", "pearl", "gen4_exp.csv", 4, { 1, 183 });
+	RegisterGame("Platinum", "platinum", "gen4_exp.csv", 4, { 1, 183 });
+	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", 4, { 184, 349 });
+	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", 4, { 184, 349 });
+	//g5
+	RegisterGame("Black", "black", "bw1_exp.csv", 5, { 576, 655 });
+	RegisterGame("White", "white", "bw1_exp.csv", 5, { 576, 655 });
+	RegisterGame("Black 2", "black-2", "bw2_exp.csv", 5, { 576, 707 });
+	RegisterGame("White 2", "white-2", "bw2_exp.csv", 5, { 576, 707 });
+	//g6
+	RegisterGame("X", "x", "gen6_exp.csv", 6, { 708, 760 });
+	RegisterGame("Y", "y", "gen6_exp.csv", 6, { 708, 760 });
+	//g7
+	RegisterGame("Sun", "sun", "gen7_exp.csv", 7, { 1035, 1156 });
+	RegisterGame("Moon", "moon", "gen7_exp.csv", 7, { 1035, 1156 });
+	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", 7, { 1035, 1156 });
+	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", 7, { 1035, 1156 });
+	//extras
+	RegisterGame("All", "all", "ALL_EXPFILE", 0, { 1, 1156 });
+}
+
 static void RegisterMethod(const char* uiname, const char* internalname, int flag)
 {
 	MethodObject* newMethod = new MethodObject;
@@ -2666,51 +2734,8 @@ static void RegisterMethod(const char* uiname, const char* internalname, int fla
 	g_methods.push_back(newMethod);
 }
 
-// Main code
-int main(int, char**)
+static void RegisterMethods()
 {
-	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based\n";
-	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
-	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
-
-	//games
-	//g1
-	RegisterGame("Blue", "blue", "gen123_exp.csv", 1, {258 , 349});
-	RegisterGame("Red", "red", "gen123_exp.csv", 1, {258 , 349});
-	RegisterGame("Yellow", "yellow", "gen123_exp.csv", 1, {258 , 349});
-	//g2
-	RegisterGame("Gold", "gold", "gen123_exp.csv", 2, {184, 349, 798, 798});
-	RegisterGame("Silver", "silver", "gen123_exp.csv", 2, {184, 349, 798, 798});
-	RegisterGame("Crystal", "crystal", "gen123_exp.csv", 2, {184, 349, 798, 798});
-	//g3
-	RegisterGame("Ruby", "ruby", "gen123_exp.csv", 3, {350, 449});
-	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", 3, {350, 449});
-	RegisterGame("Emerald", "emerald", "gen123_exp.csv", 3, {350, 449});
-	RegisterGame("FireRed", "firered", "gen123_exp.csv", 3, {258, 572, 825, 825});
-	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", 3, {258, 572, 825, 825});
-	//g4
-	RegisterGame("Diamond", "diamond", "gen4_exp.csv", 4, {1, 183});
-	RegisterGame("Pearl", "pearl", "gen4_exp.csv", 4, {1, 183});
-	RegisterGame("Platinum", "platinum", "gen4_exp.csv", 4, {1, 183});
-	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", 4, {184, 349});
-	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", 4, {184, 349});
-	//g5
-	RegisterGame("Black", "black", "bw1_exp.csv", 5, {576, 655});
-	RegisterGame("White", "white", "bw1_exp.csv", 5, {576, 655});
-	RegisterGame("Black 2", "black-2", "bw2_exp.csv", 5, {576, 707});
-	RegisterGame("White 2", "white-2", "bw2_exp.csv", 5, {576, 707});
-	//g6
-	RegisterGame("X", "x", "gen6_exp.csv", 6, {708, 760});
-	RegisterGame("Y", "y", "gen6_exp.csv", 6, {708, 760});
-	//g7
-	RegisterGame("Sun", "sun", "gen7_exp.csv", 7, {1035, 1156});
-	RegisterGame("Moon", "moon", "gen7_exp.csv", 7, {1035, 1156});
-	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", 7, {1035, 1156});
-	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", 7, {1035, 1156});
-	//extras
-	RegisterGame("All", "all", "ALL_EXPFILE", 0, {1, 1156});
-
-	//methods
 	//g1
 	RegisterMethod("Walk", "walk", MethodFilterFlags_Walk);
 	RegisterMethod("Surf", "surf", MethodFilterFlags_Surf);
@@ -2745,7 +2770,18 @@ int main(int, char**)
 	RegisterMethod("Dirt Clouds", "ambush-dirt", MethodFilterFlags_Ambush);
 	RegisterMethod("Chase", "ambush-chase", MethodFilterFlags_Ambush);
 	RegisterMethod("Sand Clouds", "ambush-sand", MethodFilterFlags_Ambush);
+}
 
+//most stuff below this line is imgui
+int main(int, char**)
+{
+	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based\n";
+	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
+	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
+
+	RegisterGames();
+	RegisterMethods();
+	
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ExpSqueeze", nullptr };
@@ -2779,22 +2815,6 @@ int main(int, char**)
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX9_Init(g_pd3dDevice);
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != nullptr);
 
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -2854,7 +2874,7 @@ int main(int, char**)
 #endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        dosettingswindow(&settings, &newsettings, &settingswindowdata, basepath);
+        UIMainWindow(&settings, &newsettings, &settingswindowdata, basepath);
 
         // Rendering
 		ImGui::PopStyleVar();
