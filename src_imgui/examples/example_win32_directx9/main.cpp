@@ -194,6 +194,7 @@ struct Settings
 	std::vector<float> maxAvgEV = {3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f};
 	std::vector<int> minSingleMonEV = {0, 0, 0, 0, 0, 0, 0};
 	std::vector<int> maxSingleMonEV = {3, 3, 3, 3, 3, 3, 3};
+	std::vector<int> partyYields = { 1, 0, 0, 0, 0, 0, 1, -10000, 61 };
 };
 
 struct SettingsWindowData
@@ -1443,9 +1444,7 @@ static int ParseLocationDataFile(int iFile)
 	if (stat(locationareapath.c_str(), &filestatus) != 0)
 	{
 		//cout << "File " + locationareapath + " not found\n";
-		//for whatever reason, some folders are missing from pokeapi.
-		//the first missing file as of right now is #65. this folder is also missing in their live api (https://pokeapi.co/api/v2/location-area/65/)
-		//so it's not simply an omission on my part or the api-data repo.
+		//we delete some folders because they're redundant, and sometimes pokeapi is just missing folders on its own
 		//return quietly
 		return 1;
 	}
@@ -1775,7 +1774,11 @@ static bool ReadTables()
 						{
 							str2 = textLine.substr(commaPos + 1, s2End - commaPos - 1);
 						}
-						ProcessStat(encounter, &table, j, stoi(str2), generation, chancescale);
+						int stat = stoi(str2);
+						//ditto reads from setting (because of Transform copying stats)
+						if (encounter.pokemonname == "ditto" && game->generation >= 3)
+							stat = g_settings.partyYields[j];
+						ProcessStat(encounter, &table, j, stat, generation, chancescale);
 					}
 				}
 			}
@@ -2186,16 +2189,16 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 		newsettings->movefiltertypeflags = moveFilterTypeFlags;
 	}
 	*/
+	static std::vector<std::vector<float>> statColors = {
+		{93.0f / 360, .56f, .90f},
+		{50.0f / 360, .57f, .96f},
+		{22.0f / 360, .57f, .94f},
+		{192.0f / 360, .58f, .96f},
+		{227.0f / 360, .41f, .91f},
+		{313.0f / 360, .52f, .89f},
+		{0.0f, 0.0f, 0.8f} };
 	if (game->generation >= 3 && ImGui::CollapsingHeader("Effort Values", ImGuiTreeNodeFlags_None))
 	{
-		static std::vector<std::vector<float>> statColors = {
-			{93.0f / 360, .56f, .90f},
-			{50.0f / 360, .57f, .96f},
-			{22.0f / 360, .57f, .94f},
-			{192.0f / 360, .58f, .96f},
-			{227.0f / 360, .41f, .91f},
-			{313.0f / 360, .52f, .89f},
-			{0.0f, 0.0f, 0.8f} };
 		ImGui::Text("Average EV range filtering: Tables must have average EV yields\nin the defined ranges. This may allow you to EV train faster by\nfinding places with multiple Pokemon who yield the desired stat.");
 		static std::vector<const char*> avgstatLabels = { "%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal" };
 		static std::vector<float> minAvgEV = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
@@ -2284,6 +2287,49 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 		g_newsettings.minSingleMonEV = minSingleMonEV;
 		g_newsettings.maxSingleMonEV = maxSingleMonEV;
 	}
+
+	if (g_settingswindowdata.generation_lastframe != game->generation)
+	{
+		if (game->generation <= 4)
+			g_newsettings.partyYields[OFFSET_BEY] = 61;
+		else
+			g_newsettings.partyYields[OFFSET_BEY] = 101;
+	}
+
+	if (ImGui::CollapsingHeader("Party Pokemon", ImGuiTreeNodeFlags_None))
+	{
+		if (game->generation >= 3)
+		{
+			ImGui::InputInt("Party Base EXP Yield", &g_newsettings.partyYields[OFFSET_BEY]);
+			ImGui::SameLine();
+			if (game->generation <= 4)
+				HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 61.");
+			else
+				HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 101.");
+			g_newsettings.partyYields[OFFSET_BEY] = g_newsettings.partyYields[OFFSET_BEY];
+		}
+		ImGui::Text("Party EV Yields");
+		ImGui::SameLine();
+		HelpMarker("When wild Ditto uses Transform, it will copy the EV yield stats of its target. If you'll allow Ditto to Transform, enter the values it will copy. Default is 1 in HP.");
+		static std::vector<const char*> statLabels = { " %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe" };
+		for (int i = 0; i < OFFSET_SPEED + 1; i++)
+		{
+			if (i > 0) ImGui::SameLine();
+			ImGui::PushID(i);
+			ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor(0, 0, 0));
+			ImGui::PushStyleColor(ImGuiCol_FrameBg, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_SliderGrab, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2]));
+			ImGui::VSliderInt("##partyEVs", ImVec2(i == 6 ? 40.0f : 30.0f, 80.0f), &g_newsettings.partyYields[i], 0, 3, statLabels[i]);
+			ImGui::PopStyleColor(5);
+			ImGui::PopID();
+		}
+		g_newsettings.partyYields[OFFSET_TOTAL] =
+			g_newsettings.partyYields[OFFSET_HP] + g_newsettings.partyYields[OFFSET_ATTACK] + g_newsettings.partyYields[OFFSET_DEFENSE] +
+			g_newsettings.partyYields[OFFSET_SP_ATTACK] + g_newsettings.partyYields[OFFSET_SP_DEFENSE] + g_newsettings.partyYields[OFFSET_SPEED];
+	}
+
 	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Sort tables by... (Use after pressing Go!)");
@@ -2625,6 +2671,7 @@ static void UIMainWindow()
 		g_settings.maxAvgEV = g_newsettings.maxAvgEV;
 		g_settings.minSingleMonEV = g_newsettings.minSingleMonEV;
 		g_settings.maxSingleMonEV = g_newsettings.maxSingleMonEV;
+		g_settings.partyYields = g_newsettings.partyYields;
 
 		maintables.clear();
 		maintables.shrink_to_fit();
@@ -2666,7 +2713,8 @@ static void UIMainWindow()
 		g_settings.minAvgEV != g_newsettings.minAvgEV ||
 		g_settings.maxAvgEV != g_newsettings.maxAvgEV ||
 		g_settings.minSingleMonEV != g_newsettings.minSingleMonEV ||
-		g_settings.maxSingleMonEV != g_newsettings.maxSingleMonEV)
+		g_settings.maxSingleMonEV != g_newsettings.maxSingleMonEV ||
+		g_settings.partyYields != g_newsettings.partyYields)
 	{
 		if (!maintables.empty())
 		{
