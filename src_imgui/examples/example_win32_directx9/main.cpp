@@ -263,6 +263,9 @@ struct MethodObject
 
 vector<MethodObject*> g_methods;
 vector<EncounterTable> maintables;
+string g_pkmndatapath = "pkmndata/";
+Settings g_settings, g_newsettings;
+SettingsWindowData g_settingswindowdata;
 
 #ifdef _DEBUG
 vector<string> g_debugdata;
@@ -359,13 +362,13 @@ static void WarnMarker(const char* desc)
 	}
 }
 
-static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
+static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
 	//throw out the whole table
-	if (settings->maxallowedlevel < maxlevel)
+	if (g_settings.maxallowedlevel < maxlevel)
 		filterReason = Reason_OverLevelCap;
 
-	if (settings->repellevel <= maxlevel)
+	if (g_settings.repellevel <= maxlevel)
 	{
 		Encounter newEnc;
 		newEnc.chance = chance;
@@ -375,7 +378,7 @@ static void RegisterEncounter(Settings* settings, __int64 chance, __int64 minlev
 		bool makenewtable = true;
 		for (EncounterTable& table : maintables)
 		{
-			if (table.placename == placename && table.method_index == method_index && (settings->wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+			if (table.placename == placename && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 			{
 				//don't lose our reason just because another encounter was ok
 				//prioritize OverLevelCap because BadType may simply be a warning
@@ -633,13 +636,13 @@ static bool isEqual(json_value* initial, json_value* compare)
 	}
 }
 */
-static bool InvalidateCondition(Settings* settings, string condition, int iFile)
+static bool InvalidateCondition(string condition, int iFile)
 {
 	if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
 	{
-		string wantedtime = settings->wantedtime;
+		string wantedtime = g_settings.wantedtime;
 		//no morning in gen 7. if the wanted game is All and the wanted time is morning, pretend we wanted day instead
-		if (settings->wantedtime == "time-morning" && iFile >= 1035)
+		if (g_settings.wantedtime == "time-morning" && iFile >= 1035)
 			wantedtime = "time-day";
 		//time: morning/day/night (relevant in gens 2, 4, 7)
 		if (wantedtime != condition)
@@ -648,31 +651,31 @@ static bool InvalidateCondition(Settings* settings, string condition, int iFile)
 	if (condition == "season-spring" || condition == "season-summer" || condition == "season-autumn" || condition == "season-winter")
 	{
 		//season: spring/summer/autumn/winter (gen 5)
-		if (settings->wantedseason != condition)
+		if (g_settings.wantedseason != condition)
 			return true;
 	}
 	if (condition == "swarm-yes" || condition == "swarm-no")
 	{
 		//swarm: yes/no (gen 2-5)
-		if (settings->wantswarm != (condition == "swarm-yes"))
+		if (g_settings.wantswarm != (condition == "swarm-yes"))
 			return true;
 	}
 	if (condition == "radar-on" || condition == "radar-off")
 	{
 		//radar: on/off (DPP)
-		if (settings->wantradar != (condition == "radar-on"))
+		if (g_settings.wantradar != (condition == "radar-on"))
 			return true;
 	}
 	if (condition == "slot2-none" || condition == "slot2-ruby" || condition == "slot2-sapphire" || condition == "slot2-emerald" || condition == "slot2-firered" || condition == "slot2-leafgreen")
 	{
 		//slot2: none/ruby/sapphire/emerald/firered/leafgreen (DPP)
-		if (settings->wantedslot2game != condition)
+		if (g_settings.wantedslot2game != condition)
 			return true;
 	}
 	if (condition == "radio-off" || condition == "radio-hoenn" || condition == "radio-sinnoh")
 	{
 		//radio: off/hoenn/sinnoh (HGSS)
-		if (settings->wantedradiostation != condition)
+		if (g_settings.wantedradiostation != condition)
 			return true;
 	}
 	return false;
@@ -768,7 +771,7 @@ static string CreateWarning(json_value* containerobj, string pokemonname, int fl
 	return "";//no match
 }
 
-static bool IsPokemonMatchingType(Settings* settings, string path, string version, int flags, string pokemonname, string* warning)
+static bool IsPokemonMatchingType(string path, string version, int flags, string pokemonname, string* warning)
 {
 	FILE* fp;
 	struct stat filestatus;
@@ -851,7 +854,7 @@ static bool IsPokemonMatchingType(Settings* settings, string path, string versio
 		//and change generation we look for based on version we found in json file
 		//we only evaluate a pokemon as it pertains to one game at a time
 		int gameindex = 0;
-		if (settings->wantedgame_index == ALLGAMES_INDEX)
+		if (g_settings.wantedgame_index == ALLGAMES_INDEX)
 		{
 			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 			{
@@ -864,7 +867,7 @@ static bool IsPokemonMatchingType(Settings* settings, string path, string versio
 		}
 		else
 		{
-			gameindex = settings->wantedgame_index;
+			gameindex = g_settings.wantedgame_index;
 		}
 		assert(gameindex != GAMES_TOTAL);
 		for (size_t pasttypeIdx = 0; pasttypeIdx < pasttypes->u.array.length; pasttypeIdx++)
@@ -1092,7 +1095,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason/*, string basepath, string url*/, string warning, bool goodtype, bool goodEVs)
+static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason, string warning, bool goodtype, bool goodEVs)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -1106,7 +1109,7 @@ static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock
 			RecordCustomData(condition);
 #endif //_DEBUG
 			//make sure encounter meets applicable parameters
-			if (InvalidateCondition(settings, condition, iFile))
+			if (InvalidateCondition(condition, iFile))
 				return false;
 		}
 	}
@@ -1125,7 +1128,7 @@ static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock
 	}
 
 	string method = FindValueInObjectByKey(methodobj, "name")->u.string.ptr;
-	int method_index = ValidateMethod(settings->methodflags, method);
+	int method_index = ValidateMethod(g_settings.methodflags, method);
 	if (method_index == -1)
 		return false;
 
@@ -1133,14 +1136,14 @@ static bool ParseEncounterDetails(Settings* settings, json_value* encdetailblock
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(settings, chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs);
+	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs);
 	return true;
 }
 
-static bool FindInExpFile(int offset, string basepath, string expfile, string pokemonname, int* stat)
+static bool FindInExpFile(int offset, string expfile, string pokemonname, int* stat)
 {
-	string path = basepath + "exp-gain-stats/" + expfile;
-	ifstream ReadFile(path);
+	string expfilepath = g_pkmndatapath + "exp-gain-stats/" + expfile;
+	ifstream ReadFile(expfilepath);
 	string textLine;
 	bool foundmon = false;
 	while (getline(ReadFile, textLine))
@@ -1194,10 +1197,10 @@ static double ExperienceScaleForLevel(int generation, double defeatedLevel, doub
 		return avgExp;
 }
 
-static bool IsPokemonInEVRangeGen3(Settings* settings, string basepath, string version, string pokemonname)
+static bool IsPokemonInEVRangeGen3(string version, string pokemonname)
 {
 	string expfile;
-	if (settings->wantedgame_index == ALLGAMES_INDEX)
+	if (g_settings.wantedgame_index == ALLGAMES_INDEX)
 	{
 		for (int i = 0; i < GAMES_TOTAL; i++)
 		{
@@ -1209,39 +1212,39 @@ static bool IsPokemonInEVRangeGen3(Settings* settings, string basepath, string v
 		}
 	}
 	else
-		expfile = g_games[settings->wantedgame_index]->expfile;
+		expfile = g_games[g_settings.wantedgame_index]->expfile;
 	for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 	{
-		if (settings->minSingleMonEV[i] == 0 && settings->maxSingleMonEV[i] == 3)
+		if (g_settings.minSingleMonEV[i] == 0 && g_settings.maxSingleMonEV[i] == 3)
 			continue;
 		int stat;
-		if (!FindInExpFile(i, basepath, expfile, pokemonname, &stat))
+		if (!FindInExpFile(i, expfile, pokemonname, &stat))
 		{
 			cout << "ERROR: Could not find pokemon named '" << pokemonname << "' in " << expfile << "\n";
 			continue;
 		}
-		if (stat < settings->minSingleMonEV[i] || stat > settings->maxSingleMonEV[i])
+		if (stat < g_settings.minSingleMonEV[i] || stat > g_settings.maxSingleMonEV[i])
 			return false;
 	}
 	return true;
 }
 
-static void ProcessStat(Encounter encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale, Settings* settings)
+static void ProcessStat(Encounter encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale)
 {
 	if (offset == OFFSET_BEY)
 	{
 		encounter.baseExp = stat;
-		encounter.minlevel = max(encounter.minlevel, settings->repellevel);
+		encounter.minlevel = max(encounter.minlevel, g_settings.repellevel);
 		double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
 		encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
 		//level scaling
-		if (settings->scalinglevel != 0)
+		if (g_settings.scalinglevel != 0)
 		{
-			encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, settings->scalinglevel, encounter.avgexp);
+			encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, g_settings.scalinglevel, encounter.avgexp);
 		}
 		assert(encounter.avgexp > 0);
 		encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table->expectedtotalpercent;
-		if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+		if (g_settings.printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
 #ifdef _DEBUG
 		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
 		//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
@@ -1275,10 +1278,10 @@ static void ProcessStat(Encounter encounter, EncounterTable* table, int offset, 
 }
 
 //find gen 3 or 5 swarm encounter. these are different than others because they make the table into X percent the special encounter and 100-X everything else. no slots are overridden.
-static int AddHoennUnovaSwarm(string basepath, EncounterTable* table, int generation, Settings* settings)
+static int AddHoennUnovaSwarm(EncounterTable* table, int generation)
 {
-	string path = basepath + "swarm-data/" + to_string(table->filenumber) + ".txt";
-	ifstream ReadFile(path);
+	string swarmdatapath = g_pkmndatapath + "swarm-data/" + to_string(table->filenumber) + ".txt";
+	ifstream ReadFile(swarmdatapath);
 	string textLine;
 	while (getline(ReadFile, textLine))
 	{
@@ -1289,7 +1292,7 @@ static int AddHoennUnovaSwarm(string basepath, EncounterTable* table, int genera
 		size_t s2End = textLine.find(',', s2Start + 1);
 		string str2 = textLine.substr(s2Start, s2End - s2Start);//level
 
-		if (generation == 5 && str1 == "croagunk" && settings->wantedseason == "season-winter")
+		if (generation == 5 && str1 == "croagunk" && g_settings.wantedseason == "season-winter")
 			break;//special case. croagunk will not appear in winter even by swarm. when the game tries to spawn a croagunk swarm in winter, it simply will not do anything.
 
 		string targetgame;
@@ -1340,7 +1343,7 @@ static int AddHoennUnovaSwarm(string basepath, EncounterTable* table, int genera
 	return 0;
 }
 
-static int ParseEncounterBlock(Settings* settings, string basepath, json_value* versiondetails, json_value* encounterblock, string placename, int iFile, GameObject* game)
+static int ParseEncounterBlock(json_value* versiondetails, json_value* encounterblock, string placename, int iFile, GameObject* game)
 {
 	for (size_t verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
 	{
@@ -1360,19 +1363,19 @@ static int ParseEncounterBlock(Settings* settings, string basepath, json_value* 
 		string givengame = FindValueInObjectByKey(version, "name")->u.string.ptr;
 
 		//ensure this pokemon is in our game version before doing anything else
-		if (!(givengame == game->internalname || settings->wantedgame_index == ALLGAMES_INDEX))
+		if (!(givengame == game->internalname || g_settings.wantedgame_index == ALLGAMES_INDEX))
 			continue;
 
 		//do NOT remove these {} brackets, or the else statement will be linked up to the wrong if statement
 		int gameindex;
-		if (settings->wantedgame_index == ALLGAMES_INDEX)
+		if (g_settings.wantedgame_index == ALLGAMES_INDEX)
 		{
 			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 				if (givengame == g_games[gameindex]->internalname)
 					break;
 		}
 		else
-			gameindex = settings->wantedgame_index;
+			gameindex = g_settings.wantedgame_index;
 		
 		json_value* pokemon = FindObjectInObjectByName(encounterblock, "pokemon");
 		if (!pokemon)
@@ -1383,10 +1386,10 @@ static int ParseEncounterBlock(Settings* settings, string basepath, json_value* 
 		string pokemonname = FindValueInObjectByKey(pokemon, "name")->u.string.ptr;
 		bool filterReason = Reason_None;
 		string warning = "";
-		if (settings->pkmnfiltertypeflags != 0)
+		if (g_settings.pkmnfiltertypeflags != 0)
 		{
 			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-			if (IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnfiltertypeflags, pokemonname, &warning))
+			if (IsPokemonMatchingType(g_pkmndatapath + url + "index.json", givengame, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
 			{
 				//pokemon is a type we don't allow
 				//cout << pokemonname << " is bad type\n";
@@ -1394,12 +1397,12 @@ static int ParseEncounterBlock(Settings* settings, string basepath, json_value* 
 			}
 		}
 		bool goodtype = false;
-		if (settings->pkmnrequiretypeflags != 0)
+		if (g_settings.pkmnrequiretypeflags != 0)
 		{
 			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-			goodtype = IsPokemonMatchingType(settings, basepath + url + "index.json", givengame, settings->pkmnrequiretypeflags, pokemonname, &warning);
+			goodtype = IsPokemonMatchingType(g_pkmndatapath + url + "index.json", givengame, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
 		}
-		bool goodEVs = g_games[gameindex]->generation >= 3 ? IsPokemonInEVRangeGen3(settings, basepath, givengame, pokemonname) : true;
+		bool goodEVs = g_games[gameindex]->generation >= 3 ? IsPokemonInEVRangeGen3(givengame, pokemonname) : true;
 
 		json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
 		if (!encounterdetails)
@@ -1416,20 +1419,20 @@ static int ParseEncounterBlock(Settings* settings, string basepath, json_value* 
 				return 0;
 			}
 
-			if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
+			if (!ParseEncounterDetails(encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
 				continue;//encounter was bad for some reason
 		}
 	}
 	return 1;
 }
 
-static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
+static int ParseLocationDataFile(int iFile)
 {
 	//if (iFile != 57)
 	//	return 1;
-	string path = basepath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
+	string locationareapath = g_pkmndatapath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
 	//cout << path << "\n";
-	GameObject* game = g_games[settings->wantedgame_index];
+	GameObject* game = g_games[g_settings.wantedgame_index];
 	string placename;//only one place name per file
 	FILE* fp;
 	struct stat filestatus;
@@ -1437,9 +1440,9 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 	char* file_contents;
 	json_char* json;
 	json_value* file;
-	if (stat(path.c_str(), &filestatus) != 0)
+	if (stat(locationareapath.c_str(), &filestatus) != 0)
 	{
-		//cout << "File " + path + " not found\n";
+		//cout << "File " + locationareapath + " not found\n";
 		//for whatever reason, some folders are missing from pokeapi.
 		//the first missing file as of right now is #65. this folder is also missing in their live api (https://pokeapi.co/api/v2/location-area/65/)
 		//so it's not simply an omission on my part or the api-data repo.
@@ -1453,10 +1456,10 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		return 0;
 	}
-	fp = fopen(path.c_str(), "rb");
+	fp = fopen(locationareapath.c_str(), "rb");
 	if (!fp)
 	{
-		cout << "Unable to open " + path + "\n";
+		cout << "Unable to open " + locationareapath + "\n";
 		//fclose(fp);
 		free(file_contents);
 		return 0;
@@ -1464,7 +1467,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
-		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+		cout << "Unable to read content of " + locationareapath + " ret " + to_string(readNum) + "\n";
 		cout << "ferror " + to_string(ferror(fp)) + "\n";
 		cout << "feof " + to_string(feof(fp)) + "\n";
 		cout << "file_size " + to_string(file_size) + "\n";
@@ -1529,7 +1532,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 			assert(0);
 			return 0;
 		}
-		int result = ParseEncounterBlock(settings, basepath, versiondetails, encounterblock, placename, iFile, game);
+		int result = ParseEncounterBlock(versiondetails, encounterblock, placename, iFile, game);
 		if (result == 0)
 			return 0;
 	}
@@ -1664,10 +1667,10 @@ static bool compareByExpPerTotalEV(const EncounterTable a, const EncounterTable 
 	return a.efficientEVs[OFFSET_TOTAL].expPerEV > b.efficientEVs[OFFSET_TOTAL].expPerEV;
 }
 
-static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdata, string basepath)
+static bool ReadTables()
 {
-	if (settings->printtext) cout << "Reading encounter data\n";
-	GameObject* game = g_games[settings->wantedgame_index];
+	if (g_settings.printtext) cout << "Reading encounter data\n";
+	GameObject* game = g_games[g_settings.wantedgame_index];
 	
 	//look at ranges to find how many files we're looking through for the progress bar
 	int totalfiles = 0;
@@ -1683,28 +1686,28 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
 		int a = i + 1;
-		if (settings->printtext) cout << "|     PROGRESS     |\n";
+		if (g_settings.printtext) cout << "|     PROGRESS     |\n";
 		for (int j = game->folderRanges[i]; j <= game->folderRanges[a]; j++)
 		{
 			filesread++;
-			settingswindowdata->progress = (1 - (static_cast<float>(totalfiles) - filesread) / totalfiles) * 0.5;
-			if (settingswindowdata->progress >= (notch * 0.05))
+			g_settingswindowdata.progress = (1 - (static_cast<float>(totalfiles) - filesread) / totalfiles) * 0.5;
+			if (g_settingswindowdata.progress >= (notch * 0.05))
 			{
-				if (settings->printtext) cout << "-";
+				if (g_settings.printtext) cout << "-";
 				notch++;
 			}
-			if (ParseLocationDataFile(basepath, j, settings) == 0)
+			if (ParseLocationDataFile(j) == 0)
 				return true;
 		}
 	}
 
-	if (settings->printtext) cout << "\n";
+	if (g_settings.printtext) cout << "\n";
 	int numTablesProcessed = 0;
 	for (EncounterTable& table : maintables)
 	{
 		string expfile = game->expfile;
 		int generation = game->generation;
-		if (settings->wantedgame_index == ALLGAMES_INDEX)
+		if (g_settings.wantedgame_index == ALLGAMES_INDEX)
 		{
 			//change exp file based on table's game
 			expfile = g_games[table.version_index]->expfile;
@@ -1713,23 +1716,23 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 		//progress bar
 		numTablesProcessed++;
 		//cout << to_string(settingswindowdata->progress) << "\n";
-		if (settingswindowdata->progress >= (notch * 0.05))
+		if (g_settingswindowdata.progress >= (notch * 0.05))
 		{
-			if (settings->printtext) cout << "-";
+			if (g_settings.printtext) cout << "-";
 			notch++;
 		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
-		if (table.filterReason == Reason_None || (settings->pkmntypewarn && table.filterReason == Reason_BadType))
+		if (table.filterReason == Reason_None || (g_settings.pkmntypewarn && table.filterReason == Reason_BadType))
 		{
-			if (settings->printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			if (g_settings.printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			table.averageYields[OFFSET_EXP - 1] = 0;
 			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 
 			bool specialswarm = false;
 			int extrachance = 0;
-			if (settings->wantswarm && table.method_index == METHOD_WALK && (generation == 5 || table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD))
+			if (g_settings.wantswarm && table.method_index == METHOD_WALK && (generation == 5 || table.version_index == GAME_RUBY || table.version_index == GAME_SAPPHIRE || table.version_index == GAME_EMERALD))
 			{
-				if (AddHoennUnovaSwarm(basepath, &table, generation, settings))
+				if (AddHoennUnovaSwarm(&table, generation))
 				{
 					specialswarm = true;
 					extrachance = (generation == 5) ? 40 : 50;
@@ -1741,8 +1744,8 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 				double chancescale = 1;
 				if (specialswarm)
 					chancescale = (generation == 5) ? 0.6 : 0.5;
-				string path = basepath + "exp-gain-stats/" + expfile;
-				ifstream ReadFile(path);
+				string expfilepath = g_pkmndatapath + "exp-gain-stats/" + expfile;
+				ifstream ReadFile(expfilepath);
 				string textLine;
 				while (getline(ReadFile, textLine))
 				{
@@ -1772,16 +1775,16 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 						{
 							str2 = textLine.substr(commaPos + 1, s2End - commaPos - 1);
 						}
-						ProcessStat(encounter, &table, j, stoi(str2), generation, chancescale, settings);
+						ProcessStat(encounter, &table, j, stoi(str2), generation, chancescale);
 					}
 				}
 			}
-			if (settings->printtext) cout << table.averageYields[OFFSET_EXP] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			if (g_settings.printtext) cout << table.averageYields[OFFSET_EXP] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((settings->repellevel == 0 && settings->maxallowedlevel == 100) && table.totalchance != 100 + extrachance)
+			if ((g_settings.repellevel == 0 && g_settings.maxallowedlevel == 100) && table.totalchance != 100 + extrachance)
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
 			else if (table.totalchance != table.expectedtotalpercent + extrachance)
@@ -1790,15 +1793,15 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 			{
 				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
 				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
-				cout << "repellevel: " << to_string(settings->repellevel) << " maxallowedlevel: " << to_string(settings->maxallowedlevel) << "\n";
+				cout << "repellevel: " << to_string(g_settings.repellevel) << " maxallowedlevel: " << to_string(g_settings.maxallowedlevel) << "\n";
 				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
 				cin.get();
 				return true;
 			}
 		}
-		settingswindowdata->progress = (1 - (static_cast<float>(maintables.size()) - numTablesProcessed) / maintables.size()) * 0.5 + 0.5;
+		g_settingswindowdata.progress = (1 - (static_cast<float>(maintables.size()) - numTablesProcessed) / maintables.size()) * 0.5 + 0.5;
 	}
-	if (settings->printtext)
+	if (g_settings.printtext)
 	{
 		cout << "\n";
 		cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
@@ -1825,10 +1828,10 @@ static const char* Items_SingleStringGetter(void* data, int idx)
 	return *p ? p : NULL;
 }
 
-static void TablePostProcess(SettingsWindowData* settingswindowdata, Settings* settings)
+static void TablePostProcess()
 {
-	settingswindowdata->running = false;
-	bool requiringtype = settings->pkmnrequiretypeflags;
+	g_settingswindowdata.running = false;
+	bool requiringtype = g_settings.pkmnrequiretypeflags;
 	std::sort(maintables.begin(), maintables.end(), compareByExp);
 	for (EncounterTable& table : maintables)
 	{
@@ -1846,7 +1849,7 @@ static void TablePostProcess(SettingsWindowData* settingswindowdata, Settings* s
 			table.filterReason = Reason_NoGoodEVs;
 		for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 		{
-			if (table.averageYields[i] < settings->minAvgEV[i] || table.averageYields[i] > settings->maxAvgEV[i])
+			if (table.averageYields[i] < g_settings.minAvgEV[i] || table.averageYields[i] > g_settings.maxAvgEV[i])
 			{
 				table.filterReason = Reason_BadEVs;
 				break;
@@ -1855,7 +1858,7 @@ static void TablePostProcess(SettingsWindowData* settingswindowdata, Settings* s
 	}
 }
 
-static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowdata, Settings* newsettings, bool allgames, bool rse, bool dpp, bool hgss)
+static void UIMiscSettings(GameObject* game, bool allgames, bool rse, bool dpp, bool hgss)
 {
 	if (game->generation == 2)
 	{
@@ -1924,20 +1927,20 @@ static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowd
 			times = "Day\0Night\0";
 			internal_times = "time-day\0time-night\0";
 			height = 2;
-			if (settingswindowdata->generation_lastframe != game->generation)
-				settingswindowdata->time_chosen = 0;
+			if (g_settingswindowdata.generation_lastframe != game->generation)
+				g_settingswindowdata.time_chosen = 0;
 		}
 		else
 		{
 			times = "Morning\0Day\0Night\0";
 			internal_times = "time-morning\0time-day\0time-night\0";
 			height = 3;
-			if (settingswindowdata->generation_lastframe != game->generation)
-				settingswindowdata->time_chosen = 1;
+			if (g_settingswindowdata.generation_lastframe != game->generation)
+				g_settingswindowdata.time_chosen = 1;
 		}
 #pragma warning(suppress: 6384)
-		ImGui::Combo("Time of Day", &settingswindowdata->time_chosen, times, IM_ARRAYSIZE(times));
-		newsettings->wantedtime = Items_SingleStringGetter((void*)internal_times, settingswindowdata->time_chosen);
+		ImGui::Combo("Time of Day", &g_settingswindowdata.time_chosen, times, IM_ARRAYSIZE(times));
+		g_newsettings.wantedtime = Items_SingleStringGetter((void*)internal_times, g_settingswindowdata.time_chosen);
 	}
 
 	if (allgames || game->generation == 5)
@@ -1946,28 +1949,28 @@ static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowd
 		const char* internal_seasons[] = { "season-spring", "season-summer", "season-autumn", "season-winter" };
 		static int season_current = 0;
 		ImGui::Combo("Season", &season_current, seasons, IM_ARRAYSIZE(seasons));
-		newsettings->wantedseason = internal_seasons[season_current];
+		g_newsettings.wantedseason = internal_seasons[season_current];
 	}
 
 	if (allgames || (game->generation == 2 || rse || game->generation == 4 || game->generation == 5))
 	{
 		static bool wantswarm = false;
 		ImGui::Checkbox("Mass Outbreaks", &wantswarm);
-		newsettings->wantswarm = wantswarm;
+		g_newsettings.wantswarm = wantswarm;
 	}
 
 	if (allgames || dpp)
 	{
 		static bool wantradar = false;
 		ImGui::Checkbox("PokeRadar", &wantradar);
-		newsettings->wantradar = wantradar;
+		g_newsettings.wantradar = wantradar;
 
 		const char* slotgames[] = { "None", "Ruby", "Sapphire", "Emerald", "FireRed", "LeafGreen" };
 		const char* internal_slotgames[] = { "slot2-none", "slot2-ruby", "slot2-sapphire", "slot2-emerald", "slot2-firered", "slot2-leafgreen" };
 		static int slotgame_current = 0;
 		ImGui::Combo("DS Slot 2", &slotgame_current, slotgames, IM_ARRAYSIZE(slotgames));
 		ImGui::SameLine(); HelpMarker("Some DS models have a slot for GameBoy games. Having a Generation 3 game in the slot while playing a Generation 4 game can change some encounter tables. Emulators may or may not have a feature for this.");
-		newsettings->wantedslot2game = internal_slotgames[slotgame_current];
+		g_newsettings.wantedslot2game = internal_slotgames[slotgame_current];
 	}
 
 	if (allgames || hgss)
@@ -1976,7 +1979,7 @@ static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowd
 		const char* internal_stations[] = { "radio-off", "radio-hoenn", "radio-sinnoh" };
 		static int station_current = 0;
 		ImGui::Combo("Radio Station", &station_current, stations, IM_ARRAYSIZE(stations));
-		newsettings->wantedradiostation = internal_stations[station_current];
+		g_newsettings.wantedradiostation = internal_stations[station_current];
 	}
 
 	if (game->generation == 5 || game->generation >= 7)
@@ -1984,10 +1987,10 @@ static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowd
 		static int scalinglevel = 0;
 		ImGui::InputInt("Level for Scaling Math", &scalinglevel);
 		ImGui::SameLine(); HelpMarker("This game scales experience by the difference in levels between the victorious pokemon and defeated pokemon. Enter your pokemon's level to factor in level scaling. Otherwise, use 0.");
-		newsettings->scalinglevel = scalinglevel;
+		g_newsettings.scalinglevel = scalinglevel;
 	}
 	else
-		newsettings->scalinglevel = 0;
+		g_newsettings.scalinglevel = 0;
 
 	static int repellevel = 0;
 	ImGui::InputInt("Repel Level", &repellevel);
@@ -1996,15 +1999,15 @@ static void UIMiscSettings(GameObject* game, SettingsWindowData* settingswindowd
 		HelpMarker("Repels keep away wild Pokemon who are a lower level than the first NON-FAINTED Pokemon in the party.");
 	else
 		HelpMarker("Repels keep away wild Pokemon who are a lower level than the first Pokemon in the party.");
-	newsettings->repellevel = repellevel;
+	g_newsettings.repellevel = repellevel;
 
 	static int maxallowedlevel = 100;
 	ImGui::InputInt("Maximum Level", &maxallowedlevel);
 	ImGui::SameLine(); HelpMarker("Encounter tables with Pokemon above this level will not be shown.");
-	newsettings->maxallowedlevel = maxallowedlevel;
+	g_newsettings.maxallowedlevel = maxallowedlevel;
 }
 
-static void UISettingSections(GameObject* game, Settings* newsettings, bool allgames, bool rse, bool hgss)
+static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hgss)
 {
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
@@ -2054,7 +2057,7 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 				ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
 		}
 
-		newsettings->methodflags = methodflags;
+		g_newsettings.methodflags = methodflags;
 	}
 
 	if (ImGui::CollapsingHeader("Pokemon Types", ImGuiTreeNodeFlags_None))
@@ -2095,11 +2098,11 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 		}
 		ImGui::EndTable();
 
-		newsettings->pkmnfiltertypeflags = pkmnFilterTypeFlags;
+		g_newsettings.pkmnfiltertypeflags = pkmnFilterTypeFlags;
 
 		static bool pkmntypewarn = false;
 		ImGui::Checkbox("Don't Hide, Just Warn", &pkmntypewarn);
-		newsettings->pkmntypewarn = pkmntypewarn;
+		g_newsettings.pkmntypewarn = pkmntypewarn;
 
 		//////////////////////////////////////////////////////////////////////////////
 		ImGui::Text(" ");
@@ -2139,7 +2142,7 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 		}
 		ImGui::EndTable();
 
-		newsettings->pkmnrequiretypeflags = pkmnRequireTypeFlags;
+		g_newsettings.pkmnrequiretypeflags = pkmnRequireTypeFlags;
 	}
 	/*
 	if (ImGui::CollapsingHeader("Move Types", ImGuiTreeNodeFlags_None))
@@ -2233,8 +2236,8 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 			ImGui::PopID();
 		}
 		ImGui::EndTable();
-		newsettings->minAvgEV = minAvgEV;
-		newsettings->maxAvgEV = maxAvgEV;
+		g_newsettings.minAvgEV = minAvgEV;
+		g_newsettings.maxAvgEV = maxAvgEV;
 		//////////////////////////////////////////////////////////////////
 		ImGui::Text(" ");
 		ImGui::Text("At least one pokemon in each table must have EV yields in these ranges to be shown.\nUse this for more standard EV training.");
@@ -2277,8 +2280,8 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 			ImGui::PopID();
 		}
 		ImGui::EndTable();
-		newsettings->minSingleMonEV = minSingleMonEV;
-		newsettings->maxSingleMonEV = maxSingleMonEV;
+		g_newsettings.minSingleMonEV = minSingleMonEV;
+		g_newsettings.maxSingleMonEV = maxSingleMonEV;
 	}
 	if (ImGui::CollapsingHeader("Sorting", ImGuiTreeNodeFlags_None))
 	{
@@ -2408,7 +2411,7 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 	{
 		static bool printtext = false;
 		ImGui::Checkbox("Text Output", &printtext);
-		newsettings->printtext = printtext;
+		g_newsettings.printtext = printtext;
 
 		if (ImGui::Button("Cull Tables Without Multiple of Species"))
 		{
@@ -2439,9 +2442,9 @@ static void UISettingSections(GameObject* game, Settings* newsettings, bool allg
 	}
 }
 
-static void UITableDisplay(Settings* settings, EncounterTable table, GameObject* game)
+static void UITableDisplay(EncounterTable table, GameObject* game)
 {
-	bool showWarning = (settings->pkmntypewarn && table.filterReason == Reason_BadType);
+	bool showWarning = (g_settings.pkmntypewarn && table.filterReason == Reason_BadType);
 	if (table.filterReason == Reason_None || showWarning)
 	{
 		if (showWarning)
@@ -2537,7 +2540,7 @@ static void UITableDisplay(Settings* settings, EncounterTable table, GameObject*
 	}
 }
 
-static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWindowData* settingswindowdata, string basepath)
+static void UIMainWindow()
 {
 #ifndef _DEBUG
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -2558,14 +2561,14 @@ static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWind
 	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 	static int game_current = 0;
 	ImGui::Combo("Game", &game_current, f_games, IM_ARRAYSIZE(f_games));
-	newsettings->wantedgame_index = game_current;
+	g_newsettings.wantedgame_index = game_current;
 
 	bool rse = false;
 	bool dpp = false;
 	bool hgss = false;
 	bool allgames = false;
 
-	switch (newsettings->wantedgame_index)
+	switch (g_newsettings.wantedgame_index)
 	{
 	case GAME_RUBY:
 	case GAME_SAPPHIRE:
@@ -2586,49 +2589,49 @@ static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWind
 		break;
 	}
 
-	GameObject *game = g_games[newsettings->wantedgame_index];
+	GameObject *game = g_games[g_newsettings.wantedgame_index];
 
-	UIMiscSettings(game, settingswindowdata, newsettings, allgames, rse, dpp, hgss);
-	UISettingSections(game, newsettings, allgames, rse, hgss);
+	UIMiscSettings(game, allgames, rse, dpp, hgss);
+	UISettingSections(game, allgames, rse, hgss);
 
-	if (settingswindowdata->running && settingswindowdata->progress == 1.00)
-		TablePostProcess(settingswindowdata, settings);
+	if (g_settingswindowdata.running && g_settingswindowdata.progress == 1.00)
+		TablePostProcess();
 
-	if (ImGui::Button("Go!") && !settingswindowdata->running)
+	if (ImGui::Button("Go!") && !g_settingswindowdata.running)
 	{
 		//only save the new settings once the button is pressed. this prevents changing the settings mid-iteration.
-		settings->wantedgame_index = newsettings->wantedgame_index;
-		settings->wantedtime = newsettings->wantedtime;
-		settings->wantedseason = newsettings->wantedseason;
-		settings->wantswarm = newsettings->wantswarm;
-		settings->wantradar = newsettings->wantradar;
-		settings->wantedslot2game = newsettings->wantedslot2game;
-		settings->wantedradiostation = newsettings->wantedradiostation;
-		settings->repellevel = newsettings->repellevel;
-		settings->maxallowedlevel = newsettings->maxallowedlevel;
-		settings->printtext = newsettings->printtext;
-		settings->methodflags = newsettings->methodflags;
-		settings->pkmnfiltertypeflags = newsettings->pkmnfiltertypeflags;
-		settings->pkmnrequiretypeflags = newsettings->pkmnrequiretypeflags;
-		settings->pkmntypewarn = newsettings->pkmntypewarn;
-		//settings->movefiltertypeflags = newsettings->movefiltertypeflags;
-		settings->scalinglevel = newsettings->scalinglevel;
-		settings->minAvgEV = newsettings->minAvgEV;
-		settings->maxAvgEV = newsettings->maxAvgEV;
-		settings->minSingleMonEV = newsettings->minSingleMonEV;
-		settings->maxSingleMonEV = newsettings->maxSingleMonEV;
+		g_settings.wantedgame_index = g_newsettings.wantedgame_index;
+		g_settings.wantedtime = g_newsettings.wantedtime;
+		g_settings.wantedseason = g_newsettings.wantedseason;
+		g_settings.wantswarm = g_newsettings.wantswarm;
+		g_settings.wantradar = g_newsettings.wantradar;
+		g_settings.wantedslot2game = g_newsettings.wantedslot2game;
+		g_settings.wantedradiostation = g_newsettings.wantedradiostation;
+		g_settings.repellevel = g_newsettings.repellevel;
+		g_settings.maxallowedlevel = g_newsettings.maxallowedlevel;
+		g_settings.printtext = g_newsettings.printtext;
+		g_settings.methodflags = g_newsettings.methodflags;
+		g_settings.pkmnfiltertypeflags = g_newsettings.pkmnfiltertypeflags;
+		g_settings.pkmnrequiretypeflags = g_newsettings.pkmnrequiretypeflags;
+		g_settings.pkmntypewarn = g_newsettings.pkmntypewarn;
+		//g_settingsmovefiltertypeflags = newsettings.movefiltertypeflags;
+		g_settings.scalinglevel = g_newsettings.scalinglevel;
+		g_settings.minAvgEV = g_newsettings.minAvgEV;
+		g_settings.maxAvgEV = g_newsettings.maxAvgEV;
+		g_settings.minSingleMonEV = g_newsettings.minSingleMonEV;
+		g_settings.maxSingleMonEV = g_newsettings.maxSingleMonEV;
 
 		maintables.clear();
 		maintables.shrink_to_fit();
 #ifdef _DEBUG
 		g_debugdata.clear();
 #endif //_DEBUG
-		settingswindowdata->running = true;
-		thread task(ReadTables, settings, settingswindowdata, basepath);
+		g_settingswindowdata.running = true;
+		thread task(ReadTables);
 		task.detach();
 	}
 
-	if (settingswindowdata->running)
+	if (g_settingswindowdata.running)
 	{
 		int totalrange = 0;
 		for (int i = 0; i < game->folderRanges.size(); i += 2)
@@ -2636,29 +2639,29 @@ static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWind
 			int a = i + 1;
 			totalrange += (game->folderRanges[a] - game->folderRanges[i]) + 1;
 		}
-		ImGui::SameLine(); ImGui::ProgressBar((float)settingswindowdata->progress, ImVec2(ImGui::GetFontSize() * 25.0f, 0.0f));
+		ImGui::SameLine(); ImGui::ProgressBar((float)g_settingswindowdata.progress, ImVec2(ImGui::GetFontSize() * 25.0f, 0.0f));
 		string imgoing = "Searching through " + to_string(totalrange) + " locations.";
 		ImGui::Text(imgoing.c_str());
 	}
 
 	//detect when settings have changed
-	if (settings->wantedgame_index != newsettings->wantedgame_index ||
-		settings->wantedseason != newsettings->wantedseason ||
-		settings->wantswarm != newsettings->wantswarm ||
-		settings->wantradar != newsettings->wantradar ||
-		settings->wantedslot2game != newsettings->wantedslot2game ||
-		settings->wantedradiostation != newsettings->wantedradiostation ||
-		settings->repellevel != newsettings->repellevel ||
-		settings->maxallowedlevel != newsettings->maxallowedlevel ||
-		settings->methodflags != newsettings->methodflags ||
-		settings->pkmnfiltertypeflags != newsettings->pkmnfiltertypeflags ||
-		settings->pkmnrequiretypeflags != newsettings->pkmnrequiretypeflags/* ||
-		settings->movefiltertypeflags != newsettings->movefiltertypeflags*/ ||
-		settings->scalinglevel != newsettings->scalinglevel ||
-		settings->minAvgEV != newsettings->minAvgEV ||
-		settings->maxAvgEV != newsettings->maxAvgEV ||
-		settings->minSingleMonEV != newsettings->minSingleMonEV ||
-		settings->maxSingleMonEV != newsettings->maxSingleMonEV)
+	if (g_settings.wantedgame_index != g_newsettings.wantedgame_index ||
+		g_settings.wantedseason != g_newsettings.wantedseason ||
+		g_settings.wantswarm != g_newsettings.wantswarm ||
+		g_settings.wantradar != g_newsettings.wantradar ||
+		g_settings.wantedslot2game != g_newsettings.wantedslot2game ||
+		g_settings.wantedradiostation != g_newsettings.wantedradiostation ||
+		g_settings.repellevel != g_newsettings.repellevel ||
+		g_settings.maxallowedlevel != g_newsettings.maxallowedlevel ||
+		g_settings.methodflags != g_newsettings.methodflags ||
+		g_settings.pkmnfiltertypeflags != g_newsettings.pkmnfiltertypeflags ||
+		g_settings.pkmnrequiretypeflags != g_newsettings.pkmnrequiretypeflags/* ||
+		g_settings.movefiltertypeflags != g_newsettings.movefiltertypeflags*/ ||
+		g_settings.scalinglevel != g_newsettings.scalinglevel ||
+		g_settings.minAvgEV != g_newsettings.minAvgEV ||
+		g_settings.maxAvgEV != g_newsettings.maxAvgEV ||
+		g_settings.minSingleMonEV != g_newsettings.minSingleMonEV ||
+		g_settings.maxSingleMonEV != g_newsettings.maxSingleMonEV)
 	{
 		if (!maintables.empty())
 		{
@@ -2666,12 +2669,12 @@ static void UIMainWindow(Settings* settings, Settings* newsettings, SettingsWind
 		}
 	}
 
-	if (!settingswindowdata->running)
+	if (!g_settingswindowdata.running)
 		for (EncounterTable& table : maintables)
-			UITableDisplay(settings, table, game);
+			UITableDisplay(table, game);
 
 	ImGui::End();
-	settingswindowdata->generation_lastframe = game->generation;
+	g_settingswindowdata.generation_lastframe = game->generation;
 }
 
 static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, /*const char* versiongroup,*/ int generation, vector<int> folderRanges)
@@ -2819,10 +2822,6 @@ int main(int, char**)
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	string basepath = "pkmndata/";
-	Settings settings, newsettings;
-	SettingsWindowData settingswindowdata;
-
     // Main loop
     bool done = false;
     while (!done)
@@ -2874,7 +2873,7 @@ int main(int, char**)
 #endif
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        UIMainWindow(&settings, &newsettings, &settingswindowdata, basepath);
+        UIMainWindow();
 
         // Rendering
 		ImGui::PopStyleVar();
