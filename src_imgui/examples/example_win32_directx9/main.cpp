@@ -1721,7 +1721,7 @@ static bool ReadTables()
 			notch++;
 		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
-		if (table.filterReason == Reason_None || (g_settings.pkmntypewarn && table.filterReason == Reason_BadType))
+		if (table.filterReason == Reason_None || table.filterReason == Reason_BadType)
 		{
 			if (g_settings.printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			table.averageYields[OFFSET_EXP - 1] = 0;
@@ -2105,7 +2105,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 
 		static bool pkmntypewarn = false;
 		ImGui::Checkbox("Don't Hide, Just Warn", &pkmntypewarn);
-		g_newsettings.pkmntypewarn = pkmntypewarn;
+		g_settings.pkmntypewarn = pkmntypewarn;
 
 		ImGui::Separator();
 
@@ -2664,7 +2664,6 @@ static void UIMainWindow()
 		g_settings.methodflags = g_newsettings.methodflags;
 		g_settings.pkmnfiltertypeflags = g_newsettings.pkmnfiltertypeflags;
 		g_settings.pkmnrequiretypeflags = g_newsettings.pkmnrequiretypeflags;
-		g_settings.pkmntypewarn = g_newsettings.pkmntypewarn;
 		//g_settingsmovefiltertypeflags = newsettings.movefiltertypeflags;
 		g_settings.scalinglevel = g_newsettings.scalinglevel;
 		g_settings.minAvgEV = g_newsettings.minAvgEV;
