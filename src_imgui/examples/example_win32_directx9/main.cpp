@@ -2513,13 +2513,40 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 				ImGui::TableSetupColumn("Avg. Exp.");
 				ImGui::TableSetupColumn("Weighted Avg. Exp.");
 				ImGui::TableHeadersRow();
+				int i = 0;
 				for (Encounter encounter : table.encounters)
 				{
 					ImGui::TableNextRow();
 
 					//pokemon
 					ImGui::TableNextColumn();
-					ImGui::Text(encounter.pokemonname.c_str());
+					//convert pokeapi name to bulbapedia url name
+					string wikiName = encounter.pokemonname;
+					if (wikiName == "nidoran-f")
+						wikiName = "nidoran-F";
+					if (wikiName == "nidoran-m")
+						wikiName = "nidoran-M";
+					if (wikiName == "mr-mime")
+						wikiName = "mr_Mime";
+					if (wikiName == "mime-jr")
+						wikiName = "mime-Jr";
+					if (wikiName.find("basculin") != string::npos)
+						wikiName = "basculin";
+					if (wikiName.find("pumpkaboo") != string::npos)
+						wikiName = "pumpkaboo";
+					if (wikiName.find("oricorio") != string::npos)
+						wikiName = "oricorio";
+					if (wikiName.find("lycanroc") != string::npos)
+						wikiName = "lycanroc";
+					if (wikiName.find("-alola") != string::npos)
+						wikiName = wikiName.substr(0, wikiName.length() - wikiName.find("-alola"));
+					//keep dash if you're jangmo-o line
+					if (wikiName.find("mo-o") == string::npos)
+						std::replace(wikiName.begin(), wikiName.end(), '-', '_');
+					string url = "https://bulbapedia.bulbagarden.net/wiki/" + wikiName;
+					ImGui::PushID(i);
+					ImGui::TextLinkOpenURL(encounter.pokemonname.c_str(), url.c_str());
+					ImGui::PopID();
 
 					//chance
 					ImGui::TableNextColumn();
@@ -2562,6 +2589,7 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 						string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
 						ImGui::Text(avgexpweighted.c_str());
 					}
+					i++;
 				}
 				ImGui::EndTable();
 			}
@@ -2729,7 +2757,7 @@ static void UIMainWindow()
 	g_settingswindowdata.generation_lastframe = game->generation;
 }
 
-static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, /*const char* versiongroup,*/ int generation, vector<int> folderRanges)
+static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
 {
 	GameObject* newGame = new GameObject;
 	newGame->uiname = uiname;
@@ -2737,7 +2765,6 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 	newGame->expfile = expfile;
 	newGame->generation = generation;
 	newGame->folderRanges = folderRanges;
-	//newGame->versiongroup = versiongroup;
 	g_games.push_back(newGame);
 }
 
