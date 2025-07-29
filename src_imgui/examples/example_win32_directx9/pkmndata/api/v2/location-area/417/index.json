@@ -67,7 +67,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -86,7 +86,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -105,7 +105,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -132,7 +132,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -142,7 +142,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -161,7 +161,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -171,7 +171,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -190,7 +190,7 @@
                             "condition_values": [],
                             "max_level": 30,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 20
@@ -200,7 +200,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -227,7 +227,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -237,7 +237,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -256,7 +256,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -266,7 +266,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -285,7 +285,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
@@ -295,7 +295,7 @@
                             "condition_values": [],
                             "max_level": 35,
                             "method": {
-                                "name": "seaweed",
+                                "name": "walk",
                                 "url": "/api/v2/encounter-method/27/"
                             },
                             "min_level": 30
