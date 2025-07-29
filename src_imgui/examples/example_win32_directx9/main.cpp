@@ -160,16 +160,16 @@ enum FilterReasons
 	Reason_LackingDuplicateMons
 };
 
-//offsets for bulba's yield tables. these also apply to averageYields[], but that does not store BEYs, so you must -1.
-#define OFFSET_BEY 0
-#define OFFSET_HP 1
-#define OFFSET_ATTACK 2
-#define OFFSET_DEFENSE 3
-#define OFFSET_SP_ATTACK 4
-#define OFFSET_SP_DEFENSE 5
-#define OFFSET_SPEED 6
-#define OFFSET_TOTAL 7
-#define OFFSET_EXP 8
+//offsets for bulba's yield tables and EncounterTable's averageYields vector
+#define OFFSET_HP 0
+#define OFFSET_ATTACK 1
+#define OFFSET_DEFENSE 2
+#define OFFSET_SP_ATTACK 3
+#define OFFSET_SP_DEFENSE 4
+#define OFFSET_SPEED 5
+#define OFFSET_TOTAL 6
+#define OFFSET_EXP 7
+#define OFFSET_BEY 8
 
 struct Settings
 {
@@ -1156,9 +1156,17 @@ static bool FindInExpFile(int offset, string basepath, string expfile, string po
 			string str2 = textLine.substr(s2Start, s2End - s2Start);
 			for (int i = 0; i < offset; i++)
 			{
-				s2Start = s2End + 1;
-				s2End = textLine.find(',', s2Start + 1);
-				str2 = textLine.substr(s2Start, s2End - s2Start);
+				//last cell of line doesn't end with a comma, it ends with nothing
+				if (s2End == -1)
+				{
+					str2 = textLine.substr(s2Start);
+				}
+				else
+				{
+					s2Start = s2End + 1;
+					s2End = textLine.find(',', s2Start + 1);
+					str2 = textLine.substr(s2Start, s2End - s2Start);
+				}
 			}
 			foundmon = true;
 			*stat = stoi(str2);
@@ -1202,15 +1210,17 @@ static bool IsPokemonInEVRangeGen3(Settings* settings, string basepath, string v
 	}
 	else
 		expfile = g_games[settings->wantedgame_index]->expfile;
-	for (int i = 1; i < 8; i++)
+	for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 	{
+		if (settings->minSingleMonEV[i] == 0 && settings->maxSingleMonEV[i] == 3)
+			continue;
 		int stat;
 		if (!FindInExpFile(i, basepath, expfile, pokemonname, &stat))
 		{
 			cout << "ERROR: Could not find pokemon named '" << pokemonname << "' in " << expfile << "\n";
 			continue;
 		}
-		if (stat < settings->minSingleMonEV[i - 1] || stat > settings->maxSingleMonEV[i - 1])
+		if (stat < settings->minSingleMonEV[i] || stat > settings->maxSingleMonEV[i])
 			return false;
 	}
 	return true;
@@ -1394,7 +1404,7 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 						return 0;
 					}
 
-					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason/*, basepath, url*/, warning, goodtype, goodEVs))
+					if (!ParseEncounterDetails(settings, encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
 						continue;//encounter was bad for some reason
 				}
 			}
@@ -1409,11 +1419,11 @@ static int ParseLocationDataFile(string basepath, int iFile, Settings* settings)
 
 static bool compareByExp(const EncounterTable a, const EncounterTable b)
 {
-	//cout << a.averageYields[OFFSET_EXP - 1] << " > " << b.averageYields[OFFSET_EXP - 1] << "\n";
+	//cout << a.averageYields[OFFSET_EXP] << " > " << b.averageYields[OFFSET_EXP] << "\n";
 	//if a table is filtered out then total avg exp is probably 0
-	assert(a.averageYields[OFFSET_EXP - 1] > 0 || a.filterReason != Reason_None);
-	assert(b.averageYields[OFFSET_EXP - 1] > 0 || b.filterReason != Reason_None);
-	return a.averageYields[OFFSET_EXP - 1] > b.averageYields[OFFSET_EXP - 1];
+	assert(a.averageYields[OFFSET_EXP] > 0 || a.filterReason != Reason_None);
+	assert(b.averageYields[OFFSET_EXP] > 0 || b.filterReason != Reason_None);
+	return a.averageYields[OFFSET_EXP] > b.averageYields[OFFSET_EXP];
 }
 
 static bool compareByLevelRange(const EncounterTable a, const EncounterTable b)
@@ -1465,72 +1475,72 @@ static bool compareByAEW(const Encounter& a, const Encounter& b)
 
 static bool compareByAverageHPEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_HP - 1] > b.averageYields[OFFSET_HP - 1];
+	return a.averageYields[OFFSET_HP] > b.averageYields[OFFSET_HP];
 }
 
 static bool compareByAverageAttackEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_ATTACK - 1] > b.averageYields[OFFSET_ATTACK - 1];
+	return a.averageYields[OFFSET_ATTACK] > b.averageYields[OFFSET_ATTACK];
 }
 
 static bool compareByAverageDefenseEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_DEFENSE - 1] > b.averageYields[OFFSET_DEFENSE - 1];
+	return a.averageYields[OFFSET_DEFENSE] > b.averageYields[OFFSET_DEFENSE];
 }
 
 static bool compareByAverageSpAtkEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_SP_ATTACK - 1] > b.averageYields[OFFSET_SP_ATTACK - 1];
+	return a.averageYields[OFFSET_SP_ATTACK] > b.averageYields[OFFSET_SP_ATTACK];
 }
 
 static bool compareByAverageSpDefEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_SP_DEFENSE - 1] > b.averageYields[OFFSET_SP_DEFENSE - 1];
+	return a.averageYields[OFFSET_SP_DEFENSE] > b.averageYields[OFFSET_SP_DEFENSE];
 }
 
 static bool compareByAverageSpeedEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_SPEED - 1] > b.averageYields[OFFSET_SPEED - 1];
+	return a.averageYields[OFFSET_SPEED] > b.averageYields[OFFSET_SPEED];
 }
 
 static bool compareByAverageTotalEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.averageYields[OFFSET_TOTAL - 1] > b.averageYields[OFFSET_TOTAL - 1];
+	return a.averageYields[OFFSET_TOTAL] > b.averageYields[OFFSET_TOTAL];
 }
 
 static bool compareByExpPerHPEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_HP - 1].expPerEV > b.efficientEVs[OFFSET_HP - 1].expPerEV;
+	return a.efficientEVs[OFFSET_HP].expPerEV > b.efficientEVs[OFFSET_HP].expPerEV;
 }
 
 static bool compareByExpPerAttackEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_ATTACK - 1].expPerEV > b.efficientEVs[OFFSET_ATTACK - 1].expPerEV;
+	return a.efficientEVs[OFFSET_ATTACK].expPerEV > b.efficientEVs[OFFSET_ATTACK].expPerEV;
 }
 
 static bool compareByExpPerDefenseEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_DEFENSE - 1].expPerEV > b.efficientEVs[OFFSET_DEFENSE - 1].expPerEV;
+	return a.efficientEVs[OFFSET_DEFENSE].expPerEV > b.efficientEVs[OFFSET_DEFENSE].expPerEV;
 }
 
 static bool compareByExpPerSpAtkEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_SP_ATTACK - 1].expPerEV > b.efficientEVs[OFFSET_SP_ATTACK - 1].expPerEV;
+	return a.efficientEVs[OFFSET_SP_ATTACK].expPerEV > b.efficientEVs[OFFSET_SP_ATTACK].expPerEV;
 }
 
 static bool compareByExpPerSpDefEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_SP_DEFENSE - 1].expPerEV > b.efficientEVs[OFFSET_SP_DEFENSE - 1].expPerEV;
+	return a.efficientEVs[OFFSET_SP_DEFENSE].expPerEV > b.efficientEVs[OFFSET_SP_DEFENSE].expPerEV;
 }
 
 static bool compareByExpPerSpeedEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_SPEED - 1].expPerEV > b.efficientEVs[OFFSET_SPEED - 1].expPerEV;
+	return a.efficientEVs[OFFSET_SPEED].expPerEV > b.efficientEVs[OFFSET_SPEED].expPerEV;
 }
 
 static bool compareByExpPerTotalEV(const EncounterTable a, const EncounterTable b)
 {
-	return a.efficientEVs[OFFSET_TOTAL - 1].expPerEV > b.efficientEVs[OFFSET_TOTAL - 1].expPerEV;
+	return a.efficientEVs[OFFSET_TOTAL].expPerEV > b.efficientEVs[OFFSET_TOTAL].expPerEV;
 }
 
 static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdata, string basepath)
@@ -1665,63 +1675,89 @@ static bool ReadTables(Settings* settings, SettingsWindowData* settingswindowdat
 
 			for (Encounter& encounter : table.encounters)
 			{
-				//get experience yield from stripped down bulba tables
-				if (!FindInExpFile(OFFSET_BEY, basepath, expfile, encounter.pokemonname, &encounter.baseExp))
-				{
-					cout << "ERROR: Could not find pokemon named '" << encounter.pokemonname << "' in " << expfile << "\n";
-					continue;
-				}
 				double chancescale = 1;
 				if (specialswarm)
 					chancescale = (generation == 5) ? 0.6 : 0.5;
-				encounter.minlevel = max(encounter.minlevel, settings->repellevel);
-				double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
-				encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
-				//level scaling
-				if (settings->scalinglevel != 0)
+				string path = basepath + "exp-gain-stats/" + expfile;
+				ifstream ReadFile(path);
+				string textLine;
+				while (getline(ReadFile, textLine))
 				{
-					encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, settings->scalinglevel, encounter.avgexp);
-				}
-				assert(encounter.avgexp > 0);
-				//find efficient EVs
-				if (generation >= 3)
-				{
-					for (int j = 1; j < OFFSET_TOTAL + 1; j++)
+					size_t s1End = textLine.find(',');
+					string str1 = textLine.substr(0, s1End);
+
+					//cout << "mon '" << str1 << "'\n";
+					if (str1 != encounter.pokemonname)
+						continue;
+
+					size_t commaPos = textLine.length();
+					//reverse order because BEY is last in the table, and efficientEVs needs BEY before other stats can be processed
+					//downsides of BEY being first in table are far worse
+					for (int j = OFFSET_BEY; j >= 0; j--)
 					{
-						int stat;
-						FindInExpFile(j, basepath, expfile, encounter.pokemonname, &stat);
-						table.averageYields[j - 1] += (double)(stat * encounter.chance * chancescale) / table.expectedtotalpercent;
-						double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
-						if (stat > 0)
+						if (j == OFFSET_EXP)//skip exp, this is filled in later based on OFFSET_BEY
+							continue;
+						commaPos = textLine.find_last_of(",", commaPos - 1);
+						size_t s2End = textLine.find(',', commaPos + 1);
+						string str2;
+						//last cell of line doesn't end with a comma, it ends with nothing
+						if (s2End == string::npos)
 						{
-							if (table.efficientEVs[j - 1].expPerEV == 0.0f)
+							str2 = textLine.substr(commaPos + 1);
+						}
+						else
+						{
+							str2 = textLine.substr(commaPos + 1, s2End - commaPos - 1);
+						}
+						int stat = stoi(str2);
+						if (j == OFFSET_BEY)
+						{
+							encounter.baseExp = stat;
+							encounter.minlevel = max(encounter.minlevel, settings->repellevel);
+							double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
+							encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
+							//level scaling
+							if (settings->scalinglevel != 0)
 							{
-								table.efficientEVs[j - 1].expPerEV = lowestExp / stat;
-								table.efficientEVs[j - 1].pokemonname = encounter.pokemonname;
+								encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, settings->scalinglevel, encounter.avgexp);
 							}
-							else
+							assert(encounter.avgexp > 0);
+							encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table.expectedtotalpercent;
+							if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+#ifdef _DEBUG
+							//if (settings->printtext) cout << "total avg exp " << table.averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
+							//if (settings->printtext) cout << "totalchance " << table.totalchance << " += " << encounter.chance << "\n\n";
+#endif //_DEBUG
+							table.averageYields[OFFSET_EXP] += encounter.avgexpweighted;
+							assert(table.averageYields[OFFSET_EXP] > 0);
+							assert(encounter.avgexpweighted > 0);
+							table.totalchance += encounter.chance;
+						}
+						else if (generation >= 3)
+						{
+							table.averageYields[j] += (double)(stat * encounter.chance * chancescale) / table.expectedtotalpercent;
+							double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
+							if (stat > 0)
 							{
-								if (table.efficientEVs[j - 1].expPerEV > lowestExp / stat)
+								if (table.efficientEVs[j].expPerEV == 0.0f)
 								{
-									table.efficientEVs[j - 1].expPerEV = lowestExp / stat;
-									table.efficientEVs[j - 1].pokemonname = encounter.pokemonname;
+									table.efficientEVs[j].expPerEV = lowestExp / stat;
+									table.efficientEVs[j].pokemonname = encounter.pokemonname;
+								}
+								else
+								{
+									if (table.efficientEVs[j].expPerEV > lowestExp / stat)
+									{
+										table.efficientEVs[j].expPerEV = lowestExp / stat;
+										table.efficientEVs[j].pokemonname = encounter.pokemonname;
+									}
 								}
 							}
 						}
 					}
 				}
-				encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table.expectedtotalpercent;
-				if (settings->printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
-#ifdef _DEBUG
-				//if (settings->printtext) cout << "total avg exp " << table.averageYields[OFFSET_EXP - 1] << " += " << encounter.avgexpweighted << "\n";
-				//if (settings->printtext) cout << "totalchance " << table.totalchance << " += " << encounter.chance << "\n\n";
-#endif //_DEBUG
-				table.averageYields[OFFSET_EXP - 1] += encounter.avgexpweighted;
-				assert(table.averageYields[OFFSET_EXP - 1] > 0);
-				assert(encounter.avgexpweighted > 0);
-				table.totalchance += encounter.chance;
 			}
-			if (settings->printtext) cout << table.averageYields[OFFSET_EXP - 1] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			if (settings->printtext) cout << table.averageYields[OFFSET_EXP] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
@@ -2294,49 +2330,49 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerHPEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_HP - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_HP - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_HP].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_HP].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Atk"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerAttackEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_ATTACK - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Def"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerDefenseEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_DEFENSE - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("SpA"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpAtkEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_ATTACK - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("SpD"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpDefEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_DEFENSE - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_DEFENSE - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Spe"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpeedEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SPEED - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SPEED].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Total"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerTotalEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_TOTAL - 1].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL - 1].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_TOTAL].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::PopID();
 		}
@@ -2416,12 +2452,12 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 					//sucks but i don't see a better way
 					methodnamestring = "Fishing";
 				}
-				table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP - 1])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
+				table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
 				if (!table.goodtype && requiringtype)
 					table.filterReason = Reason_NoGoodTypes;
 				if (!table.goodEVs)
 					table.filterReason = Reason_NoGoodEVs;
-				for (int i = 0; i < OFFSET_TOTAL; i++)
+				for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 				{
 					if (table.averageYields[i] < settings->minAvgEV[i] || table.averageYields[i] > settings->maxAvgEV[i])
 					{
@@ -2584,7 +2620,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 						static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
 						static const char* emptylabels[] = { "", "", "", "", "", "", "" };
 						//wanted to have graph Y range change to match the highest bar value and round up to next int, but the graph would not expand to fill the entire canvas, which looked really bad
-						double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL - 1]);
+						double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL]);
 						int ticks = (int)floor(graphmax * 5) + 1;
 						ImPlot::PushColormap(ImPlotColormap_PKMNstats);
 						if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
@@ -2593,7 +2629,7 @@ static void dosettingswindow(Settings* settings, Settings* newsettings, Settings
 							ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
 							ImPlot::SetupAxesLimits(-0.5, 6.5, 0, graphmax);
 							ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-							for (int i = 0; i < OFFSET_TOTAL; i++)
+							for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 							{
 								ImPlot::PlotBars(ilabels[i], &table.averageYields[i], 1, 1, i);
 							}
@@ -2639,38 +2675,38 @@ int main(int, char**)
 
 	//games
 	//g1
-	RegisterGame("Blue", "blue", "gen123_exp.txt", 1, {258 , 349});
-	RegisterGame("Red", "red", "gen123_exp.txt", 1, {258 , 349});
-	RegisterGame("Yellow", "yellow", "gen123_exp.txt", 1, {258 , 349});
+	RegisterGame("Blue", "blue", "gen123_exp.csv", 1, {258 , 349});
+	RegisterGame("Red", "red", "gen123_exp.csv", 1, {258 , 349});
+	RegisterGame("Yellow", "yellow", "gen123_exp.csv", 1, {258 , 349});
 	//g2
-	RegisterGame("Gold", "gold", "gen123_exp.txt", 2, {184, 349, 798, 798});
-	RegisterGame("Silver", "silver", "gen123_exp.txt", 2, {184, 349, 798, 798});
-	RegisterGame("Crystal", "crystal", "gen123_exp.txt", 2, {184, 349, 798, 798});
+	RegisterGame("Gold", "gold", "gen123_exp.csv", 2, {184, 349, 798, 798});
+	RegisterGame("Silver", "silver", "gen123_exp.csv", 2, {184, 349, 798, 798});
+	RegisterGame("Crystal", "crystal", "gen123_exp.csv", 2, {184, 349, 798, 798});
 	//g3
-	RegisterGame("Ruby", "ruby", "gen123_exp.txt", 3, {350, 449});
-	RegisterGame("Sapphire", "sapphire", "gen123_exp.txt", 3, {350, 449});
-	RegisterGame("Emerald", "emerald", "gen123_exp.txt", 3, {350, 449});
-	RegisterGame("FireRed", "firered", "gen123_exp.txt", 3, {258, 572, 825, 825});
-	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.txt", 3, {258, 572, 825, 825});
+	RegisterGame("Ruby", "ruby", "gen123_exp.csv", 3, {350, 449});
+	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", 3, {350, 449});
+	RegisterGame("Emerald", "emerald", "gen123_exp.csv", 3, {350, 449});
+	RegisterGame("FireRed", "firered", "gen123_exp.csv", 3, {258, 572, 825, 825});
+	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", 3, {258, 572, 825, 825});
 	//g4
-	RegisterGame("Diamond", "diamond", "gen4_exp.txt", 4, {1, 183});
-	RegisterGame("Pearl", "pearl", "gen4_exp.txt", 4, {1, 183});
-	RegisterGame("Platinum", "platinum", "gen4_exp.txt", 4, {1, 183});
-	RegisterGame("HeartGold", "heartgold", "gen4_exp.txt", 4, {184, 349});
-	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.txt", 4, {184, 349});
+	RegisterGame("Diamond", "diamond", "gen4_exp.csv", 4, {1, 183});
+	RegisterGame("Pearl", "pearl", "gen4_exp.csv", 4, {1, 183});
+	RegisterGame("Platinum", "platinum", "gen4_exp.csv", 4, {1, 183});
+	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", 4, {184, 349});
+	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", 4, {184, 349});
 	//g5
-	RegisterGame("Black", "black", "bw1_exp.txt", 5, {576, 655});
-	RegisterGame("White", "white", "bw1_exp.txt", 5, {576, 655});
-	RegisterGame("Black 2", "black-2", "bw2_exp.txt", 5, {576, 707});
-	RegisterGame("White 2", "white-2", "bw2_exp.txt", 5, {576, 707});
+	RegisterGame("Black", "black", "bw1_exp.csv", 5, {576, 655});
+	RegisterGame("White", "white", "bw1_exp.csv", 5, {576, 655});
+	RegisterGame("Black 2", "black-2", "bw2_exp.csv", 5, {576, 707});
+	RegisterGame("White 2", "white-2", "bw2_exp.csv", 5, {576, 707});
 	//g6
-	RegisterGame("X", "x", "gen6_exp.txt", 6, {708, 760});
-	RegisterGame("Y", "y", "gen6_exp.txt", 6, {708, 760});
+	RegisterGame("X", "x", "gen6_exp.csv", 6, {708, 760});
+	RegisterGame("Y", "y", "gen6_exp.csv", 6, {708, 760});
 	//g7
-	RegisterGame("Sun", "sun", "gen7_exp.txt", 7, {1035, 1156});
-	RegisterGame("Moon", "moon", "gen7_exp.txt", 7, {1035, 1156});
-	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.txt", 7, {1035, 1156});
-	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.txt", 7, {1035, 1156});
+	RegisterGame("Sun", "sun", "gen7_exp.csv", 7, {1035, 1156});
+	RegisterGame("Moon", "moon", "gen7_exp.csv", 7, {1035, 1156});
+	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", 7, {1035, 1156});
+	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", 7, {1035, 1156});
 	//extras
 	RegisterGame("All", "all", "ALL_EXPFILE", 0, {1, 1156});
 
