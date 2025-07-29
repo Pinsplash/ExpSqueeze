@@ -2104,8 +2104,8 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 		ImGui::Checkbox("Don't Hide, Just Warn", &pkmntypewarn);
 		g_newsettings.pkmntypewarn = pkmntypewarn;
 
-		//////////////////////////////////////////////////////////////////////////////
-		ImGui::Text(" ");
+		ImGui::Separator();
+
 		ImGui::Text("Tables must have at least one pokemon of the selected types.\nOnly one of the selected types will be required per table.\nIf Bug and Water are both selected, a table only needs one\nBug type or one Water type, not necessarily both.");
 		ImGui::Text("This can take a long time!");
 		static int pkmnRequireTypeFlags = 0;
@@ -2238,8 +2238,9 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 		ImGui::EndTable();
 		g_newsettings.minAvgEV = minAvgEV;
 		g_newsettings.maxAvgEV = maxAvgEV;
-		//////////////////////////////////////////////////////////////////
-		ImGui::Text(" ");
+		
+		ImGui::Separator();
+
 		ImGui::Text("At least one pokemon in each table must have EV yields in these ranges to be shown.\nUse this for more standard EV training.");
 		static std::vector<const char*> singlemonStatLabels = { " %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe", "  %i\nTotal" };
 		static std::vector<int> minSingleMonEV = { 0, 0, 0, 0, 0, 0, 0 };
@@ -2301,6 +2302,8 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 
 		if (ImGui::Button("Level Range"))
 			std::sort(maintables.begin(), maintables.end(), compareByLevelRange);
+
+		ImGui::Separator();
 
 		if (game->generation >= 3)
 		{
@@ -2383,7 +2386,9 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 			ImGui::PopID();
 		}
 
-		ImGui::Text("\nSort slots within tables by...");
+		ImGui::Separator();
+
+		ImGui::Text("Sort slots within tables by...");
 
 		if (ImGui::Button("Pokemon Name"))
 			for (EncounterTable& table : maintables)
