@@ -12,9 +12,6 @@
 #include "..\json-parser\json.h"
 #include "implot.h"
 #include "implot_internal.h"
-//#include "implot_demo.cpp"
-//#include "implot.cpp"
-//#include "implot_items.cpp"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <d3d9.h>
@@ -189,7 +186,6 @@ struct Settings
 	int pkmnfiltertypeflags = 0;
 	int pkmnrequiretypeflags = 0;
 	bool pkmntypewarn = false;
-	//int movefiltertypeflags = 0;
 	int scalinglevel = 0;
 	bool abilitywarn = true;
 	std::vector<float> minAvgEV = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
@@ -250,7 +246,6 @@ struct GameObject
 	string uiname;
 	string internalname;
 	string expfile;
-	//string versiongroup;
 	int generation = 0;
 	vector<int> folderRanges;
 };
@@ -441,94 +436,6 @@ static bool isEqualString(char* initial, char* compare)
 	return !strcmp(initial, compare);
 }
 
-/*
-static bool isEqualString(json_value* initial, json_value* compare)
-{
-	assert(initial->type == json_string);
-	return initial->u.string.ptr == compare->u.string.ptr;
-}
-
-static bool isEqualString(json_value* initial, char* compare)
-{
-	assert(initial->type == json_string);
-	return initial->u.string.ptr == compare;
-}
-
-static bool isEqualInt(json_value* initial, json_value* compare)
-{
-	assert(initial->type == json_integer);
-	return (long)initial->u.integer == compare->u.integer;
-}
-
-static bool isEqualDouble(json_value* initial, json_value* compare)
-{
-	assert(initial->type == json_double);
-	return initial->u.dbl == compare->u.dbl;
-}
-
-static bool isEqualBool(json_value* initial, json_value* compare)
-{
-	assert(initial->type == json_boolean);
-	return initial->u.boolean == compare->u.boolean;
-}
-
-static void ExplainJSONValue(json_value* obj)
-{
-	const char* str2 = " ";
-	long myint;
-	double mydub;
-	char* mystring;
-	bool mybool;
-	switch (obj->type)
-	{
-	case json_none:
-		str2 = " type: none";
-		break;
-	case json_null:
-		str2 = " type: null";
-		break;
-	case json_object:
-		str2 = " type: object";
-		break;
-	case json_array:
-		str2 = " type: array";
-		break;
-	case json_integer:
-		myint = (long)obj->u.integer;
-		char intbuffer[128];
-		snprintf(intbuffer, sizeof(intbuffer), " type: integer (%i)", myint);
-		str2 = intbuffer;
-		break;
-	case json_double:
-		mydub = obj->u.dbl;
-		char dubbuffer[128];
-		snprintf(dubbuffer, sizeof(dubbuffer), " type: double (%lf)", mydub);
-		str2 = dubbuffer;
-		break;
-	case json_string:
-		mystring = obj->u.string.ptr;
-		char stringbuffer[128];
-		snprintf(stringbuffer, sizeof(stringbuffer), " type: string (%s)", mystring);
-		str2 = stringbuffer;
-		break;
-	case json_boolean:
-		mybool = obj->u.boolean;
-		char booleanbuffer[128];
-		snprintf(booleanbuffer, sizeof(booleanbuffer), " type: bool (%s)", mybool ? "TRUE" : "FALSE");
-		str2 = booleanbuffer;
-		break;
-	}
-	//cout << str2 << "\n";
-}
-
-static void ExplainObjectEntry(json_object_entry obj)
-{
-	//string combinestring(string("val name: ") + obj.name);
-	//const char* str1 = combinestring.c_str();
-	//cout << str1;
-	ExplainJSONValue(obj.value);
-}
-*/
 static json_value* FindArrayInObjectByName(json_value* initialObject, char* name)
 {
 	assert(initialObject->type == json_object);
@@ -568,36 +475,7 @@ static json_value* FindValueInObjectByKey(json_value* initialObject, char* key)
 	}
 	return NULL;
 }
-/*
-static int FindObjectInArrayByName(json_value* initialObject, char* name)
-{
-	assert(initialObject->type == json_array);
-	int arrayLength = initialObject->u.array.length;
-	//cout << "FindObjectInArrayByName: arrayLength: " << to_string(arrayLength) << "\n";
-	for (int i = 0; i < arrayLength; i++)
-	{
-		json_value* obj = initialObject->u.array.values[i];
-		//cout << "FindObjectInArrayByName: " + to_string(i); ExplainJSONValue(obj);
-		if (obj->type == json_object)
-		{
-			int objectArrayLength = obj->u.object.length;
-			//cout << "FindObjectInArrayByName: " + to_string(i) + " objectArrayLength: " << to_string(objectArrayLength) << "\n";
-			for (int j = 0; j < objectArrayLength; j++)
-			{
-				json_object_entry val = obj->u.object.values[j];
-				//cout << "FindObjectInArrayByName: " + to_string(i) + " " + to_string(j) + " "; ExplainObjectEntry(val);
-				if (isEqualString(val.name, name))
-				{
-					//return index object is at in array
-					//cout << "FindObjectInArrayByName: " + to_string(i) + " " + to_string(j) + " MATCHED\n";
-					return i;
-				}
-			}
-		}
-	}
-	return -1;
-}
-*/
+
 static json_value* FindObjectInObjectByName(json_value* initialObject, char* name)
 {
 	assert(initialObject->type == json_object);
@@ -616,28 +494,7 @@ static json_value* FindObjectInObjectByName(json_value* initialObject, char* nam
 	}
 	return NULL;
 }
-/*
-static bool isEqual(json_value* initial, json_value* compare)
-{
-	switch (initial->type)
-	{
-	case json_integer:
-		isEqualInt(initial, compare);
-		break;
-	case json_double:
-		isEqualDouble(initial, compare);
-		break;
-	case json_string:
-		isEqualString(initial, compare);
-		break;
-	case json_boolean:
-		isEqualBool(initial, compare);
-		break;
-	default:
-		assert(0);
-	}
-}
-*/
+
 static bool InvalidateCondition(string condition, int iFile)
 {
 	if (condition == "time-morning" || condition == "time-day" || condition == "time-night")
@@ -930,144 +787,7 @@ static bool IsPokemonMatchingType(string path, string version, int flags, string
 	*warning = "";
 	return false;
 }
-/*
-static bool PokemonHasBadMove(Settings* settings, string basepath, string path, int version_index, int flags)
-{
-	path = basepath + path;
-	FILE* fp;
-	struct stat filestatus;
-	int file_size;
-	char* file_contents;
-	json_char* json;
-	json_value* file;
-	if (stat(path.c_str(), &filestatus) != 0)
-	{
-		//cout << "File " + path + " not found\n";
-		//return quietly
-		assert(0);
-		return 1;
-	}
-	file_size = filestatus.st_size;
-	file_contents = (char*)malloc(filestatus.st_size);
-	if (!file_contents)
-	{
-		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
-		assert(0);
-		return 0;
-	}
-	fp = fopen(path.c_str(), "rb");
-	if (!fp)
-	{
-		cout << "Unable to open " + path + "\n";
-		//fclose(fp);
-		free(file_contents);
-		assert(0);
-		return 0;
-	}
-	size_t readNum = fread(file_contents, 1, file_size, fp);
-	if (readNum != file_size)
-	{
-		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
-		cout << "ferror " + to_string(ferror(fp)) + "\n";
-		cout << "feof " + to_string(feof(fp)) + "\n";
-		cout << "file_size " + to_string(file_size) + "\n";
-		fclose(fp);
-		free(file_contents);
-		assert(0);
-		return 0;
-	}
-	fclose(fp);
-	json = (json_char*)file_contents;
-	string error_buf;
-	file = json_parse(json, file_size, &error_buf);
-	if (file == NULL)
-	{
-		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
-		free(file_contents);
-		assert(0);
-		return 0;
-	}
-	//there are only 3 attacking moves that have ever changed type. it's 100% not worth checking for altered types dynamically.
-	//2:  karate chop: normal -> fighting
-	//16: gust:		   normal -> flying
-	//44: bite:		   normal -> dark
-	//all 3 were changed in gen 2
-	bool gen1 = (version_index <= 2);
-	//find all level-up moves with a level less than or equal to the encounter's max level
-	json_value* moves = FindArrayInObjectByName(file, "moves");
-	if (!moves)
-	{
-		json_value_free(file);
-		free(file_contents);
-		assert(0);
-		return 0;
-	}
-	for (size_t movesIdx = 0; movesIdx < moves->u.array.length; movesIdx++)
-	{
-		json_value* moveEntry = moves->u.array.values[movesIdx];
-		if (!moveEntry)
-		{
-			json_value_free(file);
-			free(file_contents);
-			assert(0);
-			return 0;
-		}
-		json_value* versionGroupDetails = FindArrayInObjectByName(moveEntry, "version_group_details");
-		if (!versionGroupDetails)
-		{
-			json_value_free(file);
-			free(file_contents);
-			assert(0);
-			return 0;
-		}
-		for (size_t VGDIdx = 0; VGDIdx < versionGroupDetails->u.array.length; VGDIdx++)
-		{
-			json_value* VGDEntry = versionGroupDetails->u.array.values[VGDIdx];
-			if (!VGDEntry)
-			{
-				json_value_free(file);
-				free(file_contents);
-				assert(0);
-				return 0;
-			}
-			__int64 moveLevel = FindValueInObjectByKey(VGDEntry, "level_learned_at")->u.integer;
 
-			//current working model of how movesets are made for wild pokemon:
-			//-4 most recent level up moves
-			//-evolution, egg, tutor, TM/HM, and other more niche move types not included
-			//-the only exceptions are encounters not in the scope of this program (such as USUM necrozma reportedly or dexnav)
-			
-			//old games have a bug where a pokemon will not know a given move if the relevant slot (A) is 2 or 3 slots away from a slot (B) where the pokemon also learns that same move.
-			//There is most likely a caveat where the move will in fact be learned if slot B was affected by this bug earlier.
-			//The working model for the original way the game generated movesets is this:
-			//for (int i = 1; i < chosen_level; i++)
-			//{
-			//  If we want to learn a new move x
-			//	{
-			//    If move x is the same as a move we currently know, don't learn it.
-			// 
-			//    If there are 4 moves learned, forget the oldest move.
-			//	}
-			//}
-			//proof:
-			//https://www.youtube.com/watch?v=8CfVFjQk6Jg yellow, cerulean cave. golbat can be seen using supersonic, confuse ray, wing attack, and haze. they should have bite instead of supersonic.
-			//gen 2: ___
-			//report of this being fixed by gen 3 but still want to personally confirm
-			
-			//easy way to tell if a move is non-level-up.
-			if (moveLevel == 0)
-		}
-	}
-	
-	//sort the list by level (high to low)
-	//ignore everything after four slots once the minimum level is reached
-
-	json_value_free(file);
-	free(file_contents);
-	assert(0);
-	return 0;
-}
-*/
 static int ValidateMethod(int flags, string method)
 {
 	//these encounter methods are not very useful, if even applicable.
@@ -2163,48 +1883,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hg
 
 		g_newsettings.pkmnrequiretypeflags = pkmnRequireTypeFlags;
 	}
-	/*
-	if (ImGui::CollapsingHeader("Move Types", ImGuiTreeNodeFlags_None))
-	{
-		ImGui::Text("Tables with pokemon with ATTACKING MOVES of the selected types will not be shown.");
-		ImGui::Text("This can take a long time!");
-		static int moveFilterTypeFlags = 0;
-		if (ImGui::BeginTable("typetable2", 5, ImGuiTableFlags_None))
-		{
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Normal", &moveFilterTypeFlags, 1);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fighting", &moveFilterTypeFlags, 2);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Flying", &moveFilterTypeFlags, 4);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Poison", &moveFilterTypeFlags, 8);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ground", &moveFilterTypeFlags, 16);
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Rock", &moveFilterTypeFlags, 32);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Bug", &moveFilterTypeFlags, 64);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ghost", &moveFilterTypeFlags, 128);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fire", &moveFilterTypeFlags, 512);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Water", &moveFilterTypeFlags, 1024);
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Grass", &moveFilterTypeFlags, 2048);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Electric", &moveFilterTypeFlags, 4096);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Psychic", &moveFilterTypeFlags, 8192);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Ice", &moveFilterTypeFlags, 16384);
-			ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dragon", &moveFilterTypeFlags, 32768);
-			if (allgames || game->generation >= 2)
-			{
-				ImGui::TableNextRow();
-				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Steel", &moveFilterTypeFlags, 256);
-				ImGui::TableNextColumn(); ImGui::CheckboxFlags("Dark", &moveFilterTypeFlags, 65536);
-				if (allgames || game->generation >= 6)
-				{
-					ImGui::TableNextColumn(); ImGui::CheckboxFlags("Fairy", &moveFilterTypeFlags, 131072);
-				}
-			}
-		}
-		ImGui::EndTable();
 
-		newsettings->movefiltertypeflags = moveFilterTypeFlags;
-	}
-	*/
 	static std::vector<std::vector<float>> statColors = {
 		{93.0f / 360, .56f, .90f},
 		{50.0f / 360, .57f, .96f},
@@ -2735,7 +2414,6 @@ static void UIMainWindow()
 		g_settings.methodflags = g_newsettings.methodflags;
 		g_settings.pkmnfiltertypeflags = g_newsettings.pkmnfiltertypeflags;
 		g_settings.pkmnrequiretypeflags = g_newsettings.pkmnrequiretypeflags;
-		//g_settingsmovefiltertypeflags = newsettings.movefiltertypeflags;
 		g_settings.scalinglevel = g_newsettings.scalinglevel;
 		g_settings.minAvgEV = g_newsettings.minAvgEV;
 		g_settings.maxAvgEV = g_newsettings.maxAvgEV;
@@ -2777,8 +2455,7 @@ static void UIMainWindow()
 		g_settings.maxallowedlevel != g_newsettings.maxallowedlevel ||
 		g_settings.methodflags != g_newsettings.methodflags ||
 		g_settings.pkmnfiltertypeflags != g_newsettings.pkmnfiltertypeflags ||
-		g_settings.pkmnrequiretypeflags != g_newsettings.pkmnrequiretypeflags/* ||
-		g_settings.movefiltertypeflags != g_newsettings.movefiltertypeflags*/ ||
+		g_settings.pkmnrequiretypeflags != g_newsettings.pkmnrequiretypeflags ||
 		g_settings.scalinglevel != g_newsettings.scalinglevel ||
 		g_settings.minAvgEV != g_newsettings.minAvgEV ||
 		g_settings.maxAvgEV != g_newsettings.maxAvgEV ||
