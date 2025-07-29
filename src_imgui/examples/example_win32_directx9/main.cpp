@@ -171,6 +171,8 @@ enum FilterReasons
 #define OFFSET_EXP 7
 #define OFFSET_BEY 8
 
+#define GENERATION_ALL 0
+
 struct Settings
 {
 	int wantedgame_index = 0;
@@ -1230,48 +1232,66 @@ static bool IsPokemonInEVRangeGen3(string version, string pokemonname)
 	return true;
 }
 
-static void ProcessStat(Encounter encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale)
+static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale)
 {
 	if (offset == OFFSET_BEY)
 	{
-		encounter.baseExp = stat;
-		encounter.minlevel = max(encounter.minlevel, g_settings.repellevel);
-		double avglevel = (double)(encounter.maxlevel + encounter.minlevel) / 2;
-		encounter.avgexp = CalculateExperienceCore(generation, avglevel, encounter.baseExp);
-		//level scaling
-		if (g_settings.scalinglevel != 0)
+		encounter->baseExp = stat;
+		//school form BEY introduces special behavior for wishiwashi
+		//school form is only accessible when level 20+
+		if ((generation >= 7 || generation == GENERATION_ALL) && encounter->pokemonname == "wishiwashi")
 		{
-			encounter.avgexp = ExperienceScaleForLevel(generation, avglevel, g_settings.scalinglevel, encounter.avgexp);
+			encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+			for (__int64 level = encounter->minlevel; level <= encounter->maxlevel; level++)
+			{
+				int BEY = level < 20 ? 61 : encounter->baseExp;
+				double exp = CalculateExperienceCore(generation, (double)level, BEY);
+				//level scaling
+				if (g_settings.scalinglevel != 0)
+					exp = ExperienceScaleForLevel(generation, (double)level, g_settings.scalinglevel, exp);
+				//since we're going level-by-level, we weigh exp here by what fraction of the range this level is
+				encounter->avgexp += exp / (encounter->maxlevel - encounter->minlevel + 1);
+				assert(encounter->avgexp > 0);
+			}
 		}
-		assert(encounter.avgexp > 0);
-		encounter.avgexpweighted = (double)(encounter.avgexp * encounter.chance * chancescale) / table->expectedtotalpercent;
-		if (g_settings.printtext) cout << encounter.pokemonname << " has " << encounter.chance << "% chance between level " << encounter.minlevel << " and " << encounter.maxlevel << ". avgexp " << encounter.avgexp << ", weighted " << encounter.avgexpweighted << "\n";
+		else
+		{
+			encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+			double avglevel = (double)(encounter->maxlevel + encounter->minlevel) / 2;
+			encounter->avgexp = CalculateExperienceCore(generation, avglevel, encounter->baseExp);
+			//level scaling
+			if (g_settings.scalinglevel != 0)
+				encounter->avgexp = ExperienceScaleForLevel(generation, avglevel, g_settings.scalinglevel, encounter->avgexp);
+		}
+		assert(encounter->avgexp > 0);
+		encounter->avgexpweighted = (double)(encounter->avgexp * encounter->chance * chancescale) / table->expectedtotalpercent;
+		if (g_settings.printtext) cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
 #ifdef _DEBUG
 		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
 		//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
 #endif //_DEBUG
-		table->averageYields[OFFSET_EXP] += encounter.avgexpweighted;
+		table->averageYields[OFFSET_EXP] += encounter->avgexpweighted;
 		assert(table->averageYields[OFFSET_EXP] > 0);
-		assert(encounter.avgexpweighted > 0);
-		table->totalchance += encounter.chance;
+		assert(encounter->avgexpweighted > 0);
+		table->totalchance += encounter->chance;
 	}
 	else if (generation >= 3)
 	{
-		table->averageYields[offset] += (double)(stat * encounter.chance * chancescale) / table->expectedtotalpercent;
-		double lowestExp = CalculateExperienceCore(generation, (double)encounter.minlevel, encounter.baseExp);
+		table->averageYields[offset] += (double)(stat * encounter->chance * chancescale) / table->expectedtotalpercent;
+		double lowestExp = CalculateExperienceCore(generation, (double)encounter->minlevel, encounter->baseExp);
 		if (stat > 0)
 		{
 			if (table->efficientEVs[offset].expPerEV == 0.0f)
 			{
 				table->efficientEVs[offset].expPerEV = lowestExp / stat;
-				table->efficientEVs[offset].pokemonname = encounter.pokemonname;
+				table->efficientEVs[offset].pokemonname = encounter->pokemonname;
 			}
 			else
 			{
 				if (table->efficientEVs[offset].expPerEV > lowestExp / stat)
 				{
 					table->efficientEVs[offset].expPerEV = lowestExp / stat;
-					table->efficientEVs[offset].pokemonname = encounter.pokemonname;
+					table->efficientEVs[offset].pokemonname = encounter->pokemonname;
 				}
 			}
 		}
@@ -1778,7 +1798,7 @@ static bool ReadTables()
 						//ditto reads from setting (because of Transform copying stats)
 						if (encounter.pokemonname == "ditto" && game->generation >= 3)
 							stat = g_settings.partyYields[j];
-						ProcessStat(encounter, &table, j, stat, generation, chancescale);
+						ProcessStat(&encounter, &table, j, stat, generation, chancescale);
 					}
 				}
 			}
@@ -2504,6 +2524,8 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 		}
 		if (ImGui::CollapsingHeader(table.header.c_str()))
 		{
+			bool wishiwashi = false;
+			bool minior = false;
 			if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
 				ImGui::TableSetupColumn("Pokemon");
@@ -2516,6 +2538,13 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 				int i = 0;
 				for (Encounter encounter : table.encounters)
 				{
+					if (game->generation >= 7 || game->generation == GENERATION_ALL)
+					{
+						if (encounter.pokemonname == "wishiwashi")
+							wishiwashi = true;
+						if (encounter.pokemonname == "minior")
+							minior = true;
+					}
 					ImGui::TableNextRow();
 
 					//pokemon
@@ -2527,7 +2556,7 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 					if (wikiName == "nidoran-m")
 						wikiName = "nidoran-M";
 					if (wikiName == "mr-mime")
-						wikiName = "mr_Mime";
+						wikiName = "mr-Mime";
 					if (wikiName == "mime-jr")
 						wikiName = "mime-Jr";
 					if (wikiName.find("basculin") != string::npos)
@@ -2569,8 +2598,15 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 
 					//BEY
 					ImGui::TableNextColumn();
-					string baseexp = to_string((long)trunc(encounter.baseExp));
-					ImGui::Text(baseexp.c_str());
+					if ((game->generation >= 7 || game->generation == GENERATION_ALL) && encounter.pokemonname == "wishiwashi")
+					{
+						ImGui::Text("61/217");
+					}
+					else
+					{
+						string baseexp = to_string((long)trunc(encounter.baseExp));
+						ImGui::Text(baseexp.c_str());
+					}
 
 					//avg exp
 					ImGui::TableNextColumn();
@@ -2592,6 +2628,17 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 					i++;
 				}
 				ImGui::EndTable();
+			}
+			if (wishiwashi)
+			{
+				ImGui::Text("Wishiwashi turn into School form starting at level 20, which gives 255%% more EXP.");
+				ImGui::Text("The numbers above were calculated using School form where applicable.");
+			}
+			if (minior)
+			{
+				ImGui::Text("Minior defeated while in Core form give 13%% more EXP.");
+				ImGui::Text("The numbers above assume Minior is defeated in Core form.");
+				ImGui::Text("Meteor form gives 1 EV in both defense stats, and Core 1 in both attack stats.");
 			}
 			if (game->generation >= 3)
 			{
@@ -2804,7 +2851,7 @@ static void RegisterGames()
 	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", 7, { 1035, 1156 });
 	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", 7, { 1035, 1156 });
 	//extras
-	RegisterGame("All", "all", "ALL_EXPFILE", 0, { 1, 1156 });
+	RegisterGame("All", "all", "ALL_EXPFILE", GENERATION_ALL, { 1, 1156 });
 }
 
 static void RegisterMethod(const char* uiname, const char* internalname, int flag)
