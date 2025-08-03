@@ -157,6 +157,14 @@ enum FilterReasons
 	Reason_LackingDuplicateMons
 };
 
+enum MilestoneType
+{
+	MILESTONE_NONE,
+	MILESTONE_CHECKPOINT,
+	MILESTONE_ONEWAY,
+	MILESTONE_CHECKBOX
+};
+
 //offsets for bulba's yield tables and EncounterTable's averageYields vector
 #define OFFSET_HP 0
 #define OFFSET_ATTACK 1
@@ -198,6 +206,7 @@ struct Settings
 struct SettingsWindowData
 {
 	int generation_lastframe = 0;
+	int wantedgame_index_lastframe = 0;
 	int time_chosen = 0;
 	bool running = false;
 	double progress = 0;
@@ -259,8 +268,28 @@ struct MethodObject
 	int flag = 0;
 };
 
+struct MethodExclude
+{
+	size_t slot;//slot in the tables vector of a Milestone that this exclusion applies to
+	string str;//method(s) to exclude. multiple methods can be delimited by commas.
+};
+
+struct Milestone
+{
+	string name;
+	MilestoneType type = MILESTONE_NONE;
+	size_t parent = ((std::size_t)(-1));//it's not suitable to simply look at the previous slot in the Milestone list as that may be a checkbox
+	int id = 0;
+	vector<int> tables;
+	vector<int> removes;
+	vector<int> cancels;
+	vector<string> unlocks;
+	vector<MethodExclude*> excludes;
+};
+
 vector<MethodObject*> g_methods;
 vector<EncounterTable> maintables;
+vector<Milestone> g_milestones;
 string g_pkmndatapath = "pkmndata/";
 Settings g_settings, g_newsettings;
 SettingsWindowData g_settingswindowdata;
@@ -1501,7 +1530,7 @@ static bool ReadTables()
 					{
 						if (j == OFFSET_EXP)//skip exp, this is filled in later based on OFFSET_BEY
 							continue;
-						commaPos = textLine.find_last_of(",", commaPos - 1);
+						commaPos = textLine.find_last_of(',' , commaPos - 1);
 						size_t s2End = textLine.find(',', commaPos + 1);
 						string str2;
 						//last cell of line doesn't end with a comma, it ends with nothing
@@ -1749,7 +1778,7 @@ static void UIMiscSettings(GameObject* game, bool allgames, bool rse, bool dpp, 
 	g_newsettings.maxallowedlevel = maxallowedlevel;
 }
 
-static void UISettingSections(GameObject* game, bool allgames, bool rse, bool hgss)
+static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 {
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
@@ -2341,6 +2370,151 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 	}
 }
 
+//progress file describes how areas unlock with game progress. see yellow.pro for an explanation of most features.
+void ParseProgressFile(int game_index)
+{
+	g_milestones.clear();
+	string progressfilepath = g_pkmndatapath + "progress/" + g_games[game_index]->internalname + ".pro";
+	//both checkpoints and oneways are Milestones.
+	//oneways are a type of checkpoint.
+	//checkboxes are Milestones but not checkpoints.
+	//the main Milestone list in the UI is made of checkpoints (which includes oneways) exclusively. checkboxes go into a separate list.
+	size_t lastcheckpointslot = ((std::size_t)(-1));
+	size_t lastmilestoneslot = ((std::size_t)(-1));
+	ifstream ReadFile(progressfilepath);
+	string textLine;
+	while (getline(ReadFile, textLine))
+	{
+		size_t s1End = textLine.find("//");
+		string str1;
+
+		if (s1End == string::npos)
+			str1 = textLine;
+		else
+			str1 = textLine.substr(0, s1End);
+
+		if (str1.empty())
+			continue;
+
+		string ms_name;
+		MilestoneType ms_type = MILESTONE_NONE;
+		int ms_id = 0;
+		size_t ms_parent = ((std::size_t)(-1));
+
+		if (str1.find("checkpoint ") != string::npos)
+		{
+			ms_type = MILESTONE_CHECKPOINT;
+			ms_name = str1.substr(11);
+		}
+
+		if (ms_type != MILESTONE_CHECKPOINT && lastcheckpointslot == -1)
+		{
+			cout << "ERROR on line: " + textLine + "\nNo checkpoint to attach this item to!\n";
+			return;
+		}
+
+		if (str1.find("oneway ") != string::npos)
+		{
+			ms_type = MILESTONE_ONEWAY;
+			size_t s2End = str1.find(" ", 7);
+			string str2 = str1.substr(7, s2End - 7);
+			ms_id = stoi(str2);
+			ms_parent = lastcheckpointslot;
+			string str3 = str1.substr(s2End + 1);
+			ms_name = str3;
+		}
+
+		if (ms_type != MILESTONE_CHECKPOINT && lastmilestoneslot == -1)
+		{
+			cout << "ERROR on line: " + textLine + "\nNo milestone to attach this item to!\n";
+			return;
+		}
+
+		if (str1.find("checkbox ") != string::npos)
+		{
+			ms_type = MILESTONE_CHECKBOX;
+			size_t s2End = str1.find(" ", 9);
+			string str2 = str1.substr(9, s2End - 9);
+			ms_id = stoi(str2);
+			ms_parent = lastcheckpointslot;
+			string str3 = str1.substr(s2End + 1);
+			ms_name = str3;
+		}
+		
+		if (ms_type == MILESTONE_NONE && lastmilestoneslot != -1)
+		{
+			if (str1.find("unlock ") != string::npos)
+			{
+				g_milestones[lastmilestoneslot].unlocks.push_back(str1.substr(7));
+				continue;
+			}
+
+			if (str1.find("remove ") != string::npos)
+			{
+				size_t s2End = str1.find(" ", 7);
+				string str2 = str1.substr(7, s2End - 7);
+				g_milestones[lastmilestoneslot].removes.push_back(stoi(str2));
+				continue;
+			}
+
+			if (str1.find("cancel ") != string::npos)
+			{
+				size_t s2End = str1.find(" ", 7);
+				string str2 = str1.substr(7, s2End - 7);
+				g_milestones[lastmilestoneslot].cancels.push_back(stoi(str2));
+				continue;
+			}
+
+			//only thing left to try is a number, which would indicate a location-area file number
+			//some such lines might have the word "exclude" after them, so take that off first
+			size_t s2End = str1.find(" ");
+			string str2;
+
+			if (s2End == string::npos)
+				str2 = str1;
+			else
+				str2 = str1.substr(0, s2End);
+
+			//check if string is a number
+			if (strspn(str2.c_str(), "0123456789") == str2.size())
+			{
+				g_milestones[lastmilestoneslot].tables.push_back(stoi(str2));
+				//now parse exclude word
+				if (s2End != string::npos)
+				{
+					string str3 = str1.substr(s2End + 9);//" exclude " is 9 chars
+					MethodExclude* newME = new MethodExclude;
+					newME->slot = g_milestones[lastmilestoneslot].tables.size() - 1;
+					newME->str = str3;
+					g_milestones[lastmilestoneslot].excludes.push_back(newME);
+				}
+				continue;
+			}
+			else
+			{
+				cout << "ERROR on line: " + textLine + "\nString '" + str2 + "' not recognized.\n";
+				return;
+			}
+		}
+
+		if (ms_type == MILESTONE_NONE)
+		{
+			cout << "ERROR on line: " + textLine + "\nCommand not recognized.\n";
+			return;
+		}
+
+		Milestone* newMS = new Milestone;
+		newMS->name = ms_name;
+		newMS->type = ms_type;
+		newMS->id = ms_id;
+		newMS->parent = ms_parent;
+		g_milestones.push_back(*newMS);
+		if (ms_type == MILESTONE_CHECKPOINT || ms_type == MILESTONE_ONEWAY)
+			lastcheckpointslot = g_milestones.size() - 1;
+		lastmilestoneslot = g_milestones.size() - 1;
+	}
+}
+
 static void UIMainWindow()
 {
 #ifndef _DEBUG
@@ -2392,8 +2566,15 @@ static void UIMainWindow()
 
 	GameObject *game = g_games[g_newsettings.wantedgame_index];
 
+	if (g_settingswindowdata.wantedgame_index_lastframe != g_newsettings.wantedgame_index)
+	{
+		//only parse progress file for games with one
+		if (g_newsettings.wantedgame_index == GAME_YELLOW)
+			ParseProgressFile(g_newsettings.wantedgame_index);
+	}
+	
 	UIMiscSettings(game, allgames, rse, dpp, hgss);
-	UISettingSections(game, allgames, rse, hgss);
+	UISettingSections(game, allgames, hgss);
 
 	if (g_settingswindowdata.running && g_settingswindowdata.progress == 1.00)
 		TablePostProcess();
@@ -2475,6 +2656,7 @@ static void UIMainWindow()
 
 	ImGui::End();
 	g_settingswindowdata.generation_lastframe = game->generation;
+	g_settingswindowdata.wantedgame_index_lastframe = g_newsettings.wantedgame_index;
 }
 
 static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
