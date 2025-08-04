@@ -453,8 +453,7 @@ static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current
 				break;
 		case MILESTONE_CHECKPOINT:
 			if (gountilnextcheckpoint)
-				return foundself;//2nd bug catcher on route 9, which is the one that cancels #2, returns true because it never
-				//return foundself && !MilestoneCancelsID(slot, subjectID);
+				return foundself;
 			if (MilestoneCancelsID(slot, subjectID))
 				return false;
 			else
