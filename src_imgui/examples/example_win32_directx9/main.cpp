@@ -196,6 +196,7 @@ struct Settings
 	bool pkmntypewarn = false;
 	int scalinglevel = 0;
 	bool abilitywarn = true;
+	bool useprogressfilter = false;
 	std::vector<float> minAvgEV = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 	std::vector<float> maxAvgEV = {3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f};
 	std::vector<int> minSingleMonEV = {0, 0, 0, 0, 0, 0, 0};
@@ -278,18 +279,20 @@ struct Milestone
 {
 	string name;
 	MilestoneType type = MILESTONE_NONE;
-	size_t parent = ((std::size_t)(-1));//it's not suitable to simply look at the previous slot in the Milestone list as that may be a checkbox
+	size_t parentslot = ((std::size_t)(-1));//it's not suitable to simply look at the previous slot in the Milestone list as that may be a checkbox
 	int id = 0;
 	vector<int> tables;
 	vector<int> removes;
 	vector<int> cancels;
 	vector<string> unlocks;
 	vector<MethodExclude*> excludes;
+	bool userchecked = false;
 };
 
 vector<MethodObject*> g_methods;
 vector<EncounterTable> maintables;
 vector<Milestone> g_milestones;
+vector<string> g_checkpointnames;
 string g_pkmndatapath = "pkmndata/";
 Settings g_settings, g_newsettings;
 SettingsWindowData g_settingswindowdata;
@@ -388,9 +391,88 @@ static void WarnMarker(const char* desc)
 	}
 }
 
+static bool MilestoneCancelsID(int slot, int subjectID)
+{
+	Milestone ms = g_milestones[slot];
+	for (int cancel : ms.cancels)
+	{
+		if (cancel == subjectID)
+		{
+			if (ms.id == subjectID)
+			{
+				//milestone cannot cancel itself!!
+				assert(false);
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+//see that no milestone between #0 and checkpoint_current is suppressing id
+static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current)
+{
+	if (!subjectID)
+		return true;
+
+	bool foundself = false;
+
+	//keep iterating through milestones so we can set foundself = true when the checkpoint_current is the parent of a checkbox
+	bool gountilnextcheckpoint = false;
+
+	for (int slot = start; (slot < checkpoint_current + 1 || gountilnextcheckpoint) && slot < g_milestones.size(); slot++)
+	{
+		Milestone ms = g_milestones[slot];
+
+		if (ms.id == subjectID)
+		{
+			foundself = true;
+			for (int cancel : ms.cancels)
+			{
+				if (cancel == subjectID)
+				{
+					//milestone cannot cancel itself!!
+					assert(false);
+				}
+			}
+		}
+
+		switch (ms.type)
+		{
+		case MILESTONE_ONEWAY:
+			if (gountilnextcheckpoint)
+				return foundself;
+			if (foundself && MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(ms.id, slot + 1, checkpoint_current))//oneway is currently in effect and lower down than our milestone, so milestone can't be relevant
+				return false;
+			else
+				break;
+		case MILESTONE_CHECKBOX:
+			if (!gountilnextcheckpoint && MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(ms.id, slot + 1, checkpoint_current))
+				return false;
+			else
+				break;
+		case MILESTONE_CHECKPOINT:
+			if (gountilnextcheckpoint)
+				return foundself;//2nd bug catcher on route 9, which is the one that cancels #2, returns true because it never
+				//return foundself && !MilestoneCancelsID(slot, subjectID);
+			if (MilestoneCancelsID(slot, subjectID))
+				return false;
+			else
+				break;
+		case MILESTONE_NONE:
+		default:
+			assert(false);
+			break;
+		}
+
+		if (slot == checkpoint_current)
+			gountilnextcheckpoint = true;
+	}
+	return foundself;
+}
+
 static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
-	//throw out the whole table
 	if (g_settings.maxallowedlevel < maxlevel)
 		filterReason = Reason_OverLevelCap;
 
@@ -928,6 +1010,14 @@ static bool FindInExpFile(int offset, string expfile, string pokemonname, int* s
 		}
 	}
 	return false;
+}
+
+static bool GameHasProgressFile(int index)
+{
+	if (index == GAME_YELLOW)
+		return true;
+	else
+		return false;
 }
 
 static double CalculateExperienceCore(int generation, double level, int baseExp)
@@ -1913,6 +2003,80 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		g_newsettings.pkmnrequiretypeflags = pkmnRequireTypeFlags;
 	}
 
+	if (GameHasProgressFile(g_newsettings.wantedgame_index) && ImGui::CollapsingHeader("Game Progress", ImGuiTreeNodeFlags_None))
+	{
+		ImGui::Text("Hide locations that are not normally accessible at a certain point in the game.\nSelect the action above the first one you have not done.");
+		static bool useprogressfilter = false;
+		ImGui::Checkbox("Use", &useprogressfilter);
+		ImGui::SameLine(); HelpMarker("In some games, some areas can become permanently inaccessible, so you are given the option to use this feature at all.");
+		g_newsettings.useprogressfilter = useprogressfilter;
+
+		//main milestone list
+		float w = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.y);
+		ImGui::SetNextItemWidth(w);
+		static int selected_checkpoint_slot = 0;
+		if (ImGui::BeginListBox("##"))
+		{
+			for (int slot = 0; slot < g_milestones.size(); slot++)
+			{
+				Milestone ms = g_milestones[slot];
+				if (ms.type != MILESTONE_CHECKBOX)
+				{
+					if (ImGui::Selectable(ms.name.c_str(), ms.userchecked))
+					{
+						bool pastmyself = false;
+						for (Milestone& ms2 : g_milestones)
+						{
+							if (ms2.type != MILESTONE_CHECKBOX)
+							{
+								if (pastmyself)
+									ms2.userchecked = false;
+								else
+								{
+									ms2.userchecked = true;
+									if (ms.name == ms2.name)
+									{
+										pastmyself = true;
+										selected_checkpoint_slot = slot;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			ImGui::EndListBox();
+		}
+
+		//checkboxes
+		static bool checked[32] = {
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false,
+			false, false, false, false};
+		for (Milestone ms : g_milestones)
+		{
+			//running check is because we don't want the user to change settings during iteration
+			if (!g_settingswindowdata.running && ms.type == MILESTONE_CHECKBOX)
+			{
+				if (MilestoneIsRelevant(ms.id, 0, selected_checkpoint_slot))
+				{
+					ImGui::Checkbox(ms.name.c_str(), &checked[ms.id]);
+					ms.userchecked = checked[ms.id];
+				}
+				else
+				{
+					ms.userchecked = false;
+					checked[ms.id] = false;
+				}
+			}
+		}
+	}
+
 	static std::vector<std::vector<float>> statColors = {
 		{93.0f / 360, .56f, .90f},
 		{50.0f / 360, .57f, .96f},
@@ -2374,6 +2538,7 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 void ParseProgressFile(int game_index)
 {
 	g_milestones.clear();
+	g_checkpointnames.clear();
 	string progressfilepath = g_pkmndatapath + "progress/" + g_games[game_index]->internalname + ".pro";
 	//both checkpoints and oneways are Milestones.
 	//oneways are a type of checkpoint.
@@ -2507,10 +2672,16 @@ void ParseProgressFile(int game_index)
 		newMS->name = ms_name;
 		newMS->type = ms_type;
 		newMS->id = ms_id;
-		newMS->parent = ms_parent;
+		newMS->parentslot = ms_parent;
+		//first checkpoint should always be active
+		if (lastcheckpointslot == -1)
+			newMS->userchecked = true;
 		g_milestones.push_back(*newMS);
 		if (ms_type == MILESTONE_CHECKPOINT || ms_type == MILESTONE_ONEWAY)
+		{
 			lastcheckpointslot = g_milestones.size() - 1;
+			g_checkpointnames.push_back(ms_name);
+		}
 		lastmilestoneslot = g_milestones.size() - 1;
 	}
 }
@@ -2568,8 +2739,7 @@ static void UIMainWindow()
 
 	if (g_settingswindowdata.wantedgame_index_lastframe != g_newsettings.wantedgame_index)
 	{
-		//only parse progress file for games with one
-		if (g_newsettings.wantedgame_index == GAME_YELLOW)
+		if (GameHasProgressFile(g_newsettings.wantedgame_index))
 			ParseProgressFile(g_newsettings.wantedgame_index);
 	}
 	

@@ -43,6 +43,8 @@ Index of this file:
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
+#include <vector>
+#include <string>
 
 // System includes
 #include <stdint.h>     // intptr_t
@@ -8496,6 +8498,52 @@ bool ImGui::ListBox(const char* label, int* current_item, const char* (*getter)(
                 SetItemDefaultFocus();
             PopID();
         }
+    EndListBox();
+
+    if (value_changed)
+        MarkItemEdited(g.LastItemData.ID);
+
+    return value_changed;
+}
+bool ImGui::ListBox(const char* label, int* current_item, std::vector<std::string> user_data, int items_count, int height_in_items)
+{
+    ImGuiContext& g = *GImGui;
+
+    // Calculate size from "height_in_items"
+    if (height_in_items < 0)
+        height_in_items = ImMin(items_count, 7);
+    float height_in_items_f = height_in_items + 0.25f;
+    ImVec2 size(0.0f, ImTrunc(GetTextLineHeightWithSpacing() * height_in_items_f + g.Style.FramePadding.y * 2.0f));
+
+    if (!BeginListBox(label, size))
+        return false;
+
+    // Assume all items have even height (= 1 line of text). If you need items of different height,
+    // you can create a custom version of ListBox() in your code without using the clipper.
+    bool value_changed = false;
+    ImGuiListClipper clipper;
+    clipper.Begin(items_count, GetTextLineHeightWithSpacing()); // We know exactly our line height here so we pass it as a minor optimization, but generally you don't need to.
+    clipper.IncludeItemByIndex(*current_item);
+    while (clipper.Step())
+    {
+        for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+        {
+            std::string item_text = user_data[i];
+            if (item_text.empty())
+                item_text = "*Unknown item*";
+
+            PushID(i);
+            const bool item_selected = (i == *current_item);
+            if (Selectable(item_text.c_str(), item_selected))
+            {
+                *current_item = i;
+                value_changed = true;
+            }
+            if (item_selected)
+                SetItemDefaultFocus();
+            PopID();
+        }
+    }
     EndListBox();
 
     if (value_changed)
