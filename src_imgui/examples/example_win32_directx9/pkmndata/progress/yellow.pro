@@ -54,21 +54,19 @@ unlock old-rod
 
 //a checkbox is a milestone that is not in the main list, but rather shows up as a checkbox. checkboxes only appear if the selected checkpoint is the one directly above them, or any checkpoint lower down.
 //also uses an identifier number like one-ways do
+
 checkbox 2 S.S. Anne departed
 //remove means... you can guess i think
 remove 349//vermilion-city-ss-anne-dock
 
 checkbox 6 Obtained ability to use Cut
 //this cancels the oneway defined earlier with the id 1
+//if you get the cascade badge first, you technically have the ability to use Cut immediately after getting the HM, so don't remove the dock
 cancel 1
 
 checkbox 5 Defeated 1st Bug Catcher on Route 9
 //we clearly have cut by now, so we can go back to places before the route 4 one-way
 cancel 1
-//we clearly have cut by now
-cancel 6
-//ss anne is clearly gone by now
-cancel 2
 remove 349//vermilion-city-ss-anne-dock
 303//kanto-route-9
 
@@ -91,7 +89,7 @@ checkpoint Defeated 1st Pokemaniac in Rock Tunnel
 
 checkpoint Defeated last Jr. Trainer F in Rock Tunnel
 //no wild pokemon in lavender town or first two floors of pokemon tower
-//here we exclude the walk table, because the grass isn't accessible until the next checkpoint
+//here we exclude the walk table, because the grass isn't accessible until later
 276 exclude walk//kanto-route-12
 
 checkbox 10 Defeated 1st Gambler or Lass on Route 8
@@ -102,14 +100,8 @@ checkbox 10 Defeated 1st Gambler or Lass on Route 8
 309 exclude surf,old-rod,good-rod,super-rod//kanto-route-16
 //doing this from west grants us nothing new
 
-//both of these badges are dependent on reaching celadon.
-//this is the earliest point where you can reach celadon.
-//all badges control how far you can go in route 23, but these two are the only meaningful ones
 checkbox 9 Obtained Rainbow Badge
 329 exclude walk//kanto-route-23
-
-checkbox 11 Obtained Marsh Badge
-329//kanto-route-23
 
 checkpoint Defeated Rival in Pokemon Tower
 336//pokemon-tower-3f
@@ -201,6 +193,9 @@ unlock surf
 344//pokemon-mansion-b1f
 312//kanto-sea-route-21
 330//power-plant
+
+checkbox 11 Obtained Marsh Badge and haven't defeated Giovanni
+329//kanto-route-23
 
 checkpoint Defeated Rival on Route 22 (2nd battle)
 //battle only possible when all badges are collected

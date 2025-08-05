@@ -968,7 +968,7 @@
             "url": "/api/v2/location-area/293/"
         },
         {
-            "name": "kanto-victory-road-1-1f",
+            "name": "kanto-victory-road-1f",
             "url": "/api/v2/location-area/294/"
         },
         {
@@ -1064,11 +1064,11 @@
             "url": "/api/v2/location-area/317/"
         },
         {
-            "name": "kanto-victory-road-1-2f",
+            "name": "kanto-victory-road-2f",
             "url": "/api/v2/location-area/318/"
         },
         {
-            "name": "kanto-victory-road-1-3f",
+            "name": "kanto-victory-road-3f",
             "url": "/api/v2/location-area/319/"
         },
         {
@@ -1106,18 +1106,6 @@
         {
             "name": "power-plant-area",
             "url": "/api/v2/location-area/330/"
-        },
-        {
-            "name": "kanto-victory-road-2-1f",
-            "url": "/api/v2/location-area/331/"
-        },
-        {
-            "name": "kanto-victory-road-2-2f",
-            "url": "/api/v2/location-area/332/"
-        },
-        {
-            "name": "kanto-victory-road-2-3f",
-            "url": "/api/v2/location-area/333/"
         },
         {
             "name": "pokemon-tower-1f",
