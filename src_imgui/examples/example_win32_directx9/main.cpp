@@ -154,6 +154,7 @@ enum FilterReasons
 	Reason_BadEVs,
 	Reason_NoGoodEVs,
 	Reason_OverLevelCap,
+	Reason_BadProgress,
 	Reason_LackingDuplicateMons
 };
 
@@ -197,6 +198,7 @@ struct Settings
 	int scalinglevel = 0;
 	bool abilitywarn = true;
 	bool useprogressfilter = false;
+	int selected_checkpoint_slot = 0;
 	std::vector<float> minAvgEV = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 	std::vector<float> maxAvgEV = {3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f};
 	std::vector<int> minSingleMonEV = {0, 0, 0, 0, 0, 0, 0};
@@ -286,7 +288,7 @@ struct Milestone
 	vector<int> cancels;
 	vector<string> unlocks;
 	vector<MethodExclude*> excludes;
-	bool userchecked = false;
+	bool userselected = false;
 };
 
 vector<MethodObject*> g_methods;
@@ -409,13 +411,15 @@ static bool MilestoneCancelsID(int slot, int subjectID)
 	return false;
 }
 
-//see that no milestone between #0 and checkpoint_current is suppressing id
-static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current)
+//see that no milestone between #0 and checkpoint_current is suppressing id (not including the effect of oneways)
+static bool MilestoneIsRelevant(int subjectslot, int start, int checkpoint_current)
 {
+	int subjectID = g_milestones[subjectslot].id;
+
 	if (!subjectID)
 		return true;
 
-	bool foundself = false;
+	bool pastownslot = subjectslot <= start;
 
 	//keep iterating through milestones so we can set foundself = true when the checkpoint_current is the parent of a checkbox
 	bool gountilnextcheckpoint = false;
@@ -426,7 +430,6 @@ static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current
 
 		if (ms.id == subjectID)
 		{
-			foundself = true;
 			for (int cancel : ms.cancels)
 			{
 				if (cancel == subjectID)
@@ -437,27 +440,29 @@ static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current
 			}
 		}
 
+		if (subjectslot <= slot)
+		{
+			pastownslot = true;
+		}
+
 		switch (ms.type)
 		{
 		case MILESTONE_ONEWAY:
 			if (gountilnextcheckpoint)
-				return foundself;
-			if (foundself && MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(ms.id, slot + 1, checkpoint_current))//oneway is currently in effect and lower down than our milestone, so milestone can't be relevant
+				return pastownslot;
+			if (MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(slot, slot + 1, checkpoint_current))
 				return false;
-			else
-				break;
+			break;
 		case MILESTONE_CHECKBOX:
-			if (!gountilnextcheckpoint && MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(ms.id, slot + 1, checkpoint_current))
+			if (ms.userselected && MilestoneCancelsID(slot, subjectID) && MilestoneIsRelevant(ms.id, slot + 1, checkpoint_current))
 				return false;
-			else
-				break;
+			break;
 		case MILESTONE_CHECKPOINT:
 			if (gountilnextcheckpoint)
-				return foundself;
+				return pastownslot;
 			if (MilestoneCancelsID(slot, subjectID))
 				return false;
-			else
-				break;
+			break;
 		case MILESTONE_NONE:
 		default:
 			assert(false);
@@ -467,77 +472,149 @@ static bool MilestoneIsRelevant(int subjectID, int start, int checkpoint_current
 		if (slot == checkpoint_current)
 			gountilnextcheckpoint = true;
 	}
-	return foundself;
+	return pastownslot;
+}
+
+static bool EncounterIsAccessible(int tablenum, string method)
+{
+	bool excludebymethod = false;
+	bool foundtable = false;
+	bool removed = false;
+	vector<string> unlockedmethods;
+	for (int slot = 0; slot < g_milestones.size(); slot++)
+	{
+		Milestone ms = g_milestones[slot];
+		if (ms.userselected && MilestoneIsRelevant(slot, 0, g_newsettings.selected_checkpoint_slot))
+		{
+			if (foundtable && ms.type == MILESTONE_ONEWAY)
+			{
+				return false;
+			}
+			for (int Jslot = 0; Jslot < ms.tables.size(); Jslot++)
+			{
+				int table = ms.tables[Jslot];
+				if (tablenum == table)
+				{
+					foundtable = true;
+					removed = false;
+					if (!ms.excludes.empty())
+					{
+						bool thistableexcludes = false;
+						for (MethodExclude* exclude : ms.excludes)
+						{
+							if (exclude->slot == Jslot)
+							{
+								if (exclude->str.find(method) != string::npos)
+								{
+									//don't return yet. there might be a later milestone that unlocks our target method.
+									excludebymethod = true;
+									thistableexcludes = true;
+								}
+							}
+						}
+						if (!thistableexcludes)
+						{
+							excludebymethod = false;
+						}
+					}
+					else
+					{
+						excludebymethod = false;
+					}
+				}
+			}
+			if (!ms.removes.empty())
+			{
+				for (int remove : ms.removes)
+				{
+					if (tablenum == remove)
+					{
+						//don't return yet. there might be a later milestone that re-adds this table.
+						removed = true;
+					}
+				}
+			}
+			for (int Jslot = 0; Jslot < ms.unlocks.size(); Jslot++)
+			{
+				unlockedmethods.push_back(ms.unlocks[Jslot]);
+			}
+		}
+	}
+	bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
+	return foundtable && !excludebymethod && methodavailable && !removed;
 }
 
 static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
+	if (g_settings.repellevel > maxlevel)
+		return;
+	
+	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname))
+		filterReason = Reason_BadProgress;
+
 	if (g_settings.maxallowedlevel < maxlevel)
 		filterReason = Reason_OverLevelCap;
 
-	if (g_settings.repellevel <= maxlevel)
+	Encounter newEnc;
+	newEnc.chance = chance;
+	newEnc.maxlevel = maxlevel;
+	newEnc.minlevel = minlevel;
+	newEnc.pokemonname = pokemonname;
+	bool makenewtable = true;
+	for (EncounterTable& table : maintables)
 	{
-		Encounter newEnc;
-		newEnc.chance = chance;
-		newEnc.maxlevel = maxlevel;
-		newEnc.minlevel = minlevel;
-		newEnc.pokemonname = pokemonname;
-		bool makenewtable = true;
-		for (EncounterTable& table : maintables)
+		if (table.placename == placename && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 		{
-			if (table.placename == placename && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+			//don't lose our reason just because another encounter was ok
+			//prioritize OverLevelCap because BadType may simply be a warning
+			if (filterReason != Reason_None && table.filterReason != Reason_OverLevelCap)
+				table.filterReason = filterReason;
+
+			makenewtable = false;
+			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+			table.encounters.push_back(newEnc);
+			table.expectedtotalpercent += chance;
+			table.lowestlevel = min(table.lowestlevel, minlevel);
+			table.highestlevel = max(table.highestlevel, maxlevel);
+			//if any type is good, the table is good
+			if (goodtype)
+				table.goodtype = true;
+			if (goodEVs)
+				table.goodEVs = true;
+
+			if (!warning.empty())
 			{
-				//don't lose our reason just because another encounter was ok
-				//prioritize OverLevelCap because BadType may simply be a warning
-				if (filterReason != Reason_None && table.filterReason != Reason_OverLevelCap)
-					table.filterReason = filterReason;
-
-				makenewtable = false;
-				//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
-				table.encounters.push_back(newEnc);
-				table.expectedtotalpercent += chance;
-				table.lowestlevel = min(table.lowestlevel, minlevel);
-				table.highestlevel = max(table.highestlevel, maxlevel);
-				//if any type is good, the table is good
-				if (goodtype)
-					table.goodtype = true;
-				if (goodEVs)
-					table.goodEVs = true;
-
-				if (!warning.empty())
+				if (table.warning.empty())
 				{
-					if (table.warning.empty())
-					{
-						table.warning = warning;
-					}
-					else
-					{
-						table.warning += "\n" + warning;
-					}
+					table.warning = warning;
 				}
-				break;
+				else
+				{
+					table.warning += "\n" + warning;
+				}
 			}
+			break;
 		}
-		if (makenewtable)
-		{
-			//cout << "Line " << linenum << ": new table\n";
-			EncounterTable* newTable = new EncounterTable;
-			newTable->method_index = method_index;
-			newTable->placename = placename;
-			newTable->filenumber = i;
-			newTable->expectedtotalpercent = chance;
-			newTable->version_index = version_index;
-			newTable->filterReason = filterReason;
-			newTable->warning = warning;
-			newTable->lowestlevel = minlevel;
-			newTable->highestlevel = maxlevel;
-			newTable->goodtype = goodtype;
-			newTable->goodEVs = goodEVs;
-			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
-			newTable->encounters.push_back(newEnc);
+	}
+	if (makenewtable)
+	{
+		//cout << "Line " << linenum << ": new table\n";
+		EncounterTable* newTable = new EncounterTable;
+		newTable->method_index = method_index;
+		newTable->placename = placename;
+		newTable->filenumber = i;
+		newTable->expectedtotalpercent = chance;
+		newTable->version_index = version_index;
+		newTable->filterReason = filterReason;
+		newTable->warning = warning;
+		newTable->lowestlevel = minlevel;
+		newTable->highestlevel = maxlevel;
+		newTable->goodtype = goodtype;
+		newTable->goodEVs = goodEVs;
+		//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
+		newTable->encounters.push_back(newEnc);
 
-			maintables.push_back(*newTable);
-		}
+		maintables.push_back(*newTable);
 	}
 }
 
@@ -1286,8 +1363,6 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 
 static int ParseLocationDataFile(int iFile)
 {
-	//if (iFile != 57)
-	//	return 1;
 	string locationareapath = g_pkmndatapath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
 	//cout << path << "\n";
 	GameObject* game = g_games[g_settings.wantedgame_index];
@@ -2021,7 +2096,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				Milestone ms = g_milestones[slot];
 				if (ms.type != MILESTONE_CHECKBOX)
 				{
-					if (ImGui::Selectable(ms.name.c_str(), ms.userchecked))
+					if (ImGui::Selectable(ms.name.c_str(), ms.userselected) && !g_settingswindowdata.running)
 					{
 						bool pastmyself = false;
 						for (Milestone& ms2 : g_milestones)
@@ -2029,14 +2104,15 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 							if (ms2.type != MILESTONE_CHECKBOX)
 							{
 								if (pastmyself)
-									ms2.userchecked = false;
+									ms2.userselected = false;
 								else
 								{
-									ms2.userchecked = true;
+									ms2.userselected = true;
 									if (ms.name == ms2.name)
 									{
 										pastmyself = true;
 										selected_checkpoint_slot = slot;
+										g_newsettings.selected_checkpoint_slot = selected_checkpoint_slot;
 									}
 								}
 							}
@@ -2057,19 +2133,21 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			false, false, false, false,
 			false, false, false, false,
 			false, false, false, false};
-		for (Milestone ms : g_milestones)
+		for (int slot = 0; slot < g_milestones.size(); slot++)
 		{
+			Milestone& ms = g_milestones[slot];
 			//running check is because we don't want the user to change settings during iteration
 			if (!g_settingswindowdata.running && ms.type == MILESTONE_CHECKBOX)
 			{
-				if (MilestoneIsRelevant(ms.id, 0, selected_checkpoint_slot))
+				if (MilestoneIsRelevant(slot, 0, selected_checkpoint_slot))
 				{
 					ImGui::Checkbox(ms.name.c_str(), &checked[ms.id]);
-					ms.userchecked = checked[ms.id];
+					ms.userselected = checked[ms.id];
 				}
 				else
 				{
-					ms.userchecked = false;
+					//critical: a checkbox that is not relevant must be regarded as unselected
+					ms.userselected = false;
 					checked[ms.id] = false;
 				}
 			}
@@ -2183,18 +2261,18 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			g_newsettings.partyYields[OFFSET_BEY] = 101;
 	}
 
-	if (ImGui::CollapsingHeader("Party Pokemon", ImGuiTreeNodeFlags_None))
+	//Transform does not copy the BEY until gen 3
+	//EVs don't exist until gen 3
+	//therefore we check for >= 3 here
+	if (game->generation >= 3 && ImGui::CollapsingHeader("Party Pokemon", ImGuiTreeNodeFlags_None))
 	{
-		if (game->generation >= 3)
-		{
-			ImGui::InputInt("Party Base EXP Yield", &g_newsettings.partyYields[OFFSET_BEY]);
-			ImGui::SameLine();
-			if (game->generation <= 4)
-				HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 61.");
-			else
-				HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 101.");
-			g_newsettings.partyYields[OFFSET_BEY] = g_newsettings.partyYields[OFFSET_BEY];
-		}
+		ImGui::InputInt("Party Base EXP Yield", &g_newsettings.partyYields[OFFSET_BEY]);
+		ImGui::SameLine();
+		if (game->generation <= 4)
+			HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 61.");
+		else
+			HelpMarker("When wild Ditto uses Transform, it will copy the base experience yield stat of its target. If you'll allow Ditto to Transform, enter the value it will copy. Default 101.");
+		g_newsettings.partyYields[OFFSET_BEY] = g_newsettings.partyYields[OFFSET_BEY];
 		ImGui::Text("Party EV Yields");
 		ImGui::SameLine();
 		HelpMarker("When wild Ditto uses Transform, it will copy the EV yield stats of its target. If you'll allow Ditto to Transform, enter the values it will copy. Default is 1 in HP.");
@@ -2625,6 +2703,19 @@ void ParseProgressFile(int game_index)
 			{
 				size_t s2End = str1.find(" ", 7);
 				string str2 = str1.substr(7, s2End - 7);
+				int idtocancel = stoi(str2);
+				for (Milestone ms : g_milestones)
+				{
+					if (ms.id == idtocancel)
+					{
+						if (ms.type == MILESTONE_CHECKBOX)
+						{
+							//critical: one checkbox is not allowed to cancel another
+							assert(g_milestones[lastmilestoneslot].type != MILESTONE_CHECKBOX);
+						}
+						break;
+					}
+				}
 				g_milestones[lastmilestoneslot].cancels.push_back(stoi(str2));
 				continue;
 			}
@@ -2674,7 +2765,7 @@ void ParseProgressFile(int game_index)
 		newMS->parentslot = ms_parent;
 		//first checkpoint should always be active
 		if (lastcheckpointslot == -1)
-			newMS->userchecked = true;
+			newMS->userselected = true;
 		g_milestones.push_back(*newMS);
 		if (ms_type == MILESTONE_CHECKPOINT || ms_type == MILESTONE_ONEWAY)
 		{
@@ -2770,6 +2861,8 @@ static void UIMainWindow()
 		g_settings.minSingleMonEV = g_newsettings.minSingleMonEV;
 		g_settings.maxSingleMonEV = g_newsettings.maxSingleMonEV;
 		g_settings.partyYields = g_newsettings.partyYields;
+		g_settings.useprogressfilter = g_newsettings.useprogressfilter;
+		g_settings.selected_checkpoint_slot = g_newsettings.selected_checkpoint_slot;
 
 		maintables.clear();
 		maintables.shrink_to_fit();
@@ -2811,7 +2904,9 @@ static void UIMainWindow()
 		g_settings.maxAvgEV != g_newsettings.maxAvgEV ||
 		g_settings.minSingleMonEV != g_newsettings.minSingleMonEV ||
 		g_settings.maxSingleMonEV != g_newsettings.maxSingleMonEV ||
-		g_settings.partyYields != g_newsettings.partyYields)
+		g_settings.partyYields != g_newsettings.partyYields ||
+		g_settings.useprogressfilter != g_newsettings.useprogressfilter ||
+		g_settings.selected_checkpoint_slot != g_newsettings.selected_checkpoint_slot)
 	{
 		if (!maintables.empty())
 		{
