@@ -258,6 +258,7 @@ struct GameObject
 	string uiname;
 	string internalname;
 	string expfile;
+	string progressfile;
 	int generation = 0;
 	vector<int> folderRanges;
 };
@@ -1090,10 +1091,7 @@ static bool FindInExpFile(int offset, string expfile, string pokemonname, int* s
 
 static bool GameHasProgressFile(int index)
 {
-	if (index == GAME_YELLOW)
-		return true;
-	else
-		return false;
+	return !g_games[index]->progressfile.empty();
 }
 
 static double CalculateExperienceCore(int generation, double level, int baseExp)
@@ -2616,7 +2614,7 @@ void ParseProgressFile(int game_index)
 {
 	g_milestones.clear();
 	g_checkpointnames.clear();
-	string progressfilepath = g_pkmndatapath + "progress/" + g_games[game_index]->internalname + ".pro";
+	string progressfilepath = g_pkmndatapath + "progress/" + g_games[game_index]->progressfile;
 	//both checkpoints and oneways are Milestones.
 	//oneways are a type of checkpoint.
 	//checkboxes are Milestones but not checkpoints.
@@ -2923,12 +2921,13 @@ static void UIMainWindow()
 	g_settingswindowdata.wantedgame_index_lastframe = g_newsettings.wantedgame_index;
 }
 
-static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, int generation, vector<int> folderRanges)
+static void RegisterGame(const char* uiname, const char* internalname, const char* expfile, const char* progressfile, int generation, vector<int> folderRanges)
 {
 	GameObject* newGame = new GameObject;
 	newGame->uiname = uiname;
 	newGame->internalname = internalname;
 	newGame->expfile = expfile;
+	newGame->progressfile = progressfile;
 	newGame->generation = generation;
 	newGame->folderRanges = folderRanges;
 	g_games.push_back(newGame);
@@ -2937,40 +2936,40 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 static void RegisterGames()
 {
 	//g1
-	RegisterGame("Blue", "blue", "gen123_exp.csv", 1, { 258 , 349 });
-	RegisterGame("Red", "red", "gen123_exp.csv", 1, { 258 , 349 });
-	RegisterGame("Yellow", "yellow", "gen123_exp.csv", 1, { 258 , 349 });
+	RegisterGame("Blue", "blue", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
+	RegisterGame("Red", "red", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
+	RegisterGame("Yellow", "yellow", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
 	//g2
-	RegisterGame("Gold", "gold", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
-	RegisterGame("Silver", "silver", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
-	RegisterGame("Crystal", "crystal", "gen123_exp.csv", 2, { 184, 349, 798, 798 });
+	RegisterGame("Gold", "gold", "gen123_exp.csv", "", 2, { 184, 349, 798, 798 });
+	RegisterGame("Silver", "silver", "gen123_exp.csv", "", 2, { 184, 349, 798, 798 });
+	RegisterGame("Crystal", "crystal", "gen123_exp.csv", "", 2, { 184, 349, 798, 798 });
 	//g3
-	RegisterGame("Ruby", "ruby", "gen123_exp.csv", 3, { 350, 449 });
-	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", 3, { 350, 449 });
-	RegisterGame("Emerald", "emerald", "gen123_exp.csv", 3, { 350, 449 });
-	RegisterGame("FireRed", "firered", "gen123_exp.csv", 3, { 258, 572, 825, 825 });
-	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", 3, { 258, 572, 825, 825 });
+	RegisterGame("Ruby", "ruby", "gen123_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("Emerald", "emerald", "gen123_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("FireRed", "firered", "gen123_exp.csv", "", 3, { 258, 572, 825, 825 });
+	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", "", 3, { 258, 572, 825, 825 });
 	//g4
-	RegisterGame("Diamond", "diamond", "gen4_exp.csv", 4, { 1, 183 });
-	RegisterGame("Pearl", "pearl", "gen4_exp.csv", 4, { 1, 183 });
-	RegisterGame("Platinum", "platinum", "gen4_exp.csv", 4, { 1, 183 });
-	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", 4, { 184, 349 });
-	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", 4, { 184, 349 });
+	RegisterGame("Diamond", "diamond", "gen4_exp.csv", "", 4, { 1, 183 });
+	RegisterGame("Pearl", "pearl", "gen4_exp.csv", "", 4, { 1, 183 });
+	RegisterGame("Platinum", "platinum", "gen4_exp.csv", "", 4, { 1, 183 });
+	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", "", 4, { 184, 349 });
+	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", "", 4, { 184, 349 });
 	//g5
-	RegisterGame("Black", "black", "bw1_exp.csv", 5, { 576, 655 });
-	RegisterGame("White", "white", "bw1_exp.csv", 5, { 576, 655 });
-	RegisterGame("Black 2", "black-2", "bw2_exp.csv", 5, { 576, 707 });
-	RegisterGame("White 2", "white-2", "bw2_exp.csv", 5, { 576, 707 });
+	RegisterGame("Black", "black", "bw1_exp.csv", "", 5, { 576, 655 });
+	RegisterGame("White", "white", "bw1_exp.csv", "", 5, { 576, 655 });
+	RegisterGame("Black 2", "black-2", "bw2_exp.csv", "", 5, { 576, 707 });
+	RegisterGame("White 2", "white-2", "bw2_exp.csv", "", 5, { 576, 707 });
 	//g6
-	RegisterGame("X", "x", "gen6_exp.csv", 6, { 708, 760 });
-	RegisterGame("Y", "y", "gen6_exp.csv", 6, { 708, 760 });
+	RegisterGame("X", "x", "gen6_exp.csv", "", 6, { 708, 760 });
+	RegisterGame("Y", "y", "gen6_exp.csv", "", 6, { 708, 760 });
 	//g7
-	RegisterGame("Sun", "sun", "gen7_exp.csv", 7, { 1035, 1156 });
-	RegisterGame("Moon", "moon", "gen7_exp.csv", 7, { 1035, 1156 });
-	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", 7, { 1035, 1156 });
-	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", 7, { 1035, 1156 });
+	RegisterGame("Sun", "sun", "gen7_exp.csv", "", 7, { 1035, 1156 });
+	RegisterGame("Moon", "moon", "gen7_exp.csv", "", 7, { 1035, 1156 });
+	RegisterGame("Ultra Sun", "ultra-sun", "gen7_exp.csv", "", 7, { 1035, 1156 });
+	RegisterGame("Ultra Moon", "ultra-moon", "gen7_exp.csv", "", 7, { 1035, 1156 });
 	//extras
-	RegisterGame("All", "all", "ALL_EXPFILE", GENERATION_ALL, { 1, 1156 });
+	RegisterGame("All", "all", "ALL_EXPFILE", "", GENERATION_ALL, { 1, 1156 });
 }
 
 static void RegisterMethod(const char* uiname, const char* internalname, int flag)
@@ -3027,6 +3026,9 @@ int main(int, char**)
 
 	RegisterGames();
 	RegisterMethods();
+	
+	//must parse blue's progress file on start
+	ParseProgressFile(GAME_BLUE);
 	
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
