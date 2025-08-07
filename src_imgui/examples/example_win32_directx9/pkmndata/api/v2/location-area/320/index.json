@@ -30,6 +30,7 @@
         "url": "/api/v2/location/99/"
     },
     "name": "kanto-route-2-north-towards-pewter-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

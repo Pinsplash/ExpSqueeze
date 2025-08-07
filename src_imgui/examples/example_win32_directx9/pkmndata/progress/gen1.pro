@@ -208,8 +208,8 @@ checkpoint Obtained Strength HM
 332//kanto-victory-road-2-2f
 333//kanto-victory-road-2-3f
 
-//checkpoint Defeated last trainer in Victory Road
-//supposed to be able to fish in lorelei's room, but we don't seem to have a table for that.
+checkpoint Defeated last trainer in Victory Road
+345//loreleis-room
 
 checkpoint Became Champion
 323//cerulean-cave-1f

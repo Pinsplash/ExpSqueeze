@@ -44,6 +44,7 @@
         "url": "/api/v2/location/80/"
     },
     "name": "mt-moon-1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

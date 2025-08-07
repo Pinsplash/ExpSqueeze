@@ -44,6 +44,7 @@
         "url": "/api/v2/location/136/"
     },
     "name": "seafoam-islands-1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

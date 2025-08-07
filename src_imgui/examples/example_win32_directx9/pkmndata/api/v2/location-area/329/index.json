@@ -118,6 +118,7 @@
         "url": "/api/v2/location/157/"
     },
     "name": "kanto-route-23-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

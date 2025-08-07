@@ -80,6 +80,7 @@
         "url": "/api/v2/location/87/"
     },
     "name": "rock-tunnel-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

@@ -1,0 +1,239 @@
+{
+    "encounter_method_rates": [
+        {
+            "encounter_method": {
+                "name": "walk",
+                "url": "/api/v2/encounter-method/1/"
+            },
+            "version_details": [
+                {
+                    "rate": 5,
+                    "version": {
+                        "name": "firered",
+                        "url": "/api/v2/version/10/"
+                    }
+                },
+                {
+                    "rate": 5,
+                    "version": {
+                        "name": "leafgreen",
+                        "url": "/api/v2/version/11/"
+                    }
+                }
+            ]
+        }
+    ],
+    "game_index": 0,
+    "id": 345,
+    "location": {
+        "name": "loreleis-room",
+        "url": "/api/v2/location/820/"
+    },
+    "name": "loreleis-room-area",
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Lorelei's Chamber"
+        }
+    ],
+    "pokemon_encounters": [
+        {
+            "pokemon": {
+                "name": "magikarp",
+                "url": "/api/v2/pokemon/129/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 100,
+                            "condition_values": [],
+                            "max_level": 5,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 5
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "red",
+                        "url": "/api/v2/version/1/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 100,
+                            "condition_values": [],
+                            "max_level": 5,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 5
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "blue",
+                        "url": "/api/v2/version/2/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 100,
+                            "condition_values": [],
+                            "max_level": 5,
+                            "method": {
+                                "name": "old-rod",
+                                "url": "/api/v2/encounter-method/2/"
+                            },
+                            "min_level": 5
+                        }
+                    ],
+                    "max_chance": 5,
+                    "version": {
+                        "name": "yellow",
+                        "url": "/api/v2/version/3/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "goldeen",
+                "url": "/api/v2/pokemon/118/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "red",
+                        "url": "/api/v2/version/1/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "blue",
+                        "url": "/api/v2/version/2/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "yellow",
+                        "url": "/api/v2/version/3/"
+                    }
+                }
+            ]
+        },
+        {
+            "pokemon": {
+                "name": "poliwag",
+                "url": "/api/v2/pokemon/60/"
+            },
+            "version_details": [
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "red",
+                        "url": "/api/v2/version/1/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "blue",
+                        "url": "/api/v2/version/2/"
+                    }
+                },
+                {
+                    "encounter_details": [
+                        {
+                            "chance": 50,
+                            "condition_values": [],
+                            "max_level": 10,
+                            "method": {
+                                "name": "good-rod",
+                                "url": "/api/v2/encounter-method/3/"
+                            },
+                            "min_level": 10
+                        }
+                    ],
+                    "max_chance": 40,
+                    "version": {
+                        "name": "yellow",
+                        "url": "/api/v2/version/3/"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -44,6 +44,7 @@
         "url": "/api/v2/location/87/"
     },
     "name": "rock-tunnel-1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

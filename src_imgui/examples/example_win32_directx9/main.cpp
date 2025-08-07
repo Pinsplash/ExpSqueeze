@@ -237,6 +237,7 @@ struct EncounterTable
 {
 	int method_index = 0;
 	string placename;
+	string walkstring;
 	vector<Encounter> encounters;
 	int filenumber = 0;
 	__int64 expectedtotalpercent = 0;
@@ -545,7 +546,7 @@ static bool EncounterIsAccessible(int tablenum, string method)
 	return foundtable && !excludebymethod && methodavailable && !removed;
 }
 
-static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
+static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
 	if (g_settings.repellevel > maxlevel)
 		return;
@@ -603,6 +604,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 		EncounterTable* newTable = new EncounterTable;
 		newTable->method_index = method_index;
 		newTable->placename = placename;
+		newTable->walkstring = walkstring;
 		newTable->filenumber = i;
 		newTable->expectedtotalpercent = chance;
 		newTable->version_index = version_index;
@@ -1005,7 +1007,7 @@ static int ValidateMethod(int flags, string method)
 	return i;
 }
 
-static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname, string placename, int version_index, int iFile, bool filterReason, string warning, bool goodtype, bool goodEVs)
+static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname, string placename, string walkstring, int version_index, int iFile, bool filterReason, string warning, bool goodtype, bool goodEVs)
 {
 	json_value* conditionvalues = FindArrayInObjectByName(encdetailblock, "condition_values");
 
@@ -1046,7 +1048,7 @@ static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs);
+	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, walkstring, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs);
 	return true;
 }
 
@@ -1276,7 +1278,7 @@ static int AddHoennUnovaSwarm(EncounterTable* table, int generation)
 	return 0;
 }
 
-static int ParseEncounterBlock(json_value* versiondetails, json_value* encounterblock, string placename, int iFile, GameObject* game)
+static int ParseEncounterBlock(json_value* versiondetails, json_value* encounterblock, string placename, string walkstring, int iFile, GameObject* game)
 {
 	for (size_t verdetailsIdx = 0; verdetailsIdx < versiondetails->u.array.length; verdetailsIdx++)
 	{
@@ -1352,7 +1354,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 				return 0;
 			}
 
-			if (!ParseEncounterDetails(encdetailblock, pokemonname, placename, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
+			if (!ParseEncounterDetails(encdetailblock, pokemonname, placename, walkstring, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
 				continue;//encounter was bad for some reason
 		}
 	}
@@ -1439,6 +1441,13 @@ static int ParseLocationDataFile(int iFile)
 		if (isEqualString(langname->u.string.ptr, "en"))
 			placename = FindValueInObjectByKey(localname, "name")->u.string.ptr;
 	}
+	//walk string (not all files have one)
+	json_value* walkstringjson = FindValueInObjectByKey(file, "walk_string");
+	string walkstring;
+	if (walkstringjson)
+	{
+		walkstring = walkstringjson->u.string.ptr;
+	}
 	//get encounter info
 	json_value* encounters = FindArrayInObjectByName(file, "pokemon_encounters");
 	if (!encounters)
@@ -1461,7 +1470,7 @@ static int ParseLocationDataFile(int iFile)
 			assert(0);
 			return 0;
 		}
-		int result = ParseEncounterBlock(versiondetails, encounterblock, placename, iFile, game);
+		int result = ParseEncounterBlock(versiondetails, encounterblock, placename, walkstring, iFile, game);
 		if (result == 0)
 			return 0;
 	}
@@ -1491,7 +1500,9 @@ static bool compareByPlacename(const EncounterTable a, const EncounterTable b)
 
 static bool compareByMethod(const EncounterTable a, const EncounterTable b)
 {
-	return strcmp(g_methods[a.method_index]->uiname.c_str(), g_methods[b.method_index]->uiname.c_str()) < 0;
+	string str_a = (a.method_index == METHOD_WALK && b.method_index == METHOD_WALK && !a.walkstring.empty()) ? a.walkstring : g_methods[a.method_index]->uiname;
+	string str_b = (b.method_index == METHOD_WALK && a.method_index == METHOD_WALK && !b.walkstring.empty()) ? b.walkstring : g_methods[b.method_index]->uiname;
+	return strcmp(str_a.c_str(), str_b.c_str()) < 0;
 }
 
 static bool compareByVersion(const EncounterTable a, const EncounterTable b)
@@ -1775,6 +1786,8 @@ static void TablePostProcess()
 			//sucks but i don't see a better way
 			methodnamestring = "Fishing";
 		}
+		if (table.method_index == METHOD_WALK && !table.walkstring.empty())
+			methodnamestring = table.walkstring;
 		table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
 		if (!table.goodtype && requiringtype)
 			table.filterReason = Reason_NoGoodTypes;

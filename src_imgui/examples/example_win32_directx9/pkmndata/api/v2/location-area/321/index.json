@@ -44,6 +44,7 @@
         "url": "/api/v2/location/155/"
     },
     "name": "viridian-forest-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

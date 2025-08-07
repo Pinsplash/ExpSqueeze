@@ -52,6 +52,7 @@
         "url": "/api/v2/location/152/"
     },
     "name": "kanto-victory-road-3f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

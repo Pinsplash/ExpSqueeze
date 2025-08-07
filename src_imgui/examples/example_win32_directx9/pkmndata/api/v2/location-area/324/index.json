@@ -154,6 +154,7 @@
         "url": "/api/v2/location/147/"
     },
     "name": "cerulean-cave-2f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

@@ -30,6 +30,7 @@
         "url": "/api/v2/location/160/"
     },
     "name": "pokemon-tower-4f",
+    "walk_string": "Building",
     "names": [
         {
             "language": {
