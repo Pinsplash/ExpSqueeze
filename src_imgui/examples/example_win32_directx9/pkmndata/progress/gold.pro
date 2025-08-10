@@ -280,7 +280,7 @@ checkbox 21 Defeated Rival in Mt. Moon
 
 checkpoint Obtained All Badges
 289//kanto-route-28
-269//mt-silver-outside
+269//mt-silver-outside-before-cave
 270//mt-silver-1f
 263//mt-silver-2f
 274//mt-silver-item-rooms
