@@ -295,6 +295,21 @@
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 46
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [
+                                {
+                                    "name": "time-night",
+                                    "url": "/api/v2/encounter-condition-value/5/"
+                                }
+                            ],
+                            "max_level": 48,
+                            "method": {
+                                "name": "walk",
+                                "url": "/api/v2/encounter-method/1/"
+                            },
+                            "min_level": 48
                         }
                     ],
                     "max_chance": 80,
@@ -600,16 +615,6 @@
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 48
-                        },
-                        {
-                            "chance": 30,
-                            "condition_values": [],
-                            "max_level": 44,
-                            "method": {
-                                "name": "surf",
-                                "url": "/api/v2/encounter-method/5/"
-                            },
-                            "min_level": 40
                         }
                     ],
                     "max_chance": 60,

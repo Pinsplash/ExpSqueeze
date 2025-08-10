@@ -29,21 +29,21 @@
         "name": "ruins-of-alph",
         "url": "/api/v2/location/135/"
     },
-    "name": "ruins-of-alph-interior-a",
+    "name": "ruins-of-alph-interior",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Ruins of Alph (interior A)"
+            "name": "Ruins of Alph (interior)"
         },
         {
             "language": {
                 "name": "fr",
                 "url": "/api/v2/language/5/"
             },
-            "name": "Ruines d'Alpha (int\u00e9rieur A)"
+            "name": "Ruines d'Alpha (int\u00e9rieur)"
         }
     ],
     "pokemon_encounters": [

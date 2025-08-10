@@ -117,14 +117,14 @@
         "name": "mt-mortar",
         "url": "/api/v2/location/81/"
     },
-    "name": "mt-mortar-upper-cave",
+    "name": "mt-mortar-2f",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Mortar (Upper Cave)"
+            "name": "Mount Mortar (2F)"
         },
         {
             "language": {

@@ -29,14 +29,14 @@
         "name": "mt-mortar",
         "url": "/api/v2/location/81/"
     },
-    "name": "mt-mortar-lower-cave",
+    "name": "mt-mortar-1f-back",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Mortar (Lower Cave)"
+            "name": "Mount Mortar (1F back)"
         },
         {
             "language": {

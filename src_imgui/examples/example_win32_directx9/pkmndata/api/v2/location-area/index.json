@@ -596,20 +596,8 @@
             "url": "/api/v2/location-area/193/"
         },
         {
-            "name": "ruins-of-alph-interior-a",
+            "name": "ruins-of-alph-interior",
             "url": "/api/v2/location-area/194/"
-        },
-        {
-            "name": "ruins-of-alph-interior-b",
-            "url": "/api/v2/location-area/195/"
-        },
-        {
-            "name": "ruins-of-alph-interior-c",
-            "url": "/api/v2/location-area/196/"
-        },
-        {
-            "name": "ruins-of-alph-interior-d",
-            "url": "/api/v2/location-area/197/"
         },
         {
             "name": "union-cave-1f",
@@ -732,16 +720,8 @@
             "url": "/api/v2/location-area/228/"
         },
         {
-            "name": "whirl-islands-empty-floor-x",
-            "url": "/api/v2/location-area/229/"
-        },
-        {
             "name": "whirl-islands-b2f",
             "url": "/api/v2/location-area/230/"
-        },
-        {
-            "name": "whirl-islands-empty-floor-y",
-            "url": "/api/v2/location-area/231/"
         },
         {
             "name": "whirl-islands-b3f",
@@ -756,15 +736,15 @@
             "url": "/api/v2/location-area/236/"
         },
         {
-            "name": "mt-mortar-1f",
+            "name": "mt-mortar-1f-entrance",
             "url": "/api/v2/location-area/237/"
         },
         {
-            "name": "mt-mortar-lower-cave",
+            "name": "mt-mortar-1f-back",
             "url": "/api/v2/location-area/238/"
         },
         {
-            "name": "mt-mortar-upper-cave",
+            "name": "mt-mortar-2f",
             "url": "/api/v2/location-area/239/"
         },
         {
@@ -894,6 +874,10 @@
         {
             "name": "mt-silver-top",
             "url": "/api/v2/location-area/273/"
+        },
+        {
+            "name": "mt-silver-item-rooms",
+            "url": "/api/v2/location-area/274/"
         },
         {
             "name": "kanto-route-12-area",
@@ -1152,7 +1136,19 @@
             "url": "/api/v2/location-area/344/"
         },
         {
-            "name": "vermilion-city-ss-anne-dock",
+            "name": "loreleis-room-area",
+            "url": "/api/v2/location-area/345/"
+        },
+        {
+            "name": "cerulean-gym-area",
+            "url": "/api/v2/location-area/346/"
+        },
+        {
+            "name": "olivine-city-port",
+            "url": "/api/v2/location-area/348/"
+        },
+        {
+            "name": "vermilion-city-port",
             "url": "/api/v2/location-area/349/"
         },
         {

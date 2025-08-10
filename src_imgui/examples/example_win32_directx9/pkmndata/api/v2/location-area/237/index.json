@@ -117,14 +117,14 @@
         "name": "mt-mortar",
         "url": "/api/v2/location/81/"
     },
-    "name": "mt-mortar-1f",
+    "name": "mt-mortar-1f-entrance",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Mortar (1F)"
+            "name": "Mount Mortar (1F entrance)"
         },
         {
             "language": {

@@ -6,14 +6,14 @@
         "name": "vermilion-city",
         "url": "/api/v2/location/151/"
     },
-    "name": "vermilion-city-ss-anne-dock",
+    "name": "vermilion-city-port",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "S.S. Anne dock"
+            "name": "Vermilion Port"
         },
         {
             "language": {
