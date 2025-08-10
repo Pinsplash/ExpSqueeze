@@ -118,6 +118,7 @@
         "url": "/api/v2/location/137/"
     },
     "name": "slowpoke-well-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

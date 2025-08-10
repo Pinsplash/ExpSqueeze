@@ -118,6 +118,7 @@
         "url": "/api/v2/location/82/"
     },
     "name": "mt-silver-top",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

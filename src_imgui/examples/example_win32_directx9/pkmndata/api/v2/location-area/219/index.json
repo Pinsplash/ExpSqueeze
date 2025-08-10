@@ -30,6 +30,7 @@
         "url": "/api/v2/location/139/"
     },
     "name": "bell-tower-7f",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

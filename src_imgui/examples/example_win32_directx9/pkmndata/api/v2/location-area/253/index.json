@@ -140,6 +140,7 @@
         "url": "/api/v2/location/72/"
     },
     "name": "dark-cave-violet-city-entrance",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

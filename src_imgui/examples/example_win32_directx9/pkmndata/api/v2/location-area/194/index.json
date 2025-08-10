@@ -30,6 +30,7 @@
         "url": "/api/v2/location/135/"
     },
     "name": "ruins-of-alph-interior",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

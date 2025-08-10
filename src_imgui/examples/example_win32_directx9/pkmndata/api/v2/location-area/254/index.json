@@ -118,6 +118,7 @@
         "url": "/api/v2/location/72/"
     },
     "name": "dark-cave-blackthorn-city-entrance",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

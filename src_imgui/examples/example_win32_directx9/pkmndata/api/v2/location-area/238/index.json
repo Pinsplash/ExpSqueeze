@@ -30,6 +30,7 @@
         "url": "/api/v2/location/81/"
     },
     "name": "mt-mortar-1f-back",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

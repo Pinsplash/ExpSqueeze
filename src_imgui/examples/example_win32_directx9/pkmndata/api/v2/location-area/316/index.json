@@ -118,6 +118,7 @@
         "url": "/api/v2/location/140/"
     },
     "name": "tohjo-falls-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

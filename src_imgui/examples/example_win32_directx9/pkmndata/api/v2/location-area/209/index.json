@@ -30,6 +30,7 @@
         "url": "/api/v2/location/116/"
     },
     "name": "johto-route-36-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

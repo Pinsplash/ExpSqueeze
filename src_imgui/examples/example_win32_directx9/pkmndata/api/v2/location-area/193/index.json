@@ -140,6 +140,7 @@
         "url": "/api/v2/location/135/"
     },
     "name": "ruins-of-alph-outside",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -79,12 +79,12 @@ checkpoint Defeated Psychic Greg (Route 37)
 //water happens to become accessible at same time as surf unlock
 237//mt-mortar-1f-entrance
 238//mt-mortar-1f-back
-//b1f and 2f aren't accessible until you get waterfall
 800//mahogany-town
 241//johto-route-43
 222//johto-route-38
 223//johto-route-39
 224//olivine-city
+348//olivine-city-port
 unlock good-rod
 225//johto-sea-route-40
 
@@ -96,6 +96,8 @@ checkbox 7 Defeated Rival in Burned Tower
 213//burned-tower-b1f
 
 checkpoint Obtained ability to use Surf
+unlock surf
+240//mt-mortar-b1f
 226//johto-sea-route-41
 235//cianwood-city
 288 exclude walk//kanto-route-27
@@ -108,12 +110,14 @@ checkbox 10 Defeated Psychic Nathan (Ruins of Alph)
 193//ruins-of-alph-outside
 
 checkbox 8 Obtained Glacier Badge
+//scripted to get whirlpool hm in team rocket hq
 227//whirl-islands-1f
 228//whirl-islands-b1f
 230//whirl-islands-b2f
 232//whirl-islands-b3f
 
 checkbox 9 Obtained ability to use Strength
+//strength hm is just given by a rando in olivine cafe
 203//slowpoke-well-b1f
 
 checkpoint Obtained 7 Badges
@@ -153,7 +157,8 @@ checkpoint Defeated Team Rocket at Radio Tower
 checkpoint Defeated Clair
 250//dragons-den
 
-checkpoint Obtained Rising Badge
+checkpoint Obtained ability to use Waterfall
+239//mt-mortar-2f
 288//kanto-route-27
 
 checkpoint Defeated Cooltrainer Blake (Route 27)
@@ -183,6 +188,7 @@ unlock super-rod
 //north
 299//kanto-route-5
 281//cerulean-city
+346//cerulean-gym
 298//kanto-route-4
 314//kanto-route-24
 315 exclude walk//kanto-route-25
@@ -234,7 +240,7 @@ checkbox 18 Defeated Camper Sid or Camper Dean (Route 9)
 checkbox 19 Defeated Picnicker Heidi (Route 9)
 303//kanto-route-9
 304//kanto-route-10
-330//power-plant
+//power plant doesn't have wild pokemon. grass is part of route 10.
 292//rock-tunnel-1f
 293//rock-tunnel-b1f
 
@@ -246,7 +252,7 @@ checkbox 20 Defeated Hiker Jim (Route 10)
 292//rock-tunnel-1f
 293//rock-tunnel-b1f
 304//kanto-route-10
-330//power-plant
+//power plant doesn't have wild pokemon. grass is part of route 10.
 303//kanto-route-9
 
 checkpoint Woke Snorlax

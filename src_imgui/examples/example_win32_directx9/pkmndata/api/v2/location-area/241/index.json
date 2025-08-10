@@ -118,6 +118,7 @@
         "url": "/api/v2/location/124/"
     },
     "name": "johto-route-43-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

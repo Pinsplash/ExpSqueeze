@@ -30,6 +30,7 @@
         "url": "/api/v2/location/156/"
     },
     "name": "whirl-islands-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

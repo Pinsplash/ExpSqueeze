@@ -118,6 +118,7 @@
         "url": "/api/v2/location/141/"
     },
     "name": "union-cave-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

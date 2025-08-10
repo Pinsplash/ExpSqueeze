@@ -30,6 +30,7 @@
         "url": "/api/v2/location/83/"
     },
     "name": "national-park-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

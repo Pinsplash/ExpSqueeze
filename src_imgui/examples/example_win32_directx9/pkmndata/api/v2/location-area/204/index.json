@@ -118,6 +118,7 @@
         "url": "/api/v2/location/78/"
     },
     "name": "ilex-forest-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

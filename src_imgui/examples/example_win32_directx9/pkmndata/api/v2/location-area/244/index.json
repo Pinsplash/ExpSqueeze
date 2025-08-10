@@ -30,6 +30,7 @@
         "url": "/api/v2/location/77/"
     },
     "name": "ice-path-1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {
