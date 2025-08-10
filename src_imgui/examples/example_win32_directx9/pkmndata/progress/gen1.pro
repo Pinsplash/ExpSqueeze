@@ -97,7 +97,7 @@ checkbox 10 Defeated 1st Gambler or Lass on Route 8
 302//kanto-route-8 (no grass until after this checkpoint)
 301//kanto-route-7
 283//celadon-city
-309 exclude surf,old-rod,good-rod,super-rod//kanto-route-16
+309//kanto-route-16
 //doing this from west grants us nothing new
 
 checkbox 9 Obtained Rainbow Badge
@@ -147,7 +147,6 @@ unlock good-rod
 //critical to remember this is "obtained bike AND woke snorlax"
 checkbox 4 Obtained Bicycle
 //either way
-309//kanto-route-16
 310//kanto-route-17
 //west approach
 311//kanto-route-18
@@ -158,6 +157,7 @@ checkbox 4 Obtained Bicycle
 unlock good-rod
 277//kanto-sea-route-19
 //east approach
+309//kanto-route-16
 283//celadon-city
 301//kanto-route-7
 302//kanto-route-8
