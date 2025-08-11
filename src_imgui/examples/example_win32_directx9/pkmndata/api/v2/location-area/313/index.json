@@ -2857,7 +2857,7 @@
                                 "name": "surf",
                                 "url": "/api/v2/encounter-method/5/"
                             },
-                            "min_level": 4
+                            "min_level": 5
                         }
                     ],
                     "max_chance": 250,
@@ -2956,7 +2956,7 @@
                                 "name": "surf",
                                 "url": "/api/v2/encounter-method/5/"
                             },
-                            "min_level": 4
+                            "min_level": 5
                         }
                     ],
                     "max_chance": 250,
@@ -3085,7 +3085,7 @@
                                 "name": "surf",
                                 "url": "/api/v2/encounter-method/5/"
                             },
-                            "min_level": 4
+                            "min_level": 5
                         }
                     ],
                     "max_chance": 290,

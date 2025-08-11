@@ -1153,6 +1153,7 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		encounter->baseExp = stat;
 		//school form BEY introduces special behavior for wishiwashi
 		//school form is only accessible when level 20+
+		__int64 pctlost = 0;
 		if ((generation >= 7 || generation == GENERATION_ALL) && encounter->pokemonname == "wishiwashi")
 		{
 			encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
@@ -1170,15 +1171,62 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		}
 		else
 		{
-			encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
-			double avglevel = (double)(encounter->maxlevel + encounter->minlevel) / 2;
+			double avglevel;
+			if (generation == 2 && table->method_index == METHOD_SURF)
+			{
+				assert(encounter->maxlevel == encounter->minlevel + 4);
+				//https://github.com/pret/pokegold/blob/0b8a81212eda44a6b54a06d7c35628629003b29a/engine/overworld/wildmons.asm#L317
+				//disregard maxlevel. we actually take minlevel and add n levels onto it
+				//35%: n = 0
+				//30%: n = 1
+				//20%: n = 2
+				//10%: n = 3
+				// 5%: n = 4
+				//which means on average, n = 1.2 = (0 * .35) + (1 * .30) + (2 * .20) + (3 * .10) + (4 * .05)
+				__int64 skiplevels = g_settings.repellevel - encounter->minlevel;
+				double n = 0;
+				if (skiplevels >= 0)
+				{
+					//for every level skipped, redistribute the odds to remaining levels
+					switch (skiplevels)
+					{
+					case 0:
+						n = 1.2;//(0 * (.35+.00/5)) + (1 * (.30+.00/5)) + (2 * (.20+.00/5)) + (3 * (.10+.00/5)) + (4 * (.05+.00/5))
+						pctlost = 0;
+						break;
+					case 1:
+						n = 2.075;//				  (1 * (.30+.35/4)) + (2 * (.20+.35/4)) + (3 * (.10+.35/4)) + (4 * (.05+.35/4))
+						pctlost = 35;
+						break;
+					case 2:
+						n = 2.85;//										  (2 * (.20+.65/3)) + (3 * (.10+.65/3)) + (4 * (.05+.65/3))
+						pctlost = 65;
+						break;
+					case 3:
+						n = 3.475;//														  (3 * (.10+.85/2)) + (4 * (.05+.85/2))
+						pctlost = 85;
+						break;
+					case 4:
+						n = 4;//																				  (4 * (.05+.95/1))
+						pctlost = 95;
+						break;
+					}
+				}
+				avglevel = encounter->minlevel + n;
+				encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+			}
+			else
+			{
+				encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+				avglevel = (double)(encounter->maxlevel + encounter->minlevel) / 2;
+			}
 			encounter->avgexp = CalculateExperienceCore(generation, avglevel, encounter->baseExp);
 			//level scaling
 			if (g_settings.scalinglevel != 0)
 				encounter->avgexp = ExperienceScaleForLevel(generation, avglevel, g_settings.scalinglevel, encounter->avgexp);
 		}
 		assert(encounter->avgexp > 0);
-		encounter->avgexpweighted = (double)(encounter->avgexp * encounter->chance * chancescale) / table->expectedtotalpercent;
+		encounter->avgexpweighted = (double)(encounter->avgexp * (encounter->chance - pctlost) * chancescale) / table->expectedtotalpercent;
 		if (g_settings.printtext) cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
 #ifdef _DEBUG
 		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
