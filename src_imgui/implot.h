@@ -443,6 +443,7 @@ enum ImPlotColormap_ {
     ImPlotColormap_Spectral = 14,  // color spectrum, Color Brewer    (qual=false, n=11)
     ImPlotColormap_Greys    = 15,  // white/black                     (qual=false, n=2 )
     ImPlotColormap_PKMNstats = 16,
+    ImPlotColormap_PKMNstatsGen1 = 17,
 };
 
 // Used to position items on a plot (e.g. legends, labels, etc.)

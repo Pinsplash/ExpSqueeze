@@ -482,6 +482,7 @@ void Initialize(ImPlotContext* ctx) {
     const ImU32 Spectral[] = {IM_RGB(158,1,66),IM_RGB(213,62,79),IM_RGB(244,109,67),IM_RGB(253,174,97),IM_RGB(254,224,139),IM_RGB(255,255,191),IM_RGB(230,245,152),IM_RGB(171,221,164),IM_RGB(102,194,165),IM_RGB(50,136,189),IM_RGB(94,79,162)};
     const ImU32 Greys[]    = {IM_COL32_WHITE, IM_COL32_BLACK                                                                                                                };
     const ImU32 PKMNstats[] = {IM_RGB(158, 232, 101), IM_RGB(245, 222, 105), IM_RGB(240, 154, 101), IM_RGB(102, 216, 246), IM_RGB(137, 158, 234), IM_RGB(228, 108, 202), IM_RGB(204, 204, 204)};
+    const ImU32 PKMNstatsGen1[] = { IM_RGB(158, 232, 101), IM_RGB(245, 222, 105), IM_RGB(240, 154, 101), IM_RGB(102, 216, 246), IM_RGB(228, 108, 202), IM_RGB(204, 204, 204) };
 
     IMPLOT_APPEND_CMAP(Deep, true);
     IMPLOT_APPEND_CMAP(Dark, true);
@@ -500,6 +501,7 @@ void Initialize(ImPlotContext* ctx) {
     IMPLOT_APPEND_CMAP(Spectral, false);
     IMPLOT_APPEND_CMAP(Greys, false);
     IMPLOT_APPEND_CMAP(PKMNstats, false);
+    IMPLOT_APPEND_CMAP(PKMNstatsGen1, false);
 }
 
 void ResetCtxForNextPlot(ImPlotContext* ctx) {

@@ -170,8 +170,8 @@ enum MilestoneType
 #define OFFSET_HP 0
 #define OFFSET_ATTACK 1
 #define OFFSET_DEFENSE 2
-#define OFFSET_SP_ATTACK 3
-#define OFFSET_SP_DEFENSE 4
+#define OFFSET_SP_ATTACK 3//gen 1 special stat goes in both spa and spd
+#define OFFSET_SP_DEFENSE 4//gen 1 special stat goes in both spa and spd
 #define OFFSET_SPEED 5
 #define OFFSET_TOTAL 6
 #define OFFSET_EXP 7
@@ -200,9 +200,9 @@ struct Settings
 	bool useprogressfilter = false;
 	int selected_checkpoint_slot = 0;
 	std::vector<float> minAvgEV = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-	std::vector<float> maxAvgEV = {3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f};
+	std::vector<float> maxAvgEV = {255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 680.0f};
 	std::vector<int> minSingleMonEV = {0, 0, 0, 0, 0, 0, 0};
-	std::vector<int> maxSingleMonEV = {3, 3, 3, 3, 3, 3, 3};
+	std::vector<int> maxSingleMonEV = {255, 255, 255, 255, 255, 255, 680 };
 	std::vector<int> partyYields = { 1, 0, 0, 0, 0, 0, 1, -10000, 61 };
 };
 
@@ -1114,25 +1114,32 @@ static double ExperienceScaleForLevel(int generation, double defeatedLevel, doub
 		return avgExp;
 }
 
-static bool IsPokemonInEVRangeGen3(string version, string pokemonname)
+static bool IsPokemonInEVRange(string version, string pokemonname)
 {
 	string expfile;
+	int gameindex = 0;
 	if (g_settings.wantedgame_index == ALLGAMES_INDEX)
 	{
-		for (int i = 0; i < GAMES_TOTAL; i++)
+		for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 		{
-			if (version == g_games[i]->internalname)
+			if (version == g_games[gameindex]->internalname)
 			{
-				expfile = g_games[i]->expfile;
+				expfile = g_games[gameindex]->expfile;
 				break;
 			}
 		}
 	}
 	else
+	{
+		gameindex = g_settings.wantedgame_index;
 		expfile = g_games[g_settings.wantedgame_index]->expfile;
+	}
+	assert(gameindex != GAMES_TOTAL);
 	for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 	{
-		if (g_settings.minSingleMonEV[i] == 0 && g_settings.maxSingleMonEV[i] == 3)
+		if (g_settings.minSingleMonEV[i] == 0 &&
+			(g_games[g_settings.wantedgame_index]->generation == 1 || g_games[g_settings.wantedgame_index]->generation == 2) ?
+			(i == OFFSET_TOTAL ? g_settings.maxSingleMonEV[i] == 680 : g_settings.maxSingleMonEV[i] == 255) : (g_settings.maxSingleMonEV[i] == 3))
 			continue;
 		int stat;
 		if (!FindInExpFile(i, expfile, pokemonname, &stat))
@@ -1237,7 +1244,7 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		assert(encounter->avgexpweighted > 0);
 		table->totalchance += encounter->chance;
 	}
-	else if (generation >= 3)
+	else
 	{
 		table->averageYields[offset] += (double)(stat * encounter->chance * chancescale) / table->expectedtotalpercent;
 		double lowestExp = CalculateExperienceCore(generation, (double)encounter->minlevel, encounter->baseExp);
@@ -1385,7 +1392,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
 			goodtype = IsPokemonMatchingType(g_pkmndatapath + url + "index.json", givengame, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
 		}
-		bool goodEVs = g_games[gameindex]->generation >= 3 ? IsPokemonInEVRangeGen3(givengame, pokemonname) : true;
+		bool goodEVs = IsPokemonInEVRange(givengame, pokemonname);
 
 		json_value* encounterdetails = FindArrayInObjectByName(verdetailblock, "encounter_details");
 		if (!encounterdetails)
@@ -2003,6 +2010,19 @@ static void UIMiscSettings(GameObject* game, bool allgames, bool rse, bool dpp, 
 
 static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 {
+	if (g_settingswindowdata.generation_lastframe != game->generation)
+	{
+		if (game->generation <= 4)
+			g_newsettings.partyYields[OFFSET_BEY] = 61;
+		else
+			g_newsettings.partyYields[OFFSET_BEY] = 101;
+		if (game->generation < 3 && g_settingswindowdata.generation_lastframe >= 3)
+		{
+			g_newsettings.maxAvgEV = { 255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 680.0f };
+			g_newsettings.maxSingleMonEV = { 255, 255, 255, 255, 255, 255, 680 };
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Encounter Methods", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Choose which encounter methods to include in the analysis.");
@@ -2221,12 +2241,15 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{227.0f / 360, .41f, .91f},
 		{313.0f / 360, .52f, .89f},
 		{0.0f, 0.0f, 0.8f} };
-	if (game->generation >= 3 && ImGui::CollapsingHeader("Effort Values", ImGuiTreeNodeFlags_None))
+	if (ImGui::CollapsingHeader("Effort Values", ImGuiTreeNodeFlags_None))
 	{
 		ImGui::Text("Average EV range filtering: Tables must have average EV yields\nin the defined ranges. This may allow you to EV train faster by\nfinding places with multiple Pokemon who yield the desired stat.");
-		static std::vector<const char*> avgstatLabels = { "%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal" };
+		static std::vector<const char*> Gen1avgstatLabels = { "%.f\nHiP", "%.f\nAtk", "%.f\nDef", "%.f\nSpc", "%.f\nSpD", "%.f\nSpe", " %.f\nTotal" };
+		static std::vector<const char*> Gen2avgstatLabels = { "%.f\nHiP", "%.f\nAtk", "%.f\nDef", "%.f\nSpA", "%.f\nSpD", "%.f\nSpe", " %.f\nTotal" };
+		static std::vector<const char*> Gen3avgstatLabels = { "%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal" };
 		static std::vector<float> minAvgEV = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-		static std::vector<float> maxAvgEV = { 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f };
+		static std::vector<float> Gen1maxAvgEV = { 255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 255.0f, 680.0f };
+		static std::vector<float> Gen3maxAvgEV = { 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f };
 		ImGui::BeginTable("averageEVfiltering", 2);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
@@ -2235,8 +2258,10 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		ImGui::Text("Maximum average EV");
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
-		for (int i = 0; i < 7; i++)
+		int maxi = 7;
+		for (int i = 0; i < maxi; i++)
 		{
+			if (i == OFFSET_SP_DEFENSE && game->generation == 1) continue;
 			if (i > 0) ImGui::SameLine();
 			ImGui::PushID(i);
 			ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor(0, 0, 0));
@@ -2244,13 +2269,15 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_SliderGrab, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2]));
-			ImGui::VSliderFloat("##minavg", ImVec2(i == 6 ? 40.0f : 30.0f, 80.0f), &minAvgEV[i], 0.0f, 3.0f, avgstatLabels[i]);
+			ImGui::VSliderFloat("##minavg", ImVec2(i == maxi - 1 ? 40.0f : 30.0f, game->generation >= 3 ? 80.0f : 255.0f), &minAvgEV[i],
+				0.0f, game->generation >= 3 ? 3.0f : 255.0f, game->generation == 1 ? Gen1avgstatLabels[i] : game->generation == 2 || game->generation == GENERATION_ALL ? Gen2avgstatLabels[i] : Gen3avgstatLabels[i]);
 			ImGui::PopStyleColor(5);
 			ImGui::PopID();
 		}
 		ImGui::TableSetColumnIndex(1);
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < maxi; i++)
 		{
+			if (i == OFFSET_SP_DEFENSE && game->generation == 1) continue;
 			if (i > 0) ImGui::SameLine();
 			ImGui::PushID(i);
 			ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor(0, 0, 0));
@@ -2258,20 +2285,25 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_SliderGrab, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2]));
-			ImGui::VSliderFloat("##maxavg", ImVec2(i == 6 ? 40.0f : 30.0f, 80.0f), &maxAvgEV[i], 0.0f, 3.0f, avgstatLabels[i]);
+			ImGui::VSliderFloat("##maxavg", ImVec2(i == maxi - 1 ? 40.0f : 30.0f, game->generation >= 3 ? 80.0f : 255.0f),
+				game->generation >= 3 ? &Gen3maxAvgEV[i] : &Gen1maxAvgEV[i],
+				0.0f, game->generation >= 3 ? 3.0f : 255.0f, game->generation == 1 ? Gen1avgstatLabels[i] : game->generation == 2 || game->generation == GENERATION_ALL ? Gen2avgstatLabels[i] : Gen3avgstatLabels[i]);
 			ImGui::PopStyleColor(5);
 			ImGui::PopID();
 		}
 		ImGui::EndTable();
 		g_newsettings.minAvgEV = minAvgEV;
-		g_newsettings.maxAvgEV = maxAvgEV;
+		g_newsettings.maxAvgEV = game->generation >= 3 ? Gen3maxAvgEV : Gen1maxAvgEV;
 		
 		ImGui::Separator();
 
 		ImGui::Text("At least one pokemon in each table must have EV yields in these ranges to be shown.\nUse this for more standard EV training.");
-		static std::vector<const char*> singlemonStatLabels = { " %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe", "  %i\nTotal" };
+		static std::vector<const char*> Gen1singlemonStatLabels = { "%i\nHiP", "%i\nAtk", "%i\nDef", "%i\nSpc", "%i\nSpD", "%i\nSpe", " %i\nTotal" };
+		static std::vector<const char*> Gen2singlemonStatLabels = { "%i\nHiP", "%i\nAtk", "%i\nDef", "%i\nSpA", "%i\nSpD", "%i\nSpe", " %i\nTotal" };
+		static std::vector<const char*> Gen3singlemonStatLabels = { " %i\nHiP", " %i\nAtk", " %i\nDef", " %i\nSpA", " %i\nSpD", " %i\nSpe", "  %i\nTotal" };
 		static std::vector<int> minSingleMonEV = { 0, 0, 0, 0, 0, 0, 0 };
-		static std::vector<int> maxSingleMonEV = { 3, 3, 3, 3, 3, 3, 3 };
+		static std::vector<int> Gen1maxSingleMonEV = { 255, 255, 255, 255, 255, 255, 680 };
+		static std::vector<int> Gen3maxSingleMonEV = { 3, 3, 3, 3, 3, 3, 3 };
 		ImGui::BeginTable("singleMonEVfiltering", 2);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
@@ -2280,8 +2312,9 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		ImGui::Text("Maximum EVs");
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < maxi; i++)
 		{
+			if (i == OFFSET_SP_DEFENSE && game->generation == 1) continue;
 			if (i > 0) ImGui::SameLine();
 			ImGui::PushID(i);
 			ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor(0, 0, 0));
@@ -2289,13 +2322,15 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_SliderGrab, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2]));
-			ImGui::VSliderInt("##minsingle", ImVec2(i == 6 ? 40.0f : 30.0f, 80.0f), &minSingleMonEV[i], 0, 3, singlemonStatLabels[i]);
+			ImGui::VSliderInt("##minsingle", ImVec2(i == maxi - 1 ? 40.0f : 30.0f, game->generation >= 3 ? 80.0f : 255.0f), &minSingleMonEV[i],
+				0, game->generation >= 3 ? 3 : i == OFFSET_TOTAL ? 680 : 255, game->generation == 1 ? Gen1singlemonStatLabels[i] : game->generation == 2 || game->generation == GENERATION_ALL ? Gen2singlemonStatLabels[i] : Gen3singlemonStatLabels[i]);
 			ImGui::PopStyleColor(5);
 			ImGui::PopID();
 		}
 		ImGui::TableSetColumnIndex(1);
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < maxi; i++)
 		{
+			if (i == OFFSET_SP_DEFENSE && game->generation == 1) continue;
 			if (i > 0) ImGui::SameLine();
 			ImGui::PushID(i);
 			ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor(0, 0, 0));
@@ -2303,25 +2338,18 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2] * 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_SliderGrab, (ImVec4)ImColor::HSV(statColors[i][0], statColors[i][1], statColors[i][2]));
-			ImGui::VSliderInt("##maxsingle", ImVec2(i == 6 ? 40.0f : 30.0f, 80.0f), &maxSingleMonEV[i], 0, 3, singlemonStatLabels[i]);
+			ImGui::VSliderInt("##maxsingle", ImVec2(i == maxi - 1 ? 40.0f : 30.0f, game->generation >= 3 ? 80.0f : 255.0f),
+				game->generation >= 3 ? &Gen3maxSingleMonEV[i] : &Gen1maxSingleMonEV[i],
+				0, game->generation >= 3 ? 3 : i == OFFSET_TOTAL ? 680 : 255, game->generation == 1 ? Gen1singlemonStatLabels[i] : game->generation == 2 || game->generation == GENERATION_ALL ? Gen2singlemonStatLabels[i] : Gen3singlemonStatLabels[i]);
 			ImGui::PopStyleColor(5);
 			ImGui::PopID();
 		}
 		ImGui::EndTable();
 		g_newsettings.minSingleMonEV = minSingleMonEV;
-		g_newsettings.maxSingleMonEV = maxSingleMonEV;
+		g_newsettings.maxSingleMonEV = game->generation >= 3 ? Gen3maxSingleMonEV : Gen1maxSingleMonEV;
 	}
 
-	if (g_settingswindowdata.generation_lastframe != game->generation)
-	{
-		if (game->generation <= 4)
-			g_newsettings.partyYields[OFFSET_BEY] = 61;
-		else
-			g_newsettings.partyYields[OFFSET_BEY] = 101;
-	}
-
-	//Transform does not copy the BEY until gen 3
-	//EVs don't exist until gen 3
+	//Transform does not copy yield stats until gen 3
 	//therefore we check for >= 3 here
 	if (game->generation >= 3 && ImGui::CollapsingHeader("Party Pokemon", ImGuiTreeNodeFlags_None))
 	{
@@ -2375,57 +2403,76 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 
 		ImGui::Separator();
 
-		if (game->generation >= 3)
-		{
-			ImGui::Text("Average Selected EVs Per Encounter");
+		ImGui::Text("Average Selected EVs Per Encounter");
 
-			ImGui::PushID(0);
-			if (ImGui::Button("HP"))
-				std::sort(maintables.begin(), maintables.end(), compareByAverageHPEV);
+		ImGui::PushID(0);
+		if (ImGui::Button("HP"))
+			std::sort(maintables.begin(), maintables.end(), compareByAverageHPEV);
+		ImGui::SameLine();
+		if (ImGui::Button("Atk"))
+			std::sort(maintables.begin(), maintables.end(), compareByAverageAttackEV);
+		ImGui::SameLine();
+		if (ImGui::Button("Def"))
+			std::sort(maintables.begin(), maintables.end(), compareByAverageDefenseEV);
+		ImGui::SameLine();
+		if (game->generation == 1)
+		{
+			if (ImGui::Button("Spc"))
+				std::sort(maintables.begin(), maintables.end(), compareByAverageSpAtkEV);
 			ImGui::SameLine();
-			if (ImGui::Button("Atk"))
-				std::sort(maintables.begin(), maintables.end(), compareByAverageAttackEV);
-			ImGui::SameLine();
-			if (ImGui::Button("Def"))
-				std::sort(maintables.begin(), maintables.end(), compareByAverageDefenseEV);
-			ImGui::SameLine();
+		}
+		else
+		{
 			if (ImGui::Button("SpA"))
 				std::sort(maintables.begin(), maintables.end(), compareByAverageSpAtkEV);
 			ImGui::SameLine();
 			if (ImGui::Button("SpD"))
 				std::sort(maintables.begin(), maintables.end(), compareByAverageSpDefEV);
 			ImGui::SameLine();
-			if (ImGui::Button("Spe"))
-				std::sort(maintables.begin(), maintables.end(), compareByAverageSpeedEV);
-			ImGui::SameLine();
-			if (ImGui::Button("Total"))
-				std::sort(maintables.begin(), maintables.end(), compareByAverageTotalEV);
-			ImGui::PopID();
+		}
+		if (ImGui::Button("Spe"))
+			std::sort(maintables.begin(), maintables.end(), compareByAverageSpeedEV);
+		ImGui::SameLine();
+		if (ImGui::Button("Total"))
+			std::sort(maintables.begin(), maintables.end(), compareByAverageTotalEV);
+		ImGui::PopID();
 
-			ImGui::Text("Lowest Experience Per Selected EV");
+		ImGui::Text("Lowest Experience Per Selected EV");
 
-			ImGui::PushID(1);
-			if (ImGui::Button("HP"))
+		ImGui::PushID(1);
+		if (ImGui::Button("HP"))
+		{
+			std::sort(maintables.begin(), maintables.end(), compareByExpPerHPEV);
+			for (EncounterTable& table : maintables)
+				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_HP].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_HP].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Atk"))
+		{
+			std::sort(maintables.begin(), maintables.end(), compareByExpPerAttackEV);
+			for (EncounterTable& table : maintables)
+				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Def"))
+		{
+			std::sort(maintables.begin(), maintables.end(), compareByExpPerDefenseEV);
+			for (EncounterTable& table : maintables)
+				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+		}
+		ImGui::SameLine();
+		if (game->generation == 1)
+		{
+			if (ImGui::Button("Spc"))
 			{
-				std::sort(maintables.begin(), maintables.end(), compareByExpPerHPEV);
+				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpAtkEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_HP].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_HP].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Atk"))
-			{
-				std::sort(maintables.begin(), maintables.end(), compareByExpPerAttackEV);
-				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Def"))
-			{
-				std::sort(maintables.begin(), maintables.end(), compareByExpPerDefenseEV);
-				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
-			}
-			ImGui::SameLine();
+		}
+		else
+		{
 			if (ImGui::Button("SpA"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpAtkEV);
@@ -2440,21 +2487,21 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Spe"))
-			{
-				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpeedEV);
-				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SPEED].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Total"))
-			{
-				std::sort(maintables.begin(), maintables.end(), compareByExpPerTotalEV);
-				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_TOTAL].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
-			}
-			ImGui::PopID();
 		}
+		if (ImGui::Button("Spe"))
+		{
+			std::sort(maintables.begin(), maintables.end(), compareByExpPerSpeedEV);
+			for (EncounterTable& table : maintables)
+				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SPEED].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Total"))
+		{
+			std::sort(maintables.begin(), maintables.end(), compareByExpPerTotalEV);
+			for (EncounterTable& table : maintables)
+				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_TOTAL].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+		}
+		ImGui::PopID();
 
 		ImGui::Separator();
 
@@ -2644,28 +2691,28 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 				ImGui::Text("The numbers above assume Minior is defeated in Core form.");
 				ImGui::Text("Meteor form gives 1 EV in both defense stats, and Core 1 in both attack stats.");
 			}
-			if (game->generation >= 3)
+			static const char* Gen1ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special", "Speed", "Total" };
+			static const char* Gen2ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
+			static const char* emptylabels[] = { "", "", "", "", "", "", "" };
+			int gen = g_games[table.version_index]->generation;
+			double graphmax = gen >= 3 ? 3 : 600;
+			int ticks = gen >= 3 ? 16 : 13;
+			ImPlot::PushColormap(gen == 1 ? ImPlotColormap_PKMNstatsGen1 : ImPlotColormap_PKMNstats);
+			if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
 			{
-				static const char* ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
-				static const char* emptylabels[] = { "", "", "", "", "", "", "" };
-				//wanted to have graph Y range change to match the highest bar value and round up to next int, but the graph would not expand to fill the entire canvas, which looked really bad
-				double graphmax = 3;// ceil(table.averageEVs[OFFSET_TOTAL]);
-				int ticks = (int)floor(graphmax * 5) + 1;
-				ImPlot::PushColormap(ImPlotColormap_PKMNstats);
-				if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
+				ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, gen == 1 ? 5.5 : 6.5, 0, emptylabels);
+				ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
+				ImPlot::SetupAxesLimits(-0.5, gen == 1 ? 5.5 : 6.5, 0, graphmax);
+				ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+				int maxi = 7;
+				for (int i = 0; i < maxi; i++)
 				{
-					ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, 6.5, 0, emptylabels);
-					ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
-					ImPlot::SetupAxesLimits(-0.5, 6.5, 0, graphmax);
-					ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
-					for (int i = 0; i < OFFSET_TOTAL + 1; i++)
-					{
-						ImPlot::PlotBars(ilabels[i], &table.averageYields[i], 1, 1, i);
-					}
-					ImPlot::EndPlot();
+					if (i == OFFSET_SP_DEFENSE && gen == 1) continue;
+					ImPlot::PlotBars(gen == 1 ? Gen1ilabels[i >= OFFSET_SP_DEFENSE ? i - 1 : i] : Gen2ilabels[i], &table.averageYields[i], 1, 1, i >= OFFSET_SP_DEFENSE && gen == 1 ? i - 1 : i);
 				}
-				ImPlot::PopColormap();
+				ImPlot::EndPlot();
 			}
+			ImPlot::PopColormap();
 		}
 	}
 }
@@ -2997,19 +3044,19 @@ static void RegisterGame(const char* uiname, const char* internalname, const cha
 static void RegisterGames()
 {
 	//g1
-	RegisterGame("Blue", "blue", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
-	RegisterGame("Red", "red", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
-	RegisterGame("Yellow", "yellow", "gen123_exp.csv", "gen1.pro", 1, { 258 , 349 });
+	RegisterGame("Blue", "blue", "gen1_exp.csv", "gen1.pro", 1, { 258 , 349 });
+	RegisterGame("Red", "red", "gen1_exp.csv", "gen1.pro", 1, { 258 , 349 });
+	RegisterGame("Yellow", "yellow", "gen1_exp.csv", "gen1.pro", 1, { 258 , 349 });
 	//g2
-	RegisterGame("Gold", "gold", "gen123_exp.csv", "gold.pro", 2, { 184, 349, 798, 798 });
-	RegisterGame("Silver", "silver", "gen123_exp.csv", "", 2, { 184, 349, 798, 798 });
-	RegisterGame("Crystal", "crystal", "gen123_exp.csv", "", 2, { 184, 349, 798, 798 });
+	RegisterGame("Gold", "gold", "gen2_exp.csv", "gold.pro", 2, { 184, 349, 798, 798 });
+	RegisterGame("Silver", "silver", "gen2_exp.csv", "", 2, { 184, 349, 798, 798 });
+	RegisterGame("Crystal", "crystal", "gen2_exp.csv", "", 2, { 184, 349, 798, 798 });
 	//g3
-	RegisterGame("Ruby", "ruby", "gen123_exp.csv", "", 3, { 350, 449 });
-	RegisterGame("Sapphire", "sapphire", "gen123_exp.csv", "", 3, { 350, 449 });
-	RegisterGame("Emerald", "emerald", "gen123_exp.csv", "", 3, { 350, 449 });
-	RegisterGame("FireRed", "firered", "gen123_exp.csv", "", 3, { 258, 572, 825, 825 });
-	RegisterGame("LeafGreen", "leafgreen", "gen123_exp.csv", "", 3, { 258, 572, 825, 825 });
+	RegisterGame("Ruby", "ruby", "gen3_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("Sapphire", "sapphire", "gen3_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("Emerald", "emerald", "gen3_exp.csv", "", 3, { 350, 449 });
+	RegisterGame("FireRed", "firered", "gen3_exp.csv", "", 3, { 258, 572, 825, 825 });
+	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.csv", "", 3, { 258, 572, 825, 825 });
 	//g4
 	RegisterGame("Diamond", "diamond", "gen4_exp.csv", "", 4, { 1, 183 });
 	RegisterGame("Pearl", "pearl", "gen4_exp.csv", "", 4, { 1, 183 });
