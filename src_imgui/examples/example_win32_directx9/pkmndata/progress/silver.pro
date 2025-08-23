@@ -142,19 +142,6 @@ cancel 9
 251//johto-route-45 (water can be reached while avoiding all trainers by taking a certain winding path)
 254//dark-cave-blackthorn-city-entrance
 
-checkpoint Defeated Team Rocket at Radio Tower
-214//bell-tower-2f
-215//bell-tower-3f
-216//bell-tower-4f
-217//bell-tower-5f
-218//bell-tower-6f
-219//bell-tower-7f
-220//bell-tower-8f
-221//bell-tower-9f
-221//bell-tower-9f
-268//bell-tower-10f
-793//bell-tower-roof
-
 checkpoint Defeated Clair
 250//dragons-den
 
@@ -273,6 +260,19 @@ cancel 16
 277//kanto-sea-route-19
 284//fuchsia-city
 308//kanto-route-15
+
+checkbox 22 Obtained Rainbow Wing
+214//bell-tower-2f
+215//bell-tower-3f
+216//bell-tower-4f
+217//bell-tower-5f
+218//bell-tower-6f
+219//bell-tower-7f
+220//bell-tower-8f
+221//bell-tower-9f
+221//bell-tower-9f
+268//bell-tower-10f
+793//bell-tower-roof
 
 checkbox 20 Defeated Youngster Jimmy (Route 3)
 297//kanto-route-3

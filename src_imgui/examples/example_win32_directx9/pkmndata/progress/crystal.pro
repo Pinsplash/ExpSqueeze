@@ -12,24 +12,22 @@ checkpoint Defeated Youngster Mikey
 253//dark-cave-violet-city-entrance
 189//violet-city
 190//sprout-tower-2f
-
-checkbox 1 Defeated Sage Edmond (Sprout Tower)
+//sage edmond is avoidable in crystal
 191//sprout-tower-3f
+//grass on east side in crystal
+209//johto-route-36
 
 checkbox 2 Solved any puzzle in Ruins of Alph
 194//ruins-of-alph-interior
 
 checkpoint Met aide after defeating Falkner
 192//johto-route-32
-
-checkpoint Defeated Youngster Albert (Route 32)
+//youngster albert is avoidable in crystal
 unlock old-rod
 198//union-cave-1f
-
-checkpoint Defeated Hiker Russell (Union Cave)
+//hiker russel is avoidable in crystal
 199//union-cave-b1f
-
-checkpoint Defeated Firebreather Ray (Union Cave)
+//firebreather ray is avoidable in crystal
 201//johto-route-33
 798//azalea-town
 204 exclude old-rod//ilex-forest
@@ -57,24 +55,16 @@ unlock headbutt-low
 unlock headbutt-high
 205//johto-route-34
 206 exclude walk//johto-route-35
-
-checkbox 4 Defeated Camper Ivan or Picnicker Brooke (Route 35)
+//camper ivan and picnicker brooke are avoidable in crystal
 206//johto-route-35
-207//national-park
-
-checkbox 5 Defeated Bug Catcher Arnie (Route 35) or Psychic Mark (Route 36)
-209//johto-route-36
-//if approaching from violet city, still have to beat one of those two to reach national park
 207//national-park
 
 checkpoint Battled the Sudowoodo
-206//johto-route-35
-209//johto-route-36
 unlock rock-smash
 210//johto-route-37
-
-checkpoint Defeated Psychic Greg (Route 37)
+//psychic greg is avoidable in crystal
 211//ecruteak-city
+212//burned-tower-1f
 236//johto-route-42
 //water happens to become accessible at same time as surf unlock
 237//mt-mortar-1f-entrance
@@ -82,17 +72,17 @@ checkpoint Defeated Psychic Greg (Route 37)
 800//mahogany-town
 241//johto-route-43
 222//johto-route-38
+//pokemaniac ron lets you walk by in crystal
+242//lake-of-rage
+
+checkbox 1 Defeated Pokefan Derek or Pokefan Ruth (Route 39)
 223//johto-route-39
 224//olivine-city
 348//olivine-city-port
 unlock good-rod
 225//johto-sea-route-40
 
-checkbox 6 Defeated Pokemaniac Ron (Route 43)
-242//lake-of-rage
-
 checkbox 7 Defeated Rival in Burned Tower
-212//burned-tower-1f
 213//burned-tower-b1f
 
 checkbox 9 Obtained ability to use Strength
@@ -122,9 +112,6 @@ checkbox 8 Obtained Glacier Badge
 232//whirl-islands-b3f
 
 checkpoint Obtained 7 Badges
-//you have to beat him to go to lake of rage to access pryce's gym
-cancel 6
-242//lake-of-rage
 cancel 8
 227//whirl-islands-1f
 228//whirl-islands-b1f
@@ -142,7 +129,7 @@ cancel 9
 251//johto-route-45 (water can be reached while avoiding all trainers by taking a certain winding path)
 254//dark-cave-blackthorn-city-entrance
 
-checkpoint Defeated Team Rocket at Radio Tower
+checkbox 4 Captured Raikou, Entei and Suicune
 214//bell-tower-2f
 215//bell-tower-3f
 216//bell-tower-4f
@@ -155,14 +142,13 @@ checkpoint Defeated Team Rocket at Radio Tower
 268//bell-tower-10f
 793//bell-tower-roof
 
-checkpoint Defeated Clair
+checkpoint Defeated Cooltrainer Darin (Dragon's Den)
 250//dragons-den
 
 checkpoint Obtained ability to use Waterfall
 239//mt-mortar-2f
 288//kanto-route-27
-
-checkpoint Defeated Cooltrainer Blake (Route 27)
+//cooltrainer blake is avoidable in crystal
 287//kanto-route-26
 
 checkpoint Defeated Cooltrainer Beth (Route 26)
@@ -184,6 +170,8 @@ checkpoint Deboarded the S.S. Aqua
 302//kanto-route-8
 //no wild pokemon in lavender town
 276//kanto-route-12
+//psychic herman is avoidable in crystal
+305//kanto-route-11
 unlock super-rod
 306 exclude walk//kanto-route-13
 //north
@@ -193,6 +181,8 @@ unlock super-rod
 298//kanto-route-4
 314//kanto-route-24
 315 exclude walk//kanto-route-25
+//camper sid is avoidable in crystal
+303 exclude surf,old-rod,good-rod,super-rod//kanto-route-9
 
 checkbox 11 Obtained Bicycle
 //west approach
@@ -204,12 +194,10 @@ checkbox 12 Defeated Bird Keeper Bob (Route 18)
 //west approach
 284//fuchsia-city
 308//kanto-route-15
+//pokefan trevor is avoidable in crystal
+307//kanto-route-14
 //east approach
 311//kanto-route-18
-
-checkbox 13 Defeated Pokefan Trevor (Route 14)
-//either direction
-307//kanto-route-14
 
 checkbox 14 Defeated Hiker Kenny (Route 13)
 //west approach
@@ -217,16 +205,14 @@ checkbox 14 Defeated Hiker Kenny (Route 13)
 //east approach
 308//kanto-route-15
 284//fuchsia-city
+//pokefan trevor is avoidable in crystal
+307//kanto-route-14
 
 //bird keepers on route 13 cannot be manipulated to allow passage
 checkbox 15 Defeated Pokefan Joshua (Route 13)
 //from west side, you had grass already and now you have water
 //from east side, you had water already and now you have grass
 306//kanto-route-13
-
-//relevant until woke snorlax
-checkbox 16 Defeated Psychic Herman (Route 11)
-305//kanto-route-11
 
 checkbox 17 Defeated Camper Lloyd (Route 25)
 315//kanto-route-25
@@ -236,20 +222,15 @@ checkbox 17 Defeated Camper Lloyd (Route 25)
 //go north from lavender to reach cerulean
 
 //east approach
-checkbox 18 Defeated Camper Sid or Camper Dean (Route 9)
-303 exclude surf,old-rod,good-rod,super-rod//kanto-route-9
-
-checkbox 19 Defeated Picnicker Heidi (Route 9)
+checkbox 18 Defeated Camper Dean (Route 9)
 303//kanto-route-9
+//picnicker heidi is avoidable in crystal
 304//kanto-route-10
 //power plant doesn't have wild pokemon. grass is part of route 10.
 292//rock-tunnel-1f
 293//rock-tunnel-b1f
 
 //north approach
-//a table can have excludes added to it even after another milestone added the table with no exclude
-//this means if Defeated Hiker Jim (20) came before Defeated Camper Sid or Camper Dean (18), and both are checked, 303 would incorrectly exclude water
-//therefore this checkbox is deliberately placed after 18
 checkbox 20 Defeated Hiker Jim (Route 10)
 292//rock-tunnel-1f
 293//rock-tunnel-b1f
@@ -263,6 +244,8 @@ cancel 16
 296//kanto-route-2-south-towards-viridian-city
 320//kanto-route-2-north-towards-pewter-city
 //no wild pokemon in pewter city (not even headbutt trees)
+//youngster jimmy is avoidable in crystal
+297//kanto-route-3
 280//viridian-city
 313//kanto-route-22
 295//kanto-route-1
@@ -273,9 +256,8 @@ cancel 16
 277//kanto-sea-route-19
 284//fuchsia-city
 308//kanto-route-15
-
-checkbox 20 Defeated Youngster Jimmy (Route 3)
-297//kanto-route-3
+//pokefan trevor is avoidable in crystal
+307//kanto-route-14
 
 checkbox 21 Defeated Rival in Mt. Moon
 290//mt-moon-1f
