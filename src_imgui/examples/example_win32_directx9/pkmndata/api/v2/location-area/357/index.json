@@ -152,14 +152,14 @@
         "name": "meteor-falls",
         "url": "/api/v2/location/435/"
     },
-    "name": "meteor-falls-back",
+    "name": "meteor-falls-1f-back",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Meteor Falls (back)"
+            "name": "Meteor Falls (1F back)"
         },
         {
             "language": {

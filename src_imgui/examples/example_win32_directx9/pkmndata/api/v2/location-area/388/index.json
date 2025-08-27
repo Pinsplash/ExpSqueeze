@@ -36,14 +36,14 @@
         "name": "new-mauville",
         "url": "/api/v2/location/446/"
     },
-    "name": "new-mauville-area",
+    "name": "new-mauville-interior",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "New Mauville"
+            "name": "New Mauville (interior)"
         },
         {
             "language": {

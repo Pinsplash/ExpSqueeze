@@ -1176,11 +1176,11 @@
             "url": "/api/v2/location-area/355/"
         },
         {
-            "name": "meteor-falls-area",
+            "name": "meteor-falls-1f-area",
             "url": "/api/v2/location-area/356/"
         },
         {
-            "name": "meteor-falls-back",
+            "name": "meteor-falls-1f-back",
             "url": "/api/v2/location-area/357/"
         },
         {
@@ -1188,7 +1188,7 @@
             "url": "/api/v2/location-area/358/"
         },
         {
-            "name": "meteor-falls-backsmall-room",
+            "name": "meteor-falls-b1f-back",
             "url": "/api/v2/location-area/359/"
         },
         {
@@ -1304,7 +1304,7 @@
             "url": "/api/v2/location-area/387/"
         },
         {
-            "name": "new-mauville-area",
+            "name": "new-mauville-interior",
             "url": "/api/v2/location-area/388/"
         },
         {
@@ -1420,20 +1420,12 @@
             "url": "/api/v2/location-area/416/"
         },
         {
-            "name": "hoenn-route-124-underwater",
-            "url": "/api/v2/location-area/417/"
-        },
-        {
             "name": "hoenn-route-125-area",
             "url": "/api/v2/location-area/418/"
         },
         {
             "name": "hoenn-route-126-area",
             "url": "/api/v2/location-area/419/"
-        },
-        {
-            "name": "hoenn-route-126-underwater",
-            "url": "/api/v2/location-area/420/"
         },
         {
             "name": "hoenn-route-127-area",

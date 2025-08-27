@@ -152,14 +152,14 @@
         "name": "meteor-falls",
         "url": "/api/v2/location/435/"
     },
-    "name": "meteor-falls-backsmall-room",
+    "name": "meteor-falls-b1f-back",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Meteor Falls (back/small room)"
+            "name": "Meteor Falls (B1F back)"
         },
         {
             "language": {
