@@ -1,0 +1,19 @@
+//1
+Black Belt Nob
+{
+machop,33
+machoke,33
+machoke,33
+machamp,33
+}
+//2
+Expert Timothy
+{
+hariyama,40
+}
+//3
+Battle Girl Cydny
+{
+medicham,35
+medicham,35
+}

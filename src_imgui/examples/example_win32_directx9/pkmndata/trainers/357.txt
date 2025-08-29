@@ -1,0 +1,13 @@
+//1
+Old Couple John & Jay
+{
+medicham,52
+hariyama,52
+}
+//2
+Dragon Tamer Nicolas
+{
+altaria,49
+altaria,49
+shelgon,49
+}

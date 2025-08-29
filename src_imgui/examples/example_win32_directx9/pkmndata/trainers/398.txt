@@ -1,0 +1,8 @@
+//1
+Fisherman Elliot
+{
+gyarados,33
+sharpedo,33
+gyarados,33
+tentacruel,35
+}

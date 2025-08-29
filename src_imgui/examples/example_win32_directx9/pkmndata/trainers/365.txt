@@ -1,0 +1,8 @@
+//1
+Bug Catcher James
+{
+surskit,33
+ninjask,33
+dustox,33
+ninjask,33
+}

@@ -1,0 +1,15 @@
+//1
+Bug Maniac Brandon
+{
+surskit,38
+dustox,38
+surskit,38
+masquerain,38
+beautifly,38
+}
+//2
+Bird Keeper Robert
+{
+altaria,41
+xatu,41
+}

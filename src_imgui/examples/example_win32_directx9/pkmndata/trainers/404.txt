@@ -1,0 +1,8 @@
+//1
+Hiker Trent
+{
+graveler,33
+graveler,33
+graveler,33
+golem,33
+}

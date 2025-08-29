@@ -1,0 +1,9 @@
+//1
+PKMN Trainer Wally
+{
+altaria,56
+delcatty,55
+roselia,56
+magneton,53
+gardevoir,57
+}

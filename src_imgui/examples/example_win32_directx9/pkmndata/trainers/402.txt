@@ -1,0 +1,22 @@
+//1
+Pokefan Isabel
+{
+plusle,35
+minun,35
+}
+//2
+Triathlete Abigail
+{
+magneton,37
+}
+//3
+Triathlete Benjamin
+{
+magneton,37
+}
+//4
+Collector Edwin
+{
+ludicolo,35
+shiftry,35
+}

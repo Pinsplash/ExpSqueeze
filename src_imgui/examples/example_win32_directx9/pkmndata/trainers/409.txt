@@ -1,0 +1,36 @@
+//1
+Sr. and Jr. Anna and Meg
+{
+linoone,35
+hariyama,37
+}
+//2
+Triathlete Maria
+{
+dodrio,37
+}
+//3
+Triathlete Dylan
+{
+dodrio,37
+}
+//4
+PKMN Breeder Lydia
+{
+pelipper,31
+breloom,31
+azumarill,31
+roselia,31
+delcatty,31
+seaking,31
+}
+//5
+PKMN Breeder Isaac
+{
+loudred,31
+linoone,31
+lairon,31
+mightyena,31
+swellow,31
+hariyama,31
+}

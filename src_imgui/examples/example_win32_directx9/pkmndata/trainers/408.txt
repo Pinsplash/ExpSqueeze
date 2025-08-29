@@ -1,0 +1,13 @@
+//1
+School Kid Karen
+{
+breloom,35
+exploud,35
+}
+//2
+School Kid Jerry
+{
+kirlia,34
+banette,34
+medicham,34
+}

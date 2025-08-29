@@ -1,0 +1,14 @@
+//1
+Camper Ethan
+{
+swellow,34
+sandslash,34
+linoone,34
+}
+//2
+Picnicker Diana
+{
+breloom,40
+vileplume,40
+altaria,40
+}

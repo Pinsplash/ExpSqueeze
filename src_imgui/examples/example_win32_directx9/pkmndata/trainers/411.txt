@@ -1,0 +1,12 @@
+//1
+PKMN Ranger Catherine
+{
+bellossom,39
+roselia,39
+}
+//2
+PKMN Ranger Jackson
+{
+kecleon,39
+breloom,39
+}

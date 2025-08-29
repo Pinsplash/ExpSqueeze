@@ -1,0 +1,17 @@
+//1
+Lady Cindy
+{
+linoone,36
+}
+//2
+Rich Boy Winston
+{
+linoone,36
+}
+//3
+Lass Haley
+{
+swellow,34
+lombre,34
+breloom,34
+}

@@ -1,0 +1,7 @@
+//1
+Sailor Ernest
+{
+pelipper,45
+machoke,45
+tentacruel,45
+}

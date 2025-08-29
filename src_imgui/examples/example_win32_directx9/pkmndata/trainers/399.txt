@@ -1,0 +1,6 @@
+//1
+Swimmer Tony
+{
+starmie,37
+sharpedo,39
+}

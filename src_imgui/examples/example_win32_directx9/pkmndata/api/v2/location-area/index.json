@@ -1420,6 +1420,10 @@
             "url": "/api/v2/location-area/416/"
         },
         {
+            "name": "mt-chimney-area",
+            "url": "/api/v2/location-area/417/"
+        },
+        {
             "name": "hoenn-route-125-area",
             "url": "/api/v2/location-area/418/"
         },

@@ -1,0 +1,13 @@
+//1
+Beauty Jessica
+{
+kecleon,42
+seviper,42
+}
+//2
+Gentleman Walter
+{
+linoone,41
+golduck,41
+manectric,41
+}

@@ -1,0 +1,11 @@
+//1
+Tuber Lola
+{
+azumarill,35
+azumarill,35
+}
+//2
+Tuber Ricky
+{
+linoone,36
+}

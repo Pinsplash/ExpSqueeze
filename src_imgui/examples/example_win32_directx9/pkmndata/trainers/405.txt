@@ -1,0 +1,14 @@
+//1
+Ninja Boy Lao
+{
+koffing,33
+koffing,33
+koffing,33
+weezing,35
+}
+//2
+Parasol Lady Madeline
+{
+roselia,35
+camerupt,35
+}

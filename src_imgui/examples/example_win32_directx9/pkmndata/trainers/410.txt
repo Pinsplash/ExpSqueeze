@@ -1,0 +1,14 @@
+//1
+Aroma Lady Rose
+{
+breloom,34
+gloom,34
+roselia,34
+}
+//2
+Guitarist Dalton
+{
+magneton,34
+exploud,34
+magneton,34
+}

@@ -1,0 +1,7 @@
+//1
+Hex Maniac Valerie
+{
+duskull,42
+sableye,42
+grumpig,42
+}

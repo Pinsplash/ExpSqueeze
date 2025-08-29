@@ -1,0 +1,10 @@
+//1
+Triathlete Isaiah
+{
+starmie,48
+}
+//2
+Triathlete Katelyn
+{
+starmie,48
+}

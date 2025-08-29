@@ -1,0 +1,7 @@
+//1
+Youngster Calvin
+{
+swellow,34
+vigoroth,32
+linoone,36
+}

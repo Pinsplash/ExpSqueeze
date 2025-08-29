@@ -1,0 +1,19 @@
+//1
+Ruin Maniac Dusty
+{
+sandslash,36
+}
+//2
+Cooltrainer Brooke
+{
+pelipper,34
+camerupt,34
+roselia,34
+}
+//3
+Cooltrainer Wilton
+{
+manectric,35
+wailmer,35
+hariyama,35
+}

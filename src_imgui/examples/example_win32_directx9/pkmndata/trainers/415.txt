@@ -1,0 +1,12 @@
+//1
+Psychic Cameron
+{
+solrock,43
+alakazam,43
+}
+//2
+Psychic Jacki
+{
+lunatone,43
+alakazam,43
+}
