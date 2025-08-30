@@ -35,6 +35,7 @@ checkpoint Defeated 3rd Bug Catcher on Route 3
 oneway 1 Crossed over final ledge on Route 4
 298//kanto-route-4
 281//cerulean-city
+346//cerulean-gym
 
 checkpoint Defeated all of Nugget Bridge
 314//kanto-route-24
@@ -48,7 +49,7 @@ checkpoint Defeated TM thief
 checkpoint Defeated last Jr. Trainer M on Route 6
 282//vermilion-city
 unlock old-rod
-349//vermilion-city-ss-anne-dock
+349//vermilion-city-port
 305//kanto-route-11
 317//digletts-cave
 
@@ -57,7 +58,7 @@ unlock old-rod
 
 checkbox 2 S.S. Anne departed
 //remove means... you can guess i think
-remove 349//vermilion-city-ss-anne-dock
+remove 349//vermilion-city-port
 
 checkbox 6 Obtained ability to use Cut
 //this cancels the oneway defined earlier with the id 1
@@ -67,7 +68,7 @@ cancel 1
 checkbox 5 Defeated 1st Bug Catcher on Route 9
 //we clearly have cut by now, so we can go back to places before the route 4 one-way
 cancel 1
-remove 349//vermilion-city-ss-anne-dock
+remove 349//vermilion-city-port
 303//kanto-route-9
 
 checkpoint Defeated 2nd Bug Catcher on Route 9
@@ -79,7 +80,7 @@ cancel 5
 cancel 6
 //ss anne is clearly gone by now
 cancel 2
-remove 349//vermilion-city-ss-anne-dock
+remove 349//vermilion-city-port
 303//kanto-route-9
 304//kanto-route-10
 292//rock-tunnel-1f
@@ -202,11 +203,11 @@ checkpoint Defeated Rival on Route 22 (2nd battle)
 cancel 9
 cancel 11
 329//kanto-route-23
-331//kanto-victory-road-2-1f
+294//kanto-victory-road-1f
 
 checkpoint Obtained Strength HM
-332//kanto-victory-road-2-2f
-333//kanto-victory-road-2-3f
+318//kanto-victory-road-2f
+319//kanto-victory-road-3f
 
 checkpoint Defeated last trainer in Victory Road
 345//loreleis-room

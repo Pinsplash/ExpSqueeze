@@ -416,7 +416,8 @@ static bool MilestoneCancelsID(int slot, int subjectID)
 //see that no milestone between #0 and checkpoint_current is suppressing id (not including the effect of oneways)
 static bool MilestoneIsRelevant(int subjectslot, int start, int checkpoint_current)
 {
-	int subjectID = g_milestones[subjectslot].id;
+	Milestone subjectMS = g_milestones[subjectslot];
+	int subjectID = subjectMS.id;
 
 	if (!subjectID)
 		return true;
@@ -483,12 +484,12 @@ static bool EncounterIsAccessible(int tablenum, string method)
 	bool foundtable = false;
 	bool removed = false;
 	vector<string> unlockedmethods;
-	for (int slot = 0; slot < g_milestones.size(); slot++)
+	for (int Islot = 0; Islot < g_milestones.size(); Islot++)
 	{
-		Milestone ms = g_milestones[slot];
-		if (ms.userselected && MilestoneIsRelevant(slot, 0, g_newsettings.selected_checkpoint_slot))
+		Milestone ms = g_milestones[Islot];
+		if (ms.userselected && (MilestoneIsRelevant(Islot, 0, g_newsettings.selected_checkpoint_slot) || ms.type == MILESTONE_ONEWAY))
 		{
-			if (foundtable && ms.type == MILESTONE_ONEWAY)
+			if (foundtable && ms.type == MILESTONE_ONEWAY && MilestoneIsRelevant(Islot, 0, g_newsettings.selected_checkpoint_slot))
 			{
 				return false;
 			}
@@ -497,6 +498,11 @@ static bool EncounterIsAccessible(int tablenum, string method)
 				int table = ms.tables[Jslot];
 				if (tablenum == table)
 				{
+					//seems odd but is necessary
+					if (ms.type == MILESTONE_ONEWAY)
+					{
+						return true;
+					}
 					foundtable = true;
 					removed = false;
 					if (!ms.excludes.empty())
