@@ -119,6 +119,7 @@ cancel 8
 232//whirl-islands-b3f
 //you have to use strength to navigate chuck's gym
 cancel 9
+202//slowpoke-well-1f
 203//slowpoke-well-b1f
 243//johto-route-44
 244//ice-path-1f

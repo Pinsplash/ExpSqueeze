@@ -132,6 +132,7 @@ cancel 8
 232//whirl-islands-b3f
 //you have to use strength to navigate chuck's gym
 cancel 9
+202//slowpoke-well-1f
 203//slowpoke-well-b1f
 243//johto-route-44
 244//ice-path-1f
@@ -259,6 +260,7 @@ checkbox 20 Defeated Hiker Jim (Route 10)
 
 checkpoint Woke Snorlax
 cancel 16
+305//kanto-route-11
 317//digletts-cave
 296//kanto-route-2-south-towards-viridian-city
 320//kanto-route-2-north-towards-pewter-city
@@ -274,7 +276,7 @@ cancel 16
 284//fuchsia-city
 308//kanto-route-15
 
-checkbox 20 Defeated Youngster Jimmy (Route 3)
+checkbox 22 Defeated Youngster Jimmy (Route 3)
 297//kanto-route-3
 
 checkbox 21 Defeated Rival in Mt. Moon
