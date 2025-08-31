@@ -1,6 +1,8 @@
 //1
 Sailor Ernest
 {
+version:ruby
+version:sapphire
 pelipper,45
 machoke,45
 tentacruel,45

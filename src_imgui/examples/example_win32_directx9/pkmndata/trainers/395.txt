@@ -1,11 +1,15 @@
 //1
 Pokefan Miguel
 {
+version:ruby
+version:sapphire
 delcatty,36
 }
 //2
 Twins Amy & Liv
 {
+version:ruby
+version:sapphire
 plusle,36
 minun,36
 }

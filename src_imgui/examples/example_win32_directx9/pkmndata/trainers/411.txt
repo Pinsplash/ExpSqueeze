@@ -1,12 +1,16 @@
 //1
 PKMN Ranger Catherine
 {
+version:ruby
+version:sapphire
 bellossom,39
 roselia,39
 }
 //2
 PKMN Ranger Jackson
 {
+version:ruby
+version:sapphire
 kecleon,39
 breloom,39
 }

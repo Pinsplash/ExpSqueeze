@@ -1,11 +1,15 @@
 //1
 Tuber Lola
 {
+version:ruby
+version:sapphire
 azumarill,35
 azumarill,35
 }
 //2
 Tuber Ricky
 {
+version:ruby
+version:sapphire
 linoone,36
 }

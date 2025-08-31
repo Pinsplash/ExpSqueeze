@@ -82,7 +82,7 @@ enum
 	METHOD_ROCKSMASH,
 	METHOD_HEADBUTTLOW,
 	METHOD_HEADBUTTHIGH,
-	METHOD_UNUSED,
+	METHOD_REMATCH,
 	METHOD_DARK_GRASS,
 	METHOD_PHEN_GRASS,
 	METHOD_PHEN_DUST,
@@ -115,7 +115,7 @@ enum MethodFilterFlags
 	MethodFilterFlags_RodSuper		= 1 << 4,
 	MethodFilterFlags_RockSmash		= 1 << 5,
 	MethodFilterFlags_Headbutt		= 1 << 6,
-	MethodFilterFlags_Unused		= 1 << 7,
+	MethodFilterFlags_Rematch		= 1 << 7,
 	MethodFilterFlags_DarkGrass		= 1 << 8,
 	MethodFilterFlags_Phenomena		= 1 << 9,
 	MethodFilterFlags_BubblingSpots = 1 << 10,
@@ -393,6 +393,16 @@ static void WarnMarker(const char* desc)
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
+}
+
+static void StripComment(string textLine, string *outstr)
+{
+	size_t s1End = textLine.find("//");
+
+	if (s1End == string::npos)
+		*outstr = textLine;
+	else
+		*outstr = textLine.substr(0, s1End);
 }
 
 static bool MilestoneCancelsID(int slot, int subjectID)
@@ -826,19 +836,20 @@ static string CreateWarning(json_value* containerobj, string pokemonname, int fl
 	return "";//no match
 }
 
-static bool IsPokemonMatchingType(string path, string version, int flags, string pokemonname, string* warning)
+static bool IsPokemonMatchingType(string version, int flags, string pokemonname, string* warning)
 {
+	string monpath = g_pkmndatapath + "pokemon\\" + pokemonname + ".json";
 	FILE* fp;
 	struct stat filestatus;
 	int file_size;
 	char* file_contents;
 	json_char* json;
 	json_value* file;
-	if (stat(path.c_str(), &filestatus) != 0)
+	if (stat(monpath.c_str(), &filestatus) != 0)
 	{
-		cout << "File " + path + " not found\n";
+		cout << "File " + monpath + " not found\n";
 		assert(0);
-		*warning = "File " + path + " not found";
+		*warning = "File " + monpath + " not found";
 		return false;
 	}
 	file_size = filestatus.st_size;
@@ -850,27 +861,27 @@ static bool IsPokemonMatchingType(string path, string version, int flags, string
 		*warning = "Memory error: unable to allocate " + to_string(file_size) + " bytes";
 		return false;
 	}
-	fp = fopen(path.c_str(), "rb");
+	fp = fopen(monpath.c_str(), "rb");
 	if (!fp)
 	{
-		cout << "Unable to open " + path + "\n";
+		cout << "Unable to open " + monpath + "\n";
 		//fclose(fp);
 		free(file_contents);
 		assert(0);
-		*warning = "Unable to open " + path;
+		*warning = "Unable to open " + monpath;
 		return false;
 	}
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
-		cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+		cout << "Unable to read content of " + monpath + " ret " + to_string(readNum) + "\n";
 		cout << "ferror " + to_string(ferror(fp)) + "\n";
 		cout << "feof " + to_string(feof(fp)) + "\n";
 		cout << "file_size " + to_string(file_size) + "\n";
 		fclose(fp);
 		free(file_contents);
 		assert(0);
-		*warning = "Unable to read content of " + path + " ret " + to_string(readNum);
+		*warning = "Unable to read content of " + monpath + " ret " + to_string(readNum);
 		return false;
 	}
 	fclose(fp);
@@ -879,10 +890,10 @@ static bool IsPokemonMatchingType(string path, string version, int flags, string
 	file = json_parse(json, file_size, &error_buf);
 	if (file == NULL)
 	{
-		cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
+		cout << "File " << monpath << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		assert(0);
-		*warning = "File " + path + ": Unable to parse data: " + error_buf;
+		*warning = "File " + monpath + ": Unable to parse data: " + error_buf;
 		return false;
 	}
 
@@ -1097,29 +1108,6 @@ static bool FindInExpFile(int offset, string expfile, string pokemonname, int* s
 	return false;
 }
 
-static bool GameHasProgressFile(int index)
-{
-	return !g_games[index]->progressfile.empty();
-}
-
-static double CalculateExperienceCore(int generation, double level, int baseExp)
-{
-	int factor = (generation == 5 || generation >= 7) ? 5 : 7;
-	return (baseExp * level) / factor;
-}
-
-static double ExperienceScaleForLevel(int generation, double defeatedLevel, double winnerLevel, double avgExp)
-{
-	double a = 2 * defeatedLevel + 10;
-	double b = defeatedLevel + winnerLevel + 10;
-	if (generation == 5)
-		return avgExp * (sqrt(a) * pow(a, 2)) / (sqrt(b) * pow(b, 2));
-	if (generation >= 7)
-		return avgExp * pow((a) / (b), 2.5);
-	else
-		return avgExp;
-}
-
 static bool IsPokemonInEVRange(string version, string pokemonname)
 {
 	string expfile;
@@ -1157,6 +1145,51 @@ static bool IsPokemonInEVRange(string version, string pokemonname)
 			return false;
 	}
 	return true;
+}
+
+static void ParseRematchDetails(string pokemonname, string level, string trainername, int version_index, int iFile)
+{
+	bool filterReason = Reason_None;
+	string warning = "";
+	if (g_settings.pkmnfiltertypeflags != 0)
+	{
+		if (IsPokemonMatchingType(g_games[version_index]->internalname, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
+		{
+			//pokemon is a type we don't allow
+			//cout << pokemonname << " is bad type\n";
+			filterReason = Reason_BadType;
+		}
+	}
+	bool goodtype = false;
+	if (g_settings.pkmnrequiretypeflags != 0)
+	{
+		goodtype = IsPokemonMatchingType(g_games[version_index]->internalname, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
+	}
+	bool goodEVs = IsPokemonInEVRange(g_games[version_index]->internalname, pokemonname);
+	RegisterEncounter(100, stoi(level), stoi(level), pokemonname, trainername, "", METHOD_REMATCH, version_index, iFile, filterReason, warning, goodtype, goodEVs);
+}
+
+static bool GameHasProgressFile(int index)
+{
+	return !g_games[index]->progressfile.empty();
+}
+
+static double CalculateExperienceCore(int generation, double level, int baseExp)
+{
+	int factor = (generation == 5 || generation >= 7) ? 5 : 7;
+	return (baseExp * level) / factor;
+}
+
+static double ExperienceScaleForLevel(int generation, double defeatedLevel, double winnerLevel, double avgExp)
+{
+	double a = 2 * defeatedLevel + 10;
+	double b = defeatedLevel + winnerLevel + 10;
+	if (generation == 5)
+		return avgExp * (sqrt(a) * pow(a, 2)) / (sqrt(b) * pow(b, 2));
+	if (generation >= 7)
+		return avgExp * pow((a) / (b), 2.5);
+	else
+		return avgExp;
 }
 
 static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset, int stat, int generation, double chancescale)
@@ -1384,8 +1417,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 		string warning = "";
 		if (g_settings.pkmnfiltertypeflags != 0)
 		{
-			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-			if (IsPokemonMatchingType(g_pkmndatapath + url + "index.json", givengame, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
+			if (IsPokemonMatchingType(givengame, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
 			{
 				//pokemon is a type we don't allow
 				//cout << pokemonname << " is bad type\n";
@@ -1395,8 +1427,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 		bool goodtype = false;
 		if (g_settings.pkmnrequiretypeflags != 0)
 		{
-			string url = FindValueInObjectByKey(pokemon, "url")->u.string.ptr;
-			goodtype = IsPokemonMatchingType(g_pkmndatapath + url + "index.json", givengame, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
+			goodtype = IsPokemonMatchingType(givengame, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
 		}
 		bool goodEVs = IsPokemonInEVRange(givengame, pokemonname);
 
@@ -1417,6 +1448,121 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 
 			if (!ParseEncounterDetails(encdetailblock, pokemonname, placename, walkstring, gameindex, iFile, filterReason, warning, goodtype, goodEVs))
 				continue;//encounter was bad for some reason
+		}
+	}
+	return 1;
+}
+
+static int ParseTrainerFile(int iFile)
+{
+	string trainerpath = g_pkmndatapath + "trainers\\" + to_string(iFile) + ".txt";
+	struct stat filestatus;
+	if (stat(trainerpath.c_str(), &filestatus) != 0)
+	{
+		//not every location has rematchable trainers
+		//return quietly
+		return 1;
+	}
+	string trainername = "";
+	bool insidetrainerblock = false;
+	bool foundtargetversion = false;
+	vector<int> relevantgames;
+	vector<string> mondata;
+	ifstream ReadFile(trainerpath);
+	string textLine;
+	while (getline(ReadFile, textLine))
+	{
+		string str1;
+		StripComment(textLine, &str1);
+
+		if (str1.empty())
+			continue;
+
+		if (str1 == "{" && !trainername.empty())
+		{
+			insidetrainerblock = true;
+		}
+		else if (str1 == "}" && insidetrainerblock)
+		{
+			//save everything
+			if (foundtargetversion)
+			{
+				for (int i = 0; i < mondata.size(); i += 2)
+				{
+					if (g_settings.wantedgame_index == ALLGAMES_INDEX)
+					{
+						for (int j = 0; j < relevantgames.size(); j++)
+						{
+							ParseRematchDetails(mondata[i], mondata[i + 1], trainername, relevantgames[j], iFile);
+						}
+					}
+					else
+						ParseRematchDetails(mondata[i], mondata[i + 1], trainername, g_settings.wantedgame_index, iFile);
+				}
+			}
+
+			//clear out data for next trainer block
+			trainername = "";
+			insidetrainerblock = false;
+			foundtargetversion = false;
+			relevantgames.clear();
+			mondata.clear();
+		}
+		else if (insidetrainerblock)
+		{
+			//must be trainer data
+
+			//version data - line that states the trainer exists in a game
+			//there is a separate version line for each game
+			if (str1.find("version:") != string::npos)
+			{
+				if (g_settings.wantedgame_index == ALLGAMES_INDEX || str1 == ("version:" + g_games[g_settings.wantedgame_index]->internalname))
+				{
+					if (g_settings.wantedgame_index == ALLGAMES_INDEX)
+					{
+						string gameinternalname = str1.substr(8);
+						for (int i = 0; i < g_games.size(); i++)
+						{
+							if (g_games[i]->internalname == gameinternalname)
+								relevantgames.push_back(i);//find game index from string
+						}
+					}
+					foundtargetversion = true;
+					continue;
+				}
+			}
+			//pokemon data - line tells one of the pokemon the trainer has
+			else if (str1.find(",") != string::npos)
+			{
+				//pokemon name
+				size_t s2End = str1.find(",");
+				string str2 = str1.substr(0, s2End);
+
+				//level
+				size_t s3Start = s2End + 1;
+				string str3 = str1.substr(s3Start);
+
+				if (!str2.empty() && !str3.empty())
+				{
+					mondata.push_back(str2);
+					mondata.push_back(str3);
+				}
+			}
+			else
+			{
+				cout << "Didn't know what to do with trainer data: '" + str1 + "'\n";
+				return 0;
+			}
+		}
+		else if (trainername.empty())
+		{
+			//assume it's the trainer name
+			trainername = str1;
+		}
+		else
+		{
+			cout << "Didn't know what to do with line: '" + str1 + "'\n";
+			return 0;
 		}
 	}
 	return 1;
@@ -1668,7 +1814,7 @@ static bool compareByExpPerTotalEV(const EncounterTable a, const EncounterTable 
 	return a.efficientEVs[OFFSET_TOTAL].expPerEV > b.efficientEVs[OFFSET_TOTAL].expPerEV;
 }
 
-static bool ReadTables()
+static void ReadTables()
 {
 	if (g_settings.printtext) cout << "Reading encounter data\n";
 	GameObject* game = g_games[g_settings.wantedgame_index];
@@ -1698,7 +1844,9 @@ static bool ReadTables()
 				notch++;
 			}
 			if (ParseLocationDataFile(j) == 0)
-				return true;
+				return;
+			if (ParseTrainerFile(j) == 0)
+				return;
 		}
 	}
 
@@ -1801,7 +1949,7 @@ static bool ReadTables()
 				cout << "repellevel: " << to_string(g_settings.repellevel) << " maxallowedlevel: " << to_string(g_settings.maxallowedlevel) << "\n";
 				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
 				cin.get();
-				return true;
+				return;
 			}
 		}
 		g_settingswindowdata.progress = (1 - (static_cast<float>(maintables.size()) - numTablesProcessed) / maintables.size()) * 0.5 + 0.5;
@@ -1815,7 +1963,6 @@ static bool ReadTables()
 #ifdef _DEBUG
 	PrintCustomData(/*settings*/);
 #endif //_DEBUG
-	return true;
 }
 
 static const char* Items_SingleStringGetter(void* data, int idx)
@@ -2043,7 +2190,10 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		}
 
 		if (game->generation == 7)
+		{
 			ImGui::CheckboxFlags("Fishing at regular rock", &methodflags, MethodFilterFlags_RodSuper);
+			ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
+		}
 		else
 			ImGui::CheckboxFlags("Super Rod", &methodflags, MethodFilterFlags_RodSuper);
 
@@ -2058,6 +2208,12 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				"\"Headbutt Low\" is:\n-\"Low chances of battle\" on Bulba individual route pages\n-\"Moderate-encounter trees\" on Bulba's \"Headbutt tree\" page\n-\"Headbutt - Special Trees\" on Serebii");
 		}
 
+		if (allgames || game->generation == 3)
+		{
+			ImGui::CheckboxFlags("Rematch", &methodflags, MethodFilterFlags_Rematch);
+			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)");
+		}
+
 		if (allgames || game->generation == 5)
 		{
 			ImGui::CheckboxFlags("Dark Grass", &methodflags, MethodFilterFlags_DarkGrass);
@@ -2069,9 +2225,6 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{
 			ImGui::CheckboxFlags("Ambush", &methodflags, MethodFilterFlags_Ambush);
 			ImGui::SameLine(); HelpMarker("Cases where pokemon have an overworld presence and move, like flying pokemon shadows or rustling grass.");
-
-			if (game->generation == 7)
-				ImGui::CheckboxFlags("Fishing at bubbling rock", &methodflags, MethodFilterFlags_BubblingSpots);
 		}
 
 		g_newsettings.methodflags = methodflags;
@@ -2567,6 +2720,85 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			}
 		}
 		ImGui::SameLine(); WarnMarker("This is a one-way operation. Hidden tables will be inaccessible until the Go button is used again.");
+#ifdef _DEBUG
+		if (ImGui::Button("Rename Pokemon Files"))
+		{
+			for (int i = 1; i <= 10277; i++)
+			{
+				string path = g_pkmndatapath + "api/v2/pokemon/" + to_string(i) + "/index.json";
+				FILE* fp;
+				struct stat filestatus;
+				int file_size;
+				char* file_contents;
+				json_char* json;
+				json_value* file;
+				if (stat(path.c_str(), &filestatus) != 0)
+				{
+					//cout << "File " + path + " not found\n";
+					//assert(0);
+					continue;
+				}
+				cout << i << "/10277\n";
+				file_size = filestatus.st_size;
+				file_contents = (char*)malloc(filestatus.st_size);
+				if (!file_contents)
+				{
+					cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+					assert(0);
+					return;
+				}
+				fp = fopen(path.c_str(), "rb");
+				if (!fp)
+				{
+					cout << "Unable to open " + path + "\n";
+					//fclose(fp);
+					free(file_contents);
+					assert(0);
+					return;
+				}
+				size_t readNum = fread(file_contents, 1, file_size, fp);
+				if (readNum != file_size)
+				{
+					cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+					cout << "ferror " + to_string(ferror(fp)) + "\n";
+					cout << "feof " + to_string(feof(fp)) + "\n";
+					cout << "file_size " + to_string(file_size) + "\n";
+					fclose(fp);
+					free(file_contents);
+					assert(0);
+					return;
+				}
+				fclose(fp);
+				json = (json_char*)file_contents;
+				string error_buf;
+				file = json_parse(json, file_size, &error_buf);
+				if (file == NULL)
+				{
+					cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
+					free(file_contents);
+					assert(0);
+					return;
+				}
+
+				json_value* name = FindValueInObjectByKey(file, "name");
+				if (!name)
+				{
+					json_value_free(file);
+					free(file_contents);
+					assert(0);
+					return;
+				}
+				string dest = g_pkmndatapath + "pokemon/" + name->u.string.ptr + ".json";
+				json_value_free(file);
+				free(file_contents);
+				ifstream ReadFile(path, std::ios::binary);
+				ofstream WriteFile(dest, std::ios::binary);
+				WriteFile << ReadFile.rdbuf();
+				WriteFile.close();
+				ReadFile.close();
+			}
+		}
+#endif
 	}
 }
 
@@ -2739,13 +2971,8 @@ void ParseProgressFile(int game_index)
 	string textLine;
 	while (getline(ReadFile, textLine))
 	{
-		size_t s1End = textLine.find("//");
 		string str1;
-
-		if (s1End == string::npos)
-			str1 = textLine;
-		else
-			str1 = textLine.substr(0, s1End);
+		StripComment(textLine, &str1);
 
 		if (str1.empty())
 			continue;
@@ -3107,6 +3334,8 @@ static void RegisterMethods()
 	RegisterMethod("Rock Smash", "rock-smash", MethodFilterFlags_RockSmash);
 	RegisterMethod("Headbutt (Low)", "headbutt-low", MethodFilterFlags_Headbutt);
 	RegisterMethod("Headbutt (High)", "headbutt-high", MethodFilterFlags_Headbutt);
+	//g3
+	RegisterMethod("Rematch", "rematch", MethodFilterFlags_Rematch);
 	//g5
 	RegisterMethod("Dark Grass", "dark-grass", MethodFilterFlags_DarkGrass);
 	RegisterMethod("Rustling Grass", "grass-spots", MethodFilterFlags_Phenomena);

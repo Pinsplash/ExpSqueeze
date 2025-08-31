@@ -1,6 +1,8 @@
 //1
 Bug Maniac Brandon
 {
+version:ruby
+version:sapphire
 surskit,38
 dustox,38
 surskit,38
@@ -10,6 +12,8 @@ beautifly,38
 //2
 Bird Keeper Robert
 {
+version:ruby
+version:sapphire
 altaria,41
 xatu,41
 }

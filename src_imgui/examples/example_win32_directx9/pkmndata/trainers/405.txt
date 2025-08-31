@@ -1,6 +1,8 @@
 //1
 Ninja Boy Lao
 {
+version:ruby
+version:sapphire
 koffing,33
 koffing,33
 koffing,33
@@ -9,6 +11,8 @@ weezing,35
 //2
 Parasol Lady Madeline
 {
+version:ruby
+version:sapphire
 roselia,35
 camerupt,35
 }

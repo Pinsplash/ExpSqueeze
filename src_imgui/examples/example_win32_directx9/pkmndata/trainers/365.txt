@@ -1,6 +1,8 @@
 //1
 Bug Catcher James
 {
+version:ruby
+version:sapphire
 surskit,33
 ninjask,33
 dustox,33

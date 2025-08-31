@@ -1,6 +1,8 @@
 //1
 Hoenn Pokemon League
 {
+version:ruby
+version:sapphire
 mightyena,46
 cacturne,46
 shiftry,48

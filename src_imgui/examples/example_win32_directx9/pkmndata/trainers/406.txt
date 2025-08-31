@@ -1,12 +1,16 @@
 //1
 Pokemaniac Steve
 {
+version:ruby
+version:sapphire
 aggron,35
 rhydon,35
 }
 //2
 Kindler Bernie
 {
+version:ruby
+version:sapphire
 magcargo,35
 pelipper,35
 }

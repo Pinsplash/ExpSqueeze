@@ -1,6 +1,8 @@
 //1
 Swimmer Tony
 {
+version:ruby
+version:sapphire
 starmie,37
 sharpedo,39
 }

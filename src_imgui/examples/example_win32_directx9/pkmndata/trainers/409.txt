@@ -1,22 +1,30 @@
 //1
 Sr. and Jr. Anna and Meg
 {
+version:ruby
+version:sapphire
 linoone,35
 hariyama,37
 }
 //2
 Triathlete Maria
 {
+version:ruby
+version:sapphire
 dodrio,37
 }
 //3
 Triathlete Dylan
 {
+version:ruby
+version:sapphire
 dodrio,37
 }
 //4
 PKMN Breeder Lydia
 {
+version:ruby
+version:sapphire
 pelipper,31
 breloom,31
 azumarill,31
@@ -27,6 +35,8 @@ seaking,31
 //5
 PKMN Breeder Isaac
 {
+version:ruby
+version:sapphire
 loudred,31
 linoone,31
 lairon,31

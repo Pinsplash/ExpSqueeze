@@ -1,6 +1,8 @@
 //1
 Young Couple Lois & Hal
 {
+version:ruby
+version:sapphire
 volbeat,39
 illumise,39
 }

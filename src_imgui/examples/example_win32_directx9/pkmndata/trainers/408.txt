@@ -1,12 +1,16 @@
 //1
 School Kid Karen
 {
+version:ruby
+version:sapphire
 breloom,35
 exploud,35
 }
 //2
 School Kid Jerry
 {
+version:ruby
+version:sapphire
 kirlia,34
 banette,34
 medicham,34

@@ -1,12 +1,16 @@
 //1
 Psychic Cameron
 {
+version:ruby
+version:sapphire
 solrock,43
 alakazam,43
 }
 //2
 Psychic Jacki
 {
+version:ruby
+version:sapphire
 lunatone,43
 alakazam,43
 }

@@ -1,6 +1,8 @@
 //1
 Expert Shelby
 {
+version:ruby
+version:sapphire
 medicham,39
 hariyama,39
 }

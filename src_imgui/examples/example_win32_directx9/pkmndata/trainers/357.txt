@@ -1,12 +1,16 @@
 //1
 Old Couple John & Jay
 {
+version:ruby
+version:sapphire
 medicham,52
 hariyama,52
 }
 //2
 Dragon Tamer Nicolas
 {
+version:ruby
+version:sapphire
 altaria,49
 altaria,49
 shelgon,49

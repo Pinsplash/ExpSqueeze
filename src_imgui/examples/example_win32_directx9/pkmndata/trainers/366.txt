@@ -1,6 +1,8 @@
 //1
 Camper Ethan
 {
+version:ruby
+version:sapphire
 swellow,34
 sandslash,34
 linoone,34
@@ -8,6 +10,8 @@ linoone,34
 //2
 Picnicker Diana
 {
+version:ruby
+version:sapphire
 breloom,40
 vileplume,40
 altaria,40

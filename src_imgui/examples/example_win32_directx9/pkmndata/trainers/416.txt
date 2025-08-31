@@ -1,12 +1,16 @@
 //1
 Sis and Bro Rita & Sam
 {
+version:ruby
+version:sapphire
 lanturn,51
 sharpedo,49
 }
 //2
 Swimmer Jenny
 {
+version:ruby
+version:sapphire
 luvdisc,45
 wailmer,45
 starmie,45
