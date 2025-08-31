@@ -564,7 +564,7 @@ static bool EncounterIsAccessible(int tablenum, string method)
 
 static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
 {
-	if (g_settings.repellevel > maxlevel)
+	if (g_settings.repellevel > maxlevel && method_index != METHOD_REMATCH)
 		return;
 	
 	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname))
@@ -1202,7 +1202,8 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		__int64 pctlost = 0;
 		if ((generation >= 7 || generation == GENERATION_ALL) && encounter->pokemonname == "wishiwashi")
 		{
-			encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+			if (table->method_index != METHOD_REMATCH)
+				encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
 			for (__int64 level = encounter->minlevel; level <= encounter->maxlevel; level++)
 			{
 				int BEY = level < 20 ? 61 : encounter->baseExp;
@@ -1263,30 +1264,45 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 			}
 			else
 			{
-				encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
+				if (table->method_index != METHOD_REMATCH)
+					encounter->minlevel = max(encounter->minlevel, g_settings.repellevel);
 				avglevel = (double)(encounter->maxlevel + encounter->minlevel) / 2;
 			}
 			encounter->avgexp = CalculateExperienceCore(generation, avglevel, encounter->baseExp);
 			//level scaling
 			if (g_settings.scalinglevel != 0)
 				encounter->avgexp = ExperienceScaleForLevel(generation, avglevel, g_settings.scalinglevel, encounter->avgexp);
+			if (generation <= 6 && table->method_index == METHOD_REMATCH)
+				encounter->avgexp *= 1.5;
 		}
 		assert(encounter->avgexp > 0);
-		encounter->avgexpweighted = (double)(encounter->avgexp * (encounter->chance - pctlost) * chancescale) / table->expectedtotalpercent;
-		if (g_settings.printtext) cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
 #ifdef _DEBUG
 		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
 		//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
 #endif //_DEBUG
-		table->averageYields[OFFSET_EXP] += encounter->avgexpweighted;
+		if (table->method_index == METHOD_REMATCH)
+		{
+			if (g_settings.printtext) cout << encounter->pokemonname << " at level " << encounter->minlevel << " gives " << encounter->avgexp << "EXP\n";
+			table->averageYields[OFFSET_EXP] += encounter->avgexp;
+		}
+		else
+		{
+			encounter->avgexpweighted = (double)(encounter->avgexp * (encounter->chance - pctlost) * chancescale) / table->expectedtotalpercent;
+			if (g_settings.printtext) cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
+			table->averageYields[OFFSET_EXP] += encounter->avgexpweighted;
+			assert(encounter->avgexpweighted > 0);
+		}
 		assert(table->averageYields[OFFSET_EXP] > 0);
-		assert(encounter->avgexpweighted > 0);
 		table->totalchance += encounter->chance;
 	}
 	else
 	{
-		table->averageYields[offset] += (double)(stat * encounter->chance * chancescale) / table->expectedtotalpercent;
+		if (table->method_index == METHOD_REMATCH)
+			table->averageYields[offset] += stat;
+		else
+			table->averageYields[offset] += (double)(stat * encounter->chance * chancescale) / table->expectedtotalpercent;
 		double lowestExp = CalculateExperienceCore(generation, (double)encounter->minlevel, encounter->baseExp);
+		//just to avoid divide by 0
 		if (stat > 0)
 		{
 			if (table->efficientEVs[offset].expPerEV == 0.0f)
@@ -1937,12 +1953,13 @@ static void ReadTables()
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((g_settings.repellevel == 0 && g_settings.maxallowedlevel == 100) && table.totalchance != 100 + extrachance)
+			if ((g_settings.repellevel == 0 && g_settings.maxallowedlevel == 100) && table.totalchance != (extrachance + 100))
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
 			else if (table.totalchance != table.expectedtotalpercent + extrachance)
 				errorfound = true;
-			if (errorfound)
+			//rematch slots don't have a concept of chance
+			if (errorfound && table.method_index != METHOD_REMATCH)
 			{
 				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
 				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
@@ -2211,7 +2228,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		if (allgames || game->generation == 3)
 		{
 			ImGui::CheckboxFlags("Rematch", &methodflags, MethodFilterFlags_Rematch);
-			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)");
+			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)\nOnly final versions of opponent teams are shown.");
 		}
 
 		if (allgames || game->generation == 5)
@@ -2815,14 +2832,24 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 		{
 			bool wishiwashi = false;
 			bool minior = false;
-			if (ImGui::BeginTable("showencountertable", 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
+			if (ImGui::BeginTable("showencountertable", table.method_index == METHOD_REMATCH ? 4 : 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
-				ImGui::TableSetupColumn("Pokemon");
-				ImGui::TableSetupColumn("Chance");
-				ImGui::TableSetupColumn("Level");
-				ImGui::TableSetupColumn("Base Exp. Yield");
-				ImGui::TableSetupColumn("Avg. Exp.");
-				ImGui::TableSetupColumn("Weighted Avg. Exp.");
+				if (table.method_index != METHOD_REMATCH)
+				{
+					ImGui::TableSetupColumn("Pokemon");
+					ImGui::TableSetupColumn("Chance");
+					ImGui::TableSetupColumn("Level");
+					ImGui::TableSetupColumn("Base Exp. Yield");
+					ImGui::TableSetupColumn("Avg. Exp.");
+					ImGui::TableSetupColumn("Weighted Avg. Exp.");
+				}
+				else
+				{
+					ImGui::TableSetupColumn("Pokemon");
+					ImGui::TableSetupColumn("Level");
+					ImGui::TableSetupColumn("Base Exp. Yield");
+					ImGui::TableSetupColumn("Experience");
+				}
 				ImGui::TableHeadersRow();
 				int i = 0;
 				for (Encounter encounter : table.encounters)
@@ -2867,9 +2894,12 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 					ImGui::PopID();
 
 					//chance
-					ImGui::TableNextColumn();
-					string pct = to_string(encounter.chance) + "%";
-					ImGui::Text(pct.c_str());
+					if (table.method_index != METHOD_REMATCH)
+					{
+						ImGui::TableNextColumn();
+						string pct = to_string(encounter.chance) + "%";
+						ImGui::Text(pct.c_str());
+					}
 
 					//level
 					if (encounter.minlevel == encounter.maxlevel)
@@ -2902,17 +2932,20 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 					string avgexp = to_string((long)trunc(encounter.avgexp));
 					ImGui::Text(avgexp.c_str());
 
-					//avg exp weighted
-					ImGui::TableNextColumn();
-					if (encounter.avgexpweighted < 10)
+					if (table.method_index != METHOD_REMATCH)
 					{
-						string avgexpweighted = to_string(encounter.avgexpweighted);
-						ImGui::Text(avgexpweighted.c_str());
-					}
-					else
-					{
-						string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
-						ImGui::Text(avgexpweighted.c_str());
+						//avg exp weighted
+						ImGui::TableNextColumn();
+						if (encounter.avgexpweighted < 10)
+						{
+							string avgexpweighted = to_string(encounter.avgexpweighted);
+							ImGui::Text(avgexpweighted.c_str());
+						}
+						else
+						{
+							string avgexpweighted = to_string((long)trunc(encounter.avgexpweighted));
+							ImGui::Text(avgexpweighted.c_str());
+						}
 					}
 					i++;
 				}
@@ -2933,15 +2966,18 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 			static const char* Gen2ilabels[] = { "Hit Points", "Physical Attack", "Physical Defense", "Special Attack", "Special Defense", "Speed", "Total" };
 			static const char* emptylabels[] = { "", "", "", "", "", "", "" };
 			int gen = g_games[table.version_index]->generation;
-			double graphmax = gen >= 3 ? 3 : 600;
+			double graphmax = ceil(table.averageYields[OFFSET_TOTAL]);
 			int ticks = gen >= 3 ? 16 : 13;
 			ImPlot::PushColormap(gen == 1 ? ImPlotColormap_PKMNstatsGen1 : ImPlotColormap_PKMNstats);
 			if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
 			{
 				ImPlot::SetupAxisTicks(ImAxis_X1, -0.5, gen == 1 ? 5.5 : 6.5, 0, emptylabels);
-				ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
-				ImPlot::SetupAxesLimits(-0.5, gen == 1 ? 5.5 : 6.5, 0, graphmax);
+				//ImPlot::SetupAxisTicks(ImAxis_Y1, 0.0, graphmax, ticks);
+				ImPlot::SetupAxesLimits(-0.5, gen == 1 ? 5.5 : 6.5, 0, graphmax, ImGuiCond_Always);
+				ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+				ImGui::PushID(1);
 				ImPlot::SetupLegend(ImPlotLocation_East, ImPlotLegendFlags_Outside);
+				ImGui::PopID();
 				int maxi = 7;
 				for (int i = 0; i < maxi; i++)
 				{

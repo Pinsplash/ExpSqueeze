@@ -1472,7 +1472,7 @@ ImGuiIO::ImGuiIO()
     ConfigScrollbarScrollByPage = true;
     ConfigMemoryCompactTimer = 60.0f;
     ConfigDebugIsDebuggerPresent = false;
-    ConfigDebugHighlightIdConflicts = true;
+    ConfigDebugHighlightIdConflicts = false;
     ConfigDebugHighlightIdConflictsShowItemPicker = true;
     ConfigDebugBeginReturnValueOnce = false;
     ConfigDebugBeginReturnValueLoop = false;
