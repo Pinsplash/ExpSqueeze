@@ -147,12 +147,13 @@ checkpoint Defeated Maxie at Seafloor Cavern
 
 checkpoint Obtained Rain Badge
 382 exclude rematch//hoenn-victory-road-1f
-357 exclude remnum:2//meteor-falls-1f-back
+//you can just walk by the old couple
+357//meteor-falls-1f-back
+358 exclude surf,old-rod,good-rod,super-rod//meteor-falls-b1f
+
+checkbox 2 Defeated Dragon Tamer Nicolas
 358//meteor-falls-b1f
 359//meteor-falls-b1f-back
-
-checkbox 2 Defeated Old Couple John & Jay
-357//meteor-falls-1f-back
 
 checkpoint Defeated Cooltrainer Hope (Victory Road)
 383//hoenn-victory-road-b1f
