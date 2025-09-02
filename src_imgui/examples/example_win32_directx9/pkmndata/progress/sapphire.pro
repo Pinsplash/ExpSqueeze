@@ -44,13 +44,12 @@ checkpoint Defeated Rival on Route 110
 409//hoenn-route-117
 //no wild pokemon in verdanturf town
 403 exclude walk//hoenn-route-111
-410//hoenn-route-118
+410 exclude walk//hoenn-route-118
 
 checkpoint Obtained ability to use Rock Smash
 unlock rock-smash
 404//hoenn-route-112
 367//fiery-path
-403 exclude walk//hoenn-route-111
 
 checkpoint Defeated Cooltrainer Brooke (Route 111)
 405//hoenn-route-113
@@ -85,6 +84,7 @@ unlock good-rod
 428//hoenn-route-134
 //excluded rematch before; have to surf to reach swimmer tony
 399//hoenn-route-107
+410//hoenn-route-118
 
 checkbox 1 Obtained Basement Key
 388//new-mauville-interior
@@ -151,7 +151,7 @@ checkpoint Obtained Rain Badge
 357//meteor-falls-1f-back
 358 exclude surf,old-rod,good-rod,super-rod//meteor-falls-b1f
 
-checkbox 2 Defeated Dragon Tamer Nicolas
+checkbox 2 Defeated Dragon Tamer Nicolas (Meteor Falls)
 358//meteor-falls-b1f
 359//meteor-falls-b1f-back
 

@@ -15,10 +15,13 @@ checkpoint Completed catching tutorial
 396//hoenn-route-104
 365//petalburg-woods
 
-checkpoint Defeated grunt in Petalburg Woods
+//twins don't "notice" you in r/s
+checkpoint Defeated Twins Gina & Mia (Route 104 North) or avoid by having 1 Pokemon in party
 //no wild pokemon in rustboro city
 407 exclude walk,rematch//hoenn-route-115
 408 exclude rematch//hoenn-route-116
+
+checkpoint Defeated Hiker Devan (Route 116)
 360//rusturf-tunnel
 
 checkbox 3 Obtained ability to use Cut
@@ -39,22 +42,26 @@ checkpoint Delivered letter to Steven
 351//slateport-city
 402//hoenn-route-110
 
-checkpoint Defeated Rival on Route 110
+checkpoint Defeated Psychic Edward and Triathlete Alyssa (Route 110)
 //no wild pokemon in mauville city
 409//hoenn-route-117
 //no wild pokemon in verdanturf town
 403 exclude walk//hoenn-route-111
+
+checkbox 5 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)
 410 exclude walk//hoenn-route-118
 
 checkpoint Obtained ability to use Rock Smash
 unlock rock-smash
 404//hoenn-route-112
 367//fiery-path
-
-checkpoint Defeated Cooltrainer Brooke (Route 111)
+//cooltrainer brooke is avoidable in emerald
 405//hoenn-route-113
 //no wild pokemon in fallarbor town
 406//hoenn-route-114
+
+//picknicker angelina is avoidable, hiker is not
+checkpoint Defeated Hiker Lucas
 356//meteor-falls-1f
 
 checkpoint Defeated Team Magma at Mt. Chimney
@@ -84,6 +91,9 @@ unlock good-rod
 428//hoenn-route-134
 //excluded rematch before; have to surf to reach swimmer tony
 399//hoenn-route-107
+cancel 5
+
+checkbox 6 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)
 410//hoenn-route-118
 
 checkbox 1 Obtained Basement Key
@@ -92,10 +102,13 @@ checkbox 1 Obtained Basement Key
 checkpoint Defeated Rival on Route 119
 //no wild pokemon in fortree city
 412 exclude surf,old-rod,good-rod,super-rod,remnum:1//hoenn-route-120
+cancel 6
+410//hoenn-route-118
 
 checkpoint Obtained Devon Scope
 412//hoenn-route-120
 //no wild pokemon in scorched slab
+//double double battles can be avoided by grass path
 413//hoenn-route-121
 368//mt-pyre-1f
 369//mt-pyre-2f
@@ -114,8 +127,10 @@ checkbox 4 Obtained ability to use Cut
 408//hoenn-route-116
 415//hoenn-route-123
 
-checkpoint Defeated Tabitha at Magma Hideout
+checkpoint Defeated Matt at Aqua Hideout
 416 exclude walk//hoenn-route-124
+
+checkpoint Defeated Swimmers Grace and Declan (Route 124)
 418//hoenn-route-125
 353//mossdeep-city
 385//shoal-cave
@@ -138,12 +153,24 @@ checkpoint Obtained ability to use Dive
 354//sootopolis-city
 376//seafloor-cavern
 
-checkpoint Defeated Maxie at Seafloor Cavern
+checkpoint Defeated Archie at Seafloor Cavern
 377//cave-of-origin-entrance
 378//cave-of-origin-1f
 379//cave-of-origin-b1f
 380//cave-of-origin-b2f
 381//cave-of-origin-b3f
+
+checkpoint Met Wallace in Cave of Origin
+390//sky-pillar-1f
+391//sky-pillar-3f
+392//sky-pillar-5f
+
+checkpoint Awakened Rayquaza
+cancel 377//cave-of-origin-entrance
+cancel 378//cave-of-origin-1f
+cancel 379//cave-of-origin-b1f
+cancel 380//cave-of-origin-b2f
+cancel 381//cave-of-origin-b3f
 
 checkpoint Obtained Rain Badge
 382 exclude rematch//hoenn-victory-road-1f
@@ -166,6 +193,3 @@ checkpoint Became Champion
 382//hoenn-victory-road-1f
 //league rematch
 355//ever-grande-city
-390//sky-pillar-1f
-391//sky-pillar-3f
-392//sky-pillar-5f
