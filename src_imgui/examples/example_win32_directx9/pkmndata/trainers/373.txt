@@ -3,6 +3,7 @@ Hex Maniac Valerie
 {
 version:ruby
 version:sapphire
+version:emerald
 duskull,42
 sableye,42
 grumpig,42

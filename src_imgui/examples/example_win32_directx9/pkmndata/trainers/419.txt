@@ -1,0 +1,8 @@
+//1
+Triathlete Pablo
+{
+version:emerald
+pelipper,43
+starmie,43
+starmie,43
+}

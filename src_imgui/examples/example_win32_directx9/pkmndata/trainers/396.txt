@@ -3,6 +3,7 @@ Lady Cindy
 {
 version:ruby
 version:sapphire
+version:emerald
 linoone,36
 }
 //2
@@ -10,6 +11,7 @@ Rich Boy Winston
 {
 version:ruby
 version:sapphire
+version:emerald
 linoone,36
 }
 //3
@@ -17,6 +19,7 @@ Lass Haley
 {
 version:ruby
 version:sapphire
+version:emerald
 swellow,34
 lombre,34
 breloom,34

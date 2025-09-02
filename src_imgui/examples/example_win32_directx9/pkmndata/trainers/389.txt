@@ -6,3 +6,18 @@ version:sapphire
 volbeat,39
 illumise,39
 }
+//2
+Beauty Thalia
+{
+version:emerald
+luvdisc,40
+wailord,40
+kingdra,40
+}
+//3
+Young Couple Kira & Dan
+{
+version:emerald
+volbeat,39
+illumise,39
+}

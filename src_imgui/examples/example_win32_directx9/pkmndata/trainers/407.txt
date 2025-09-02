@@ -3,6 +3,7 @@ Black Belt Nob
 {
 version:ruby
 version:sapphire
+version:emerald
 machop,33
 machoke,33
 machoke,33
@@ -20,6 +21,13 @@ Battle Girl Cydny
 {
 version:ruby
 version:sapphire
+version:emerald
 medicham,35
 medicham,35
+}
+//4
+Expert Timothy
+{
+version:emerald
+hariyama,42
 }

@@ -3,6 +3,7 @@ Swimmer Tony
 {
 version:ruby
 version:sapphire
+version:emerald
 starmie,37
 sharpedo,39
 }

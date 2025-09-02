@@ -11,7 +11,23 @@ Gentleman Walter
 {
 version:ruby
 version:sapphire
+version:emerald
 linoone,41
 golduck,41
 manectric,41
+}
+//3
+Cooltrainer Cristin
+{
+version:emerald
+spinda,41
+exploud,41
+slaking,41
+}
+//4
+Beauty Jessica
+{
+version:emerald
+kecleon,44
+seviper,44
 }

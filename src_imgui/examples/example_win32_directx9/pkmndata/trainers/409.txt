@@ -11,6 +11,7 @@ Triathlete Maria
 {
 version:ruby
 version:sapphire
+version:emerald
 dodrio,37
 }
 //3
@@ -18,6 +19,7 @@ Triathlete Dylan
 {
 version:ruby
 version:sapphire
+version:emerald
 dodrio,37
 }
 //4
@@ -25,6 +27,7 @@ PKMN Breeder Lydia
 {
 version:ruby
 version:sapphire
+version:emerald
 pelipper,31
 breloom,31
 azumarill,31
@@ -37,10 +40,18 @@ PKMN Breeder Isaac
 {
 version:ruby
 version:sapphire
+version:emerald
 loudred,31
 linoone,31
 lairon,31
 mightyena,31
 swellow,31
 hariyama,31
+}
+//6
+Sr. and Jr. Anna and Meg
+{
+version:emerald
+linoone,36
+hariyama,38
 }

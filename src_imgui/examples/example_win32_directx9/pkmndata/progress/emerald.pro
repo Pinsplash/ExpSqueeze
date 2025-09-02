@@ -19,7 +19,8 @@ checkpoint Completed catching tutorial
 checkpoint Defeated Twins Gina & Mia (Route 104 North) or avoid by having 1 Pokemon in party
 //no wild pokemon in rustboro city
 407 exclude walk,rematch//hoenn-route-115
-408 exclude rematch//hoenn-route-116
+//karen is in grass now
+408 exclude remnum:2//hoenn-route-116
 
 checkpoint Defeated Hiker Devan (Route 116)
 360//rusturf-tunnel
@@ -76,7 +77,7 @@ checkpoint Obtained Balance Badge
 unlock rematch
 //remnum means exclude the specified trainer (indices based on order in file in trainers/ folder)
 //expert timothy only reachable by surf, but two others are rematchable now
-407 exclude walk,remnum:2//hoenn-route-115
+407 exclude walk,remnum:4//hoenn-route-115
 
 //hm given by wally's dad after getting petalburg badge
 checkpoint Obtained Surf HM
@@ -101,7 +102,7 @@ checkbox 1 Obtained Basement Key
 
 checkpoint Defeated Rival on Route 119
 //no wild pokemon in fortree city
-412 exclude surf,old-rod,good-rod,super-rod,remnum:1//hoenn-route-120
+412 exclude surf,old-rod,good-rod,super-rod,remnum:3//hoenn-route-120
 cancel 6
 410//hoenn-route-118
 
@@ -112,25 +113,30 @@ checkpoint Obtained Devon Scope
 413//hoenn-route-121
 368//mt-pyre-1f
 369//mt-pyre-2f
-370//mt-pyre-3f
-371//mt-pyre-4f
-372//mt-pyre-5f
-373//mt-pyre-6f
 374//mt-pyre-outside
 375//mt-pyre-summit
-352//lilycove-city
 414//hoenn-route-122
-415 exclude remnum:1//hoenn-route-123
+415 exclude remnum:4//hoenn-route-123
 cancel 3
 
 checkbox 4 Obtained ability to use Cut
 408//hoenn-route-116
 415//hoenn-route-123
 
+checkbox 7 Defeated Black Belt Zander (Mt. Pyre)
+370//mt-pyre-3f
+371//mt-pyre-4f
+372//mt-pyre-5f
+373//mt-pyre-6f
+
+checkpoint Defeated Cooltrainer Cristin (Route 121)
+352//lilycove-city
+
 checkpoint Defeated Matt at Aqua Hideout
-416 exclude walk//hoenn-route-124
+416 exclude walk,rematch//hoenn-route-124
 
 checkpoint Defeated Swimmers Grace and Declan (Route 124)
+416 exclude walk//hoenn-route-124
 418//hoenn-route-125
 353//mossdeep-city
 385//shoal-cave

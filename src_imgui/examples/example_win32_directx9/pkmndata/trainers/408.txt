@@ -3,6 +3,7 @@ School Kid Karen
 {
 version:ruby
 version:sapphire
+version:emerald
 breloom,35
 exploud,35
 }
@@ -11,6 +12,7 @@ School Kid Jerry
 {
 version:ruby
 version:sapphire
+version:emerald
 kirlia,34
 banette,34
 medicham,34

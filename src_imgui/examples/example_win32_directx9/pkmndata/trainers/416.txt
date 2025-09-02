@@ -11,7 +11,15 @@ Swimmer Jenny
 {
 version:ruby
 version:sapphire
+version:emerald
 luvdisc,45
 wailmer,45
 starmie,45
+}
+//3
+Sis and Bro Lila & Roy
+{
+version:emerald
+lanturn,51
+sharpedo,49
 }

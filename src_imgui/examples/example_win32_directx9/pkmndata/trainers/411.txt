@@ -3,6 +3,7 @@ PKMN Ranger Catherine
 {
 version:ruby
 version:sapphire
+version:emerald
 bellossom,39
 roselia,39
 }
@@ -11,6 +12,7 @@ PKMN Ranger Jackson
 {
 version:ruby
 version:sapphire
+version:emerald
 kecleon,39
 breloom,39
 }

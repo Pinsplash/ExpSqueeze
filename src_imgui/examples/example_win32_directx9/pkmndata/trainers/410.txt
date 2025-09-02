@@ -3,6 +3,7 @@ Aroma Lady Rose
 {
 version:ruby
 version:sapphire
+version:emerald
 breloom,34
 gloom,34
 roselia,34
@@ -12,6 +13,7 @@ Guitarist Dalton
 {
 version:ruby
 version:sapphire
+version:emerald
 magneton,34
 exploud,34
 magneton,34

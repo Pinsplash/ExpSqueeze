@@ -3,6 +3,7 @@ Camper Ethan
 {
 version:ruby
 version:sapphire
+version:emerald
 swellow,34
 sandslash,34
 linoone,34
@@ -12,6 +13,7 @@ Picnicker Diana
 {
 version:ruby
 version:sapphire
+version:emerald
 breloom,40
 vileplume,40
 altaria,40

@@ -3,6 +3,7 @@ Ninja Boy Lao
 {
 version:ruby
 version:sapphire
+version:emerald
 koffing,33
 koffing,33
 koffing,33
@@ -15,4 +16,11 @@ version:ruby
 version:sapphire
 roselia,35
 camerupt,35
+}
+//3
+Parasol Lady Madeline
+{
+version:emerald
+roselia,37
+camerupt,37
 }

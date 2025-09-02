@@ -10,6 +10,13 @@ Twins Amy & Liv
 {
 version:ruby
 version:sapphire
+version:emerald
 plusle,36
 minun,36
+}
+//3
+Pokefan Miguel
+{
+version:emerald
+delcatty,38
 }

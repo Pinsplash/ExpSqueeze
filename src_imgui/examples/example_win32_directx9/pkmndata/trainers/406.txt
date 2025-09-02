@@ -3,6 +3,7 @@ Pokemaniac Steve
 {
 version:ruby
 version:sapphire
+version:emerald
 aggron,35
 rhydon,35
 }
@@ -11,6 +12,7 @@ Kindler Bernie
 {
 version:ruby
 version:sapphire
+version:emerald
 magcargo,35
 pelipper,35
 }

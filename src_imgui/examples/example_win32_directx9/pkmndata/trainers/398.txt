@@ -3,6 +3,7 @@ Fisherman Elliot
 {
 version:ruby
 version:sapphire
+version:emerald
 gyarados,33
 sharpedo,33
 gyarados,33

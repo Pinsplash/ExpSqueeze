@@ -3,6 +3,7 @@ Pokefan Isabel
 {
 version:ruby
 version:sapphire
+version:emerald
 plusle,35
 minun,35
 }
@@ -11,6 +12,7 @@ Triathlete Abigail
 {
 version:ruby
 version:sapphire
+version:emerald
 magneton,37
 }
 //3
@@ -25,6 +27,13 @@ Collector Edwin
 {
 version:ruby
 version:sapphire
+version:emerald
 ludicolo,35
 shiftry,35
+}
+//5
+Triathlete Benjamin
+{
+version:emerald
+magneton,39
 }

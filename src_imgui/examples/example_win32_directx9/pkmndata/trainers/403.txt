@@ -3,6 +3,7 @@ Ruin Maniac Dusty
 {
 version:ruby
 version:sapphire
+version:emerald
 sandslash,36
 }
 //2
@@ -10,6 +11,7 @@ Cooltrainer Brooke
 {
 version:ruby
 version:sapphire
+version:emerald
 pelipper,34
 camerupt,34
 roselia,34
@@ -19,6 +21,7 @@ Cooltrainer Wilton
 {
 version:ruby
 version:sapphire
+version:emerald
 manectric,35
 wailmer,35
 hariyama,35

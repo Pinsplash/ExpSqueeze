@@ -1,0 +1,8 @@
+//1
+Sailor Cory
+{
+version:emerald
+pelipper,36
+machoke,36
+tentacruel,36
+}

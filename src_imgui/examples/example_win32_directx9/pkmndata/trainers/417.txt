@@ -3,6 +3,15 @@ Expert Shelby
 {
 version:ruby
 version:sapphire
+version:emerald
 medicham,39
 hariyama,39
+}
+//2
+Hiker Sawyer
+{
+version:emerald
+machoke,33
+camerupt,33
+golem,33
 }

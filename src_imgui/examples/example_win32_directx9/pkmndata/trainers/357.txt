@@ -3,6 +3,7 @@ Old Couple John & Jay
 {
 version:ruby
 version:sapphire
+version:emerald
 medicham,52
 hariyama,52
 }
@@ -11,6 +12,7 @@ Dragon Tamer Nicolas
 {
 version:ruby
 version:sapphire
+version:emerald
 altaria,49
 altaria,49
 shelgon,49

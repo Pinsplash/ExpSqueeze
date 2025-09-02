@@ -1,0 +1,8 @@
+//1
+Ruin Maniac Andres
+{
+version:emerald
+nosepass,37
+sandslash,37
+sandslash,37
+}

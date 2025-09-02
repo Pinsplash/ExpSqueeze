@@ -3,6 +3,7 @@ Triathlete Isaiah
 {
 version:ruby
 version:sapphire
+version:emerald
 starmie,48
 }
 //2
@@ -10,5 +11,6 @@ Triathlete Katelyn
 {
 version:ruby
 version:sapphire
+version:emerald
 starmie,48
 }

@@ -1,0 +1,8 @@
+//1
+Black Belt Koji
+{
+version:emerald
+hariyama,43
+machamp,43
+machamp,43
+}

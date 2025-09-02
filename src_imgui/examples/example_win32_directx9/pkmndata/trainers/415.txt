@@ -11,6 +11,22 @@ Psychic Jacki
 {
 version:ruby
 version:sapphire
+version:emerald
 lunatone,43
 alakazam,43
+}
+//3
+Guitarist Fernando
+{
+version:emerald
+manectric,41
+manectric,41
+exploud,41
+}
+//4
+Psychic Cameron
+{
+version:emerald
+solrock,45
+alakazam,45
 }

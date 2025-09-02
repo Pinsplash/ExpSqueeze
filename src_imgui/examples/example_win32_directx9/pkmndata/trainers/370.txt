@@ -1,0 +1,11 @@
+//1
+PKMN Breeder Gabrielle
+{
+version:emerald
+delcatty,37
+mightyena,37
+linoone,37
+ludicolo,37
+shiftry,37
+swellow,37
+}

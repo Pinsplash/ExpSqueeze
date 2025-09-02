@@ -3,6 +3,7 @@ Tuber Lola
 {
 version:ruby
 version:sapphire
+version:emerald
 azumarill,35
 azumarill,35
 }
@@ -11,5 +12,6 @@ Tuber Ricky
 {
 version:ruby
 version:sapphire
+version:emerald
 linoone,36
 }

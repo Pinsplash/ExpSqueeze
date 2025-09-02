@@ -3,6 +3,7 @@ Hiker Trent
 {
 version:ruby
 version:sapphire
+version:emerald
 graveler,33
 graveler,33
 graveler,33

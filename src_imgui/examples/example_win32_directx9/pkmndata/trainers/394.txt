@@ -7,3 +7,11 @@ swellow,34
 vigoroth,32
 linoone,36
 }
+//2
+Youngster Calvin
+{
+version:emerald
+swellow,34
+linoone,32
+mightyena,36
+}

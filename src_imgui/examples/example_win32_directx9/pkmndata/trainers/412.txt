@@ -14,6 +14,17 @@ Bird Keeper Robert
 {
 version:ruby
 version:sapphire
+version:emerald
 altaria,41
 xatu,41
+}
+//3
+Bug Maniac Jeffrey
+{
+version:emerald
+surskit,38
+dustox,38
+surskit,38
+masquerain,38
+beautifly,38
 }

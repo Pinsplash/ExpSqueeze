@@ -3,6 +3,7 @@ PKMN Trainer Wally
 {
 version:ruby
 version:sapphire
+version:emerald
 altaria,56
 delcatty,55
 roselia,56
