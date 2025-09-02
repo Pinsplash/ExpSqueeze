@@ -172,11 +172,11 @@ checkpoint Met Wallace in Cave of Origin
 392//sky-pillar-5f
 
 checkpoint Awakened Rayquaza
-cancel 377//cave-of-origin-entrance
-cancel 378//cave-of-origin-1f
-cancel 379//cave-of-origin-b1f
-cancel 380//cave-of-origin-b2f
-cancel 381//cave-of-origin-b3f
+remove 377//cave-of-origin-entrance
+remove 378//cave-of-origin-1f
+remove 379//cave-of-origin-b1f
+remove 380//cave-of-origin-b2f
+remove 381//cave-of-origin-b3f
 
 checkpoint Obtained Rain Badge
 382 exclude rematch//hoenn-victory-road-1f
