@@ -237,6 +237,7 @@ struct EncounterTable
 {
 	int method_index = 0;
 	string placename;
+	string trainername;
 	string walkstring;
 	vector<Encounter> encounters;
 	int filenumber = 0;
@@ -488,7 +489,7 @@ static bool MilestoneIsRelevant(int subjectslot, int start, int checkpoint_curre
 	return pastownslot;
 }
 
-static bool EncounterIsAccessible(int tablenum, string method)
+static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
 {
 	bool excludebymethod = false;
 	bool foundtable = false;
@@ -501,6 +502,7 @@ static bool EncounterIsAccessible(int tablenum, string method)
 		{
 			if (foundtable && ms.type == MILESTONE_ONEWAY && MilestoneIsRelevant(Islot, 0, g_newsettings.selected_checkpoint_slot))
 			{
+				//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because oneway\n";
 				return false;
 			}
 			for (int Jslot = 0; Jslot < ms.tables.size(); Jslot++)
@@ -511,6 +513,7 @@ static bool EncounterIsAccessible(int tablenum, string method)
 					//seems odd but is necessary
 					if (ms.type == MILESTONE_ONEWAY)
 					{
+						//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " oneway special case\n";
 						return true;
 					}
 					foundtable = true;
@@ -525,6 +528,13 @@ static bool EncounterIsAccessible(int tablenum, string method)
 								if (exclude->str.find(method) != string::npos)
 								{
 									//don't return yet. there might be a later milestone that unlocks our target method.
+									excludebymethod = true;
+									thistableexcludes = true;
+								}
+								string rematchstr = "remnum:" + to_string(trainerindex);
+								if (trainerindex && exclude->str.find(rematchstr) != string::npos)
+								{
+									//don't return yet. there might be a later milestone that unlocks our target trainer.
 									excludebymethod = true;
 									thistableexcludes = true;
 								}
@@ -559,16 +569,23 @@ static bool EncounterIsAccessible(int tablenum, string method)
 		}
 	}
 	bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
+	//if (!foundtable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because didn't find table\n";
+	//if (excludebymethod) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because method excluded\n";
+	//if (!methodavailable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because method not yet available\n";
+	//if (removed) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because table removed\n";
 	return foundtable && !excludebymethod && methodavailable && !removed;
 }
 
-static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs)
+static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs, int trainerindex, string trainername)
 {
 	if (g_settings.repellevel > maxlevel && method_index != METHOD_REMATCH)
 		return;
 	
-	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname))
+	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname, trainerindex))
+	{
 		filterReason = Reason_BadProgress;
+		//cout << "table " << to_string(i) << " " << g_methods[method_index]->internalname << " trainer " << to_string(trainerindex) << " bad progress\n";
+	}
 
 	if (g_settings.maxallowedlevel < maxlevel)
 		filterReason = Reason_OverLevelCap;
@@ -581,7 +598,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 	bool makenewtable = true;
 	for (EncounterTable& table : maintables)
 	{
-		if (table.placename == placename && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+		if (table.placename == placename && table.trainername == trainername && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 		{
 			//don't lose our reason just because another encounter was ok
 			//prioritize OverLevelCap because BadType may simply be a warning
@@ -620,6 +637,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 		EncounterTable* newTable = new EncounterTable;
 		newTable->method_index = method_index;
 		newTable->placename = placename;
+		newTable->trainername = trainername;
 		newTable->walkstring = walkstring;
 		newTable->filenumber = i;
 		newTable->expectedtotalpercent = chance;
@@ -1065,7 +1083,7 @@ static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, walkstring, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs);
+	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, walkstring, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs, 0, "");
 	return true;
 }
 
@@ -1147,7 +1165,7 @@ static bool IsPokemonInEVRange(string version, string pokemonname)
 	return true;
 }
 
-static void ParseRematchDetails(string pokemonname, string level, string trainername, int version_index, int iFile)
+static void ParseRematchDetails(string pokemonname, string level, string placename, string trainername, int version_index, int iFile, int trainerindex)
 {
 	bool filterReason = Reason_None;
 	string warning = "";
@@ -1166,7 +1184,7 @@ static void ParseRematchDetails(string pokemonname, string level, string trainer
 		goodtype = IsPokemonMatchingType(g_games[version_index]->internalname, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
 	}
 	bool goodEVs = IsPokemonInEVRange(g_games[version_index]->internalname, pokemonname);
-	RegisterEncounter(100, stoi(level), stoi(level), pokemonname, trainername, "", METHOD_REMATCH, version_index, iFile, filterReason, warning, goodtype, goodEVs);
+	RegisterEncounter(100, stoi(level), stoi(level), pokemonname, placename, "", METHOD_REMATCH, version_index, iFile, filterReason, warning, goodtype, goodEVs, trainerindex, trainername);
 }
 
 static bool GameHasProgressFile(int index)
@@ -1469,7 +1487,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 	return 1;
 }
 
-static int ParseTrainerFile(int iFile)
+static int ParseTrainerFile(int iFile, string placename)
 {
 	string trainerpath = g_pkmndatapath + "trainers\\" + to_string(iFile) + ".txt";
 	struct stat filestatus;
@@ -1486,6 +1504,7 @@ static int ParseTrainerFile(int iFile)
 	vector<string> mondata;
 	ifstream ReadFile(trainerpath);
 	string textLine;
+	int trainerindex = 1;
 	while (getline(ReadFile, textLine))
 	{
 		string str1;
@@ -1509,11 +1528,11 @@ static int ParseTrainerFile(int iFile)
 					{
 						for (int j = 0; j < relevantgames.size(); j++)
 						{
-							ParseRematchDetails(mondata[i], mondata[i + 1], trainername, relevantgames[j], iFile);
+							ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, relevantgames[j], iFile, trainerindex);
 						}
 					}
 					else
-						ParseRematchDetails(mondata[i], mondata[i + 1], trainername, g_settings.wantedgame_index, iFile);
+						ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, g_settings.wantedgame_index, iFile, trainerindex);
 				}
 			}
 
@@ -1523,6 +1542,7 @@ static int ParseTrainerFile(int iFile)
 			foundtargetversion = false;
 			relevantgames.clear();
 			mondata.clear();
+			trainerindex++;
 		}
 		else if (insidetrainerblock)
 		{
@@ -1584,12 +1604,11 @@ static int ParseTrainerFile(int iFile)
 	return 1;
 }
 
-static int ParseLocationDataFile(int iFile)
+static int ParseLocationDataFile(int iFile, string *placename)
 {
 	string locationareapath = g_pkmndatapath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
 	//cout << path << "\n";
 	GameObject* game = g_games[g_settings.wantedgame_index];
-	string placename;//only one place name per file
 	FILE* fp;
 	struct stat filestatus;
 	int file_size;
@@ -1662,7 +1681,7 @@ static int ParseLocationDataFile(int iFile)
 		}
 		json_value* langname = FindValueInObjectByKey(language, "name");
 		if (isEqualString(langname->u.string.ptr, "en"))
-			placename = FindValueInObjectByKey(localname, "name")->u.string.ptr;
+			*placename = FindValueInObjectByKey(localname, "name")->u.string.ptr;
 	}
 	//walk string (not all files have one)
 	json_value* walkstringjson = FindValueInObjectByKey(file, "walk_string");
@@ -1693,7 +1712,7 @@ static int ParseLocationDataFile(int iFile)
 			assert(0);
 			return 0;
 		}
-		int result = ParseEncounterBlock(versiondetails, encounterblock, placename, walkstring, iFile, game);
+		int result = ParseEncounterBlock(versiondetails, encounterblock, *placename, walkstring, iFile, game);
 		if (result == 0)
 			return 0;
 	}
@@ -1859,9 +1878,10 @@ static void ReadTables()
 				if (g_settings.printtext) cout << "-";
 				notch++;
 			}
-			if (ParseLocationDataFile(j) == 0)
+			string placename;
+			if (ParseLocationDataFile(j, &placename) == 0)
 				return;
-			if (ParseTrainerFile(j) == 0)
+			if (ParseTrainerFile(j, placename) == 0)
 				return;
 		}
 	}
@@ -2013,7 +2033,10 @@ static void TablePostProcess()
 		}
 		if (table.method_index == METHOD_WALK && !table.walkstring.empty())
 			methodnamestring = table.walkstring;
-		table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
+		if (table.method_index == METHOD_REMATCH)
+			table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, rematch " + table.trainername + ", " + table.placename + ", " + g_games[table.version_index]->uiname;
+		else
+			table.header = to_string((int)trunc(table.averageYields[OFFSET_EXP])) + " EXP, " + table.placename + ", " + methodnamestring + ", " + g_games[table.version_index]->uiname;
 		if (!table.goodtype && requiringtype)
 			table.filterReason = Reason_NoGoodTypes;
 		if (!table.goodEVs)
