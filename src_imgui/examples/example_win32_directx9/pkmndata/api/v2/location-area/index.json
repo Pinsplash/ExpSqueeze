@@ -1488,40 +1488,8 @@
             "url": "/api/v2/location-area/440/"
         },
         {
-            "name": "hoenn-altering-cave-a",
+            "name": "hoenn-altering-cave",
             "url": "/api/v2/location-area/441/"
-        },
-        {
-            "name": "hoenn-altering-cave-b",
-            "url": "/api/v2/location-area/442/"
-        },
-        {
-            "name": "hoenn-altering-cave-c",
-            "url": "/api/v2/location-area/443/"
-        },
-        {
-            "name": "hoenn-altering-cave-d",
-            "url": "/api/v2/location-area/444/"
-        },
-        {
-            "name": "hoenn-altering-cave-e",
-            "url": "/api/v2/location-area/445/"
-        },
-        {
-            "name": "hoenn-altering-cave-f",
-            "url": "/api/v2/location-area/446/"
-        },
-        {
-            "name": "hoenn-altering-cave-g",
-            "url": "/api/v2/location-area/447/"
-        },
-        {
-            "name": "hoenn-altering-cave-h",
-            "url": "/api/v2/location-area/448/"
-        },
-        {
-            "name": "hoenn-altering-cave-i",
-            "url": "/api/v2/location-area/449/"
         },
         {
             "name": "monean-chamber-area",
@@ -1732,40 +1700,8 @@
             "url": "/api/v2/location-area/563/"
         },
         {
-            "name": "kanto-altering-cave-a",
+            "name": "kanto-altering-cave",
             "url": "/api/v2/location-area/564/"
-        },
-        {
-            "name": "kanto-altering-cave-b",
-            "url": "/api/v2/location-area/565/"
-        },
-        {
-            "name": "kanto-altering-cave-c",
-            "url": "/api/v2/location-area/566/"
-        },
-        {
-            "name": "kanto-altering-cave-d",
-            "url": "/api/v2/location-area/567/"
-        },
-        {
-            "name": "kanto-altering-cave-e",
-            "url": "/api/v2/location-area/568/"
-        },
-        {
-            "name": "kanto-altering-cave-f",
-            "url": "/api/v2/location-area/569/"
-        },
-        {
-            "name": "kanto-altering-cave-g",
-            "url": "/api/v2/location-area/570/"
-        },
-        {
-            "name": "kanto-altering-cave-h",
-            "url": "/api/v2/location-area/571/"
-        },
-        {
-            "name": "kanto-altering-cave-i",
-            "url": "/api/v2/location-area/572/"
         },
         {
             "name": "striaton-city-area",

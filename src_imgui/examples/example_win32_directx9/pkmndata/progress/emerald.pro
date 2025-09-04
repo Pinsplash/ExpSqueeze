@@ -72,6 +72,7 @@ checkpoint Defeated Team Magma at Mt. Chimney
 
 checkpoint Obtained Go-Goggles
 403//hoenn-route-111
+438//mirage-tower
 
 checkpoint Obtained Balance Badge
 unlock rematch
@@ -128,6 +129,13 @@ checkbox 7 Defeated Black Belt Zander (Mt. Pyre)
 371//mt-pyre-4f
 372//mt-pyre-5f
 373//mt-pyre-6f
+
+checkbox 8 Defeated Cooltrainer Cristin (Route 121)
+352//lilycove-city
+
+checkpoint Obtained Magma Emblem
+437//magma-hideout
+cancel 8
 
 checkpoint Defeated Cooltrainer Cristin (Route 121)
 352//lilycove-city
@@ -199,3 +207,6 @@ checkpoint Became Champion
 382//hoenn-victory-road-1f
 //league rematch
 355//ever-grande-city
+439//desert-underpass
+440//artisan-cave
+441//hoenn-altering-cave

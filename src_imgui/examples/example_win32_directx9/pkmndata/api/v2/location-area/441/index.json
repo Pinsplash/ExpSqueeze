@@ -22,21 +22,21 @@
         "name": "hoenn-altering-cave",
         "url": "/api/v2/location/490/"
     },
-    "name": "hoenn-altering-cave-a",
+    "name": "hoenn-altering-cave",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Altering Cave (A)"
+            "name": "Altering Cave"
         },
         {
             "language": {
                 "name": "fr",
                 "url": "/api/v2/language/5/"
             },
-            "name": "Grotte M\u00e9tamo (A)"
+            "name": "Grotte M\u00e9tamo"
         }
     ],
     "pokemon_encounters": [
