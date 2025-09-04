@@ -37,6 +37,7 @@
         "url": "/api/v2/location/448/"
     },
     "name": "sky-pillar-5f",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

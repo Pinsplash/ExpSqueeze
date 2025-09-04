@@ -23,6 +23,7 @@
         "url": "/api/v2/location/487/"
     },
     "name": "mirage-tower-area",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

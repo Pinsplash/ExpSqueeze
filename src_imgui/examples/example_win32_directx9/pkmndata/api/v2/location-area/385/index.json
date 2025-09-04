@@ -153,6 +153,7 @@
         "url": "/api/v2/location/445/"
     },
     "name": "shoal-cave-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

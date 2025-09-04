@@ -37,6 +37,7 @@
         "url": "/api/v2/location/437/"
     },
     "name": "granite-cave-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

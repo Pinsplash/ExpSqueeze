@@ -182,6 +182,7 @@
         "url": "/api/v2/location/459/"
     },
     "name": "hoenn-route-111-area",
+    "walk_string": "Sand",
     "names": [
         {
             "language": {

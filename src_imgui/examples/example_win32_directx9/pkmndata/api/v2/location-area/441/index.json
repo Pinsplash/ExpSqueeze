@@ -23,6 +23,7 @@
         "url": "/api/v2/location/490/"
     },
     "name": "hoenn-altering-cave",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

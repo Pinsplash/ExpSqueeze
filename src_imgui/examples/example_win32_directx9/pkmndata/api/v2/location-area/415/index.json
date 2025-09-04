@@ -153,6 +153,7 @@
         "url": "/api/v2/location/471/"
     },
     "name": "hoenn-route-123-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

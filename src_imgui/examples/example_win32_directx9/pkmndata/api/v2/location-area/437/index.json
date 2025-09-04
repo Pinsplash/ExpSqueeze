@@ -23,6 +23,7 @@
         "url": "/api/v2/location/486/"
     },
     "name": "magma-hideout-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

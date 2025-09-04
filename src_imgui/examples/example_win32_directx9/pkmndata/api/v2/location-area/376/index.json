@@ -153,6 +153,7 @@
         "url": "/api/v2/location/442/"
     },
     "name": "seafloor-cavern-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

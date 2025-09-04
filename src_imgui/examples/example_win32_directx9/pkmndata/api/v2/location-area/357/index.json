@@ -153,6 +153,7 @@
         "url": "/api/v2/location/435/"
     },
     "name": "meteor-falls-1f-back",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

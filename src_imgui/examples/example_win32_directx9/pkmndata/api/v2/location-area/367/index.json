@@ -37,6 +37,7 @@
         "url": "/api/v2/location/440/"
     },
     "name": "fiery-path-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

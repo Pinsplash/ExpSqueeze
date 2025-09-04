@@ -37,6 +37,7 @@
         "url": "/api/v2/location/443/"
     },
     "name": "cave-of-origin-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

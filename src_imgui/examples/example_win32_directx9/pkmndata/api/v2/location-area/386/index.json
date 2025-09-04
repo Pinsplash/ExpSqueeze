@@ -37,6 +37,7 @@
         "url": "/api/v2/location/445/"
     },
     "name": "shoal-cave-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

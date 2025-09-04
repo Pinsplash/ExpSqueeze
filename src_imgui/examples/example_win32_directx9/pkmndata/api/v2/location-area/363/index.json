@@ -66,6 +66,7 @@
         "url": "/api/v2/location/437/"
     },
     "name": "granite-cave-b2f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

@@ -37,6 +37,7 @@
         "url": "/api/v2/location/436/"
     },
     "name": "rusturf-tunnel-area",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

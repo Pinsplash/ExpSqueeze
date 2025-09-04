@@ -37,6 +37,7 @@
         "url": "/api/v2/location/438/"
     },
     "name": "petalburg-woods-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -1167,6 +1167,11 @@ static bool IsPokemonInEVRange(string version, string pokemonname)
 
 static void ParseRematchDetails(string pokemonname, string level, string placename, string trainername, int version_index, int iFile, int trainerindex)
 {
+	int result = 0;
+	StringFlagsContainStringFlag("rematch", g_settings.methodflags, g_methods[METHOD_REMATCH]->internalname, g_methods[METHOD_REMATCH]->flag, &result);
+	if (result != 0)
+		return;
+
 	bool filterReason = Reason_None;
 	string warning = "";
 	if (g_settings.pkmnfiltertypeflags != 0)

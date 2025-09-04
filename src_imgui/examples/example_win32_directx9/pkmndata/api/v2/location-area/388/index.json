@@ -37,6 +37,7 @@
         "url": "/api/v2/location/446/"
     },
     "name": "new-mauville-interior",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

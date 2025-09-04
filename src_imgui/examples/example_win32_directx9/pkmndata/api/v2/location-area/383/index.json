@@ -66,6 +66,7 @@
         "url": "/api/v2/location/444/"
     },
     "name": "hoenn-victory-road-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {
