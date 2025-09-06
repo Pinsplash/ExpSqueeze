@@ -117,14 +117,14 @@
         "name": "icefall-cave",
         "url": "/api/v2/location/502/"
     },
-    "name": "icefall-cave-waterfall",
+    "name": "icefall-cave-back-cave",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Icefall Cave (waterfall)"
+            "name": "Icefall Cave (back cave)"
         },
         {
             "language": {

@@ -51,14 +51,14 @@
         "name": "mt-ember",
         "url": "/api/v2/location/500/"
     },
-    "name": "mt-ember-inside",
+    "name": "mt-ember-summit-path-2",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Ember (inside)"
+            "name": "Mount Ember (Summit path room 2)"
         },
         {
             "language": {

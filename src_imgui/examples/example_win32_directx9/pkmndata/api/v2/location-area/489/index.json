@@ -29,14 +29,14 @@
         "name": "mt-ember",
         "url": "/api/v2/location/500/"
     },
-    "name": "mt-ember-cave",
+    "name": "mt-ember-summit-path-1-3",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Ember (cave)"
+            "name": "Mount Ember (Summit path rooms 1 and 3)"
         },
         {
             "language": {

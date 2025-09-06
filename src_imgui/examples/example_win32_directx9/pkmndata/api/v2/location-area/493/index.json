@@ -51,14 +51,14 @@
         "name": "mt-ember",
         "url": "/api/v2/location/500/"
     },
-    "name": "mt-ember-b2f",
+    "name": "mt-ember-ruby-path-b2f-b4f",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Ember (B2F)"
+            "name": "Mount Ember (Ruby path B2F and B4F)"
         },
         {
             "language": {

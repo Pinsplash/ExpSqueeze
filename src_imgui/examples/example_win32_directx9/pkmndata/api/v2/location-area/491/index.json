@@ -51,14 +51,14 @@
         "name": "mt-ember",
         "url": "/api/v2/location/500/"
     },
-    "name": "mt-ember-1f-cave-behind-team-rocket",
+    "name": "mt-ember-ruby-path-1f",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Ember (1F, cave behind team rocket)"
+            "name": "Mount Ember (Ruby path 1F)"
         },
         {
             "language": {

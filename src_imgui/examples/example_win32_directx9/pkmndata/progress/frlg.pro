@@ -1,17 +1,9 @@
-//game progress description file
-//this file details which encounter tables are available at what point in the game
-
-//checkpoints go in the main list of milestones. if the user selects a milestone, every table above it is allowed, and so is every table below until the next checkpoint.
-
-//after the first rival battle in oak's lab
+//game progress description file. see gen1.pro for explanations of most features.
 checkpoint Battled Rival for the first time
-
-//we start off being able to find pokemon in grass and dungeons
-//this allows "walk" encounters
 unlock walk
 
 //these places are reachable at the start of the game
-285//pallet-town (note that pallet town's only wild pokemon are in the water to the south. those tables are not actually allowed until we unlock the rods.)
+285//pallet-town
 295//kanto-route-1
 280//viridian-city
 313//kanto-route-22
@@ -20,18 +12,16 @@ checkpoint Delivered Oak's Parcel
 296//kanto-route-2-south-towards-viridian-city
 321//viridian-forest
 
-checkpoint Defeated Viridian Forest Trainers
+checkpoint Defeated Bug Catcher Sammy (Viridian Forest)
 320//kanto-route-2-north-towards-pewter-city
 //no wild pokemon in pewter city
 
-checkpoint Defeated 3rd Bug Catcher on Route 3
+checkpoint Defeated Bug Catcher James (Route 3)
 297//kanto-route-3
 290//mt-moon-1f
 326//mt-moon-b1f
 327//mt-moon-b2f
 
-//a one-way is a checkpoint which is a point of no return. in this case, once you cross over the ledge at the end of route 4, you can't go back to mt moon or anywhere before then until you can reach back to route 2 via diglett cave AND cut a tree.
-//1st number: identifier for this one-way so that later we can cancel it when the conditions mentioned above are met.
 oneway 1 Crossed over final ledge on Route 4
 298//kanto-route-4
 281//cerulean-city
@@ -46,54 +36,47 @@ checkpoint Defeated TM thief
 299//kanto-route-5
 300//kanto-route-6
 
-checkpoint Defeated last Jr. Trainer M on Route 6
+checkpoint Defeated Camper Jeff (Route 6)
 282//vermilion-city
 unlock old-rod
 349//vermilion-city-port
 305//kanto-route-11
 317//digletts-cave
 
-//a checkbox is a milestone that is not in the main list, but rather shows up as a checkbox. checkboxes only appear if the selected checkpoint is the one directly above them, or any checkpoint lower down.
-//also uses an identifier number like one-ways do
-
 checkbox 2 S.S. Anne departed
-//remove means... you can guess i think
 remove 349//vermilion-city-port
 
 checkbox 6 Obtained ability to use Cut
-//this cancels the oneway defined earlier with the id 1
 //if you get the cascade badge first, you technically have the ability to use Cut immediately after getting the HM, so don't remove the dock
 cancel 1
 
-checkbox 5 Defeated 1st Bug Catcher on Route 9
+checkpoint Defeated Picnicker Alicia (Route 9)
 //we clearly have cut by now, so we can go back to places before the route 4 one-way
 cancel 1
-remove 349//vermilion-city-port
-303//kanto-route-9
-
-checkpoint Defeated 2nd Bug Catcher on Route 9
-//we clearly have cut by now, so we can go back to places before the route 4 one-way
-cancel 1
-//1st bug catcher is irrelevant now because there's another patch of grass
-cancel 5
-//we clearly have cut by now
 cancel 6
 //ss anne is clearly gone by now
 cancel 2
 remove 349//vermilion-city-port
+
+checkbox 5 Defeated Bug Catcher Brent (Route 9)
 303//kanto-route-9
+
+checkbox 12 Defeated Camper Drew (Route 9)
+303//kanto-route-9
+
+checkpoint Bug Catcher Conner (Route 9)
 304//kanto-route-10
 292//rock-tunnel-1f
 
-checkpoint Defeated 1st Pokemaniac in Rock Tunnel
+checkpoint Defeated Pokemaniac Ashton (Rock Tunnel)
 293//rock-tunnel-b1f
 
-checkpoint Defeated last Jr. Trainer F in Rock Tunnel
+checkpoint Defeated Picnicker Dana (Rock Tunnel)
 //no wild pokemon in lavender town or first two floors of pokemon tower
 //here we exclude the walk table, because the grass isn't accessible until later
 276 exclude walk//kanto-route-12
 
-checkbox 10 Defeated 1st Gambler or Lass on Route 8
+checkbox 10 Defeated Gamer Rich or Lass Julia (Route 8)
 //east approach
 302//kanto-route-8 (no grass until after this checkpoint)
 301//kanto-route-7
@@ -107,61 +90,35 @@ checkbox 9 Obtained Rainbow Badge
 checkpoint Defeated Rival in Pokemon Tower
 336//pokemon-tower-3f
 337//pokemon-tower-4f
-
-checkpoint Defeated 1st Channeler on Pokemon Tower 4F
 338//pokemon-tower-5f
+
+checkpoint Defeated Channeler Tammy on Pokemon Tower 5F
 339//pokemon-tower-6f
 
 checkpoint Defeated Marowak
 340//pokemon-tower-7f
 
-//this checkpoint is only to facilitate showing checkboxes at the right time
 checkpoint Woke Snorlax
 //after you get the poke flute, you have two paths to fuchsia:
 //route 12 to 15 in the east, or
 //the cycling road in the west
-
-checkbox 7 Defeated Rocker on Route 12
+//the only requirement for either way is obtaining the bike for cycling road
+//no mandatory trainers at all
 unlock super-rod
-
-checkbox 8 Defeated Jr. Trainer M on Route 12
-//east approach
-//now we can reach the grass on this route
+//grass now reachable
 276//kanto-route-12
-306 exclude walk//kanto-route-13
-//west approach
-unlock super-rod
-
-checkbox 3 Defeated Jr. Trainer F on Route 13
-//east approach
 306//kanto-route-13
+//bikers are avoidable
 307//kanto-route-14
 308//kanto-route-15
 311 exclude surf,old-rod,good-rod,super-rod//kanto-route-18
-//west approach
-276//kanto-route-12
-//either way once you hit fuchsia
 284//fuchsia-city
 unlock good-rod
 277//kanto-sea-route-19
 
-//critical to remember this is "obtained bike AND woke snorlax"
 checkbox 4 Obtained Bicycle
-//either way
 310//kanto-route-17
-//west approach
 311//kanto-route-18
-308//kanto-route-15
-307//kanto-route-14
-306//kanto-route-13
-284//fuchsia-city
-unlock good-rod
-277//kanto-sea-route-19
-//east approach
-309//kanto-route-16
-283//celadon-city
-301//kanto-route-7
-302//kanto-route-8
 
 checkpoint Obtained ability to use Surf
 //cancel several boxes because this checkpoint means we reached Fuchsia and all of those places are now reachable while avoiding any battles
@@ -169,7 +126,7 @@ checkpoint Obtained ability to use Surf
 cancel 3
 cancel 7
 cancel 8
-cancel 4//see checkbox below
+cancel 4//explained this in gen1.pro
 //put their contents here too
 276//kanto-route-12
 unlock super-rod
@@ -196,27 +153,39 @@ unlock surf
 312//kanto-sea-route-21
 330//power-plant
 
-//"Obtained ability to use Surf" doesn't carry context about HOW you reach Fuchsia, so we can't unlock all encounters for route 18, because the water is past the cycling road gate. if "Obtained ability to use Surf" is selected and "Obtained Bicycle" is not, route 18 water again becomes unreachable in parser's eyes.
-//therefore we make a clone of "Obtained Bicycle" so we have another, later, full unlock
-checkbox 12 Obtained Bicycle
-//either way
+//explained this in gen1.pro
+checkbox 13 Obtained Bicycle
 310//kanto-route-17
-//west approach
 311//kanto-route-18
-308//kanto-route-15
-307//kanto-route-14
-306//kanto-route-13
-284//fuchsia-city
-unlock good-rod
-277//kanto-sea-route-19
-//east approach
-309//kanto-route-16
-283//celadon-city
-301//kanto-route-7
-302//kanto-route-8
 
 checkbox 11 Obtained Marsh Badge and haven't defeated Giovanni
 329//kanto-route-23
+
+checkbox 14 Traveled to Sevii Islands
+561//one-island
+512//kindle-road
+513//treasure-beach
+
+checkbox 15 Obtained ability to use Rock Smash
+unlock rock-smash
+
+checkbox 16 Obtained ability to use Strength
+488//mt-ember
+
+checkbox 17 Defeated PKMN Ranger Logan (Mt. Ember)
+489//mt-ember-summit-path-1-3
+490//mt-ember-summit-path-2
+825//mt-ember-summit
+
+checkbox 18 Obtained Tri-pass
+514//cape-brink
+
+checkbox 19 Defeated Bikers on Three Island
+515 exclude surf,old-rod,good-rod,super-rod//bond-bridge
+
+checkbox 20 Defeated Aroma Lady Violet (Bond Bridge)
+515//bond-bridge
+495//berry-forest
 
 checkpoint Defeated Rival on Route 22 (2nd battle)
 //battle only possible when all badges are collected
@@ -229,10 +198,68 @@ checkpoint Obtained Strength HM
 318//kanto-victory-road-2f
 319//kanto-victory-road-3f
 
-checkpoint Defeated last trainer in Victory Road
-345//loreleis-room
+checkpoint Obtained National Pokedex
+561//one-island
+512//kindle-road
+513//treasure-beach
+488//mt-ember
+489//mt-ember-summit-path-1-3
+490//mt-ember-summit-path-2
+825//mt-ember-summit
+514//cape-brink
+515//bond-bridge
+495//berry-forest
+516//three-isle-port
 
-checkpoint Became Champion
+checkpoint Defeated Rocket Grunts on Mt. Ember
+491//mt-ember-ruby-path-1f
+492//mt-ember-ruby-path-b1f-b5f
+493//mt-ember-ruby-path-b2f-b4f
+494//mt-ember-ruby-path-b3f
+//clearly traveled to sevii islands
+cancel 14
+561//one-island
+512//kindle-road
+513//treasure-beach
+//clearly got strength badge and hm in order to go through victory road
+cancel 16
+488//mt-ember
+
+checkpoint Obtained Rainbow Pass
+562//four-island
+496//icefall-cave-entrance
+497//icefall-cave-1f
+498//icefall-cave-b1f
+563//five-island
+519//five-isle-meadow
+520//memorial-pillar
+518//water-labyrinth
+517//resort-gorgeous
+501//lost-cave-main-rooms
+511//lost-cave-item-rooms
+523//water-path
+500//pattern-bush
+522//green-path
+521//outcast-island
+441//altering-cave
+525//trainer-tower
+526//canyon-entrance
+527//sevault-canyon
+528//tanoby-ruins
+//must have tri-pass to obtain rainbow pass
+cancel 18
+514//cape-brink
+
+checkbox 21 Obtained ability to use Waterfall
+499//icefall-cave-back-cave
+
+checkbox 22 Defeated Hiker Earl (Water Path)
+524//ruin-valley
+
+checkbox 23 Solved Tanoby Key puzzle
+450//tanoby-chambers
+
+checkpoint Saved Lostelle and Delivered the Ruby and Sapphire to Celio
 323//cerulean-cave-1f
 324//cerulean-cave-2f
 325//cerulean-cave-b1f
