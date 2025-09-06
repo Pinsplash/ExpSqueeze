@@ -52,6 +52,7 @@
         "url": "/api/v2/location/500/"
     },
     "name": "mt-ember-summit-path-2",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

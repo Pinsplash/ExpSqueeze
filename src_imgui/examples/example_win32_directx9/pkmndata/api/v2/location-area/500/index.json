@@ -30,6 +30,7 @@
         "url": "/api/v2/location/503/"
     },
     "name": "pattern-bush-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -30,6 +30,7 @@
         "url": "/api/v2/location/504/"
     },
     "name": "lost-cave-item-rooms",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

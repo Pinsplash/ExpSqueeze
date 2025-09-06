@@ -30,6 +30,7 @@
         "url": "/api/v2/location/491/"
     },
     "name": "tanoby-chambers",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

@@ -118,6 +118,7 @@
         "url": "/api/v2/location/501/"
     },
     "name": "berry-forest-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

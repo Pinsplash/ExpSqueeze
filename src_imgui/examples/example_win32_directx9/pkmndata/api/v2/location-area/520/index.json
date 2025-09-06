@@ -118,6 +118,7 @@
         "url": "/api/v2/location/513/"
     },
     "name": "memorial-pillar-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

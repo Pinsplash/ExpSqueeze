@@ -118,6 +118,7 @@
         "url": "/api/v2/location/516/"
     },
     "name": "water-path-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

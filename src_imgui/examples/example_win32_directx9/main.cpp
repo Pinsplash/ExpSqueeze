@@ -3351,7 +3351,7 @@ static void RegisterGames()
 	//g3
 	RegisterGame("Ruby", "ruby", "gen3_exp.csv", "ruby.pro", 3, { 350, 434 });
 	RegisterGame("Sapphire", "sapphire", "gen3_exp.csv", "sapphire.pro", 3, { 350, 434 });
-	RegisterGame("Emerald", "emerald", "gen3_exp.csv", "emerald.pro", 3, { 350, 449 });
+	RegisterGame("Emerald", "emerald", "gen3_exp.csv", "emerald.pro", 3, { 350, 441 });
 	RegisterGame("FireRed", "firered", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
 	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
 	//g4

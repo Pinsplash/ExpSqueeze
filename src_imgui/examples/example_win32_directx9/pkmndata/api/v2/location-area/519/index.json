@@ -118,6 +118,7 @@
         "url": "/api/v2/location/512/"
     },
     "name": "five-isle-meadow-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

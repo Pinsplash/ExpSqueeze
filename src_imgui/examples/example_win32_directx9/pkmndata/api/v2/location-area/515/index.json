@@ -118,6 +118,7 @@
         "url": "/api/v2/location/508/"
     },
     "name": "bond-bridge-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

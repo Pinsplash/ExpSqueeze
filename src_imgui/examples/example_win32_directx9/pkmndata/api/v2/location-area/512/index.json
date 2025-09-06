@@ -140,6 +140,7 @@
         "url": "/api/v2/location/505/"
     },
     "name": "kindle-road-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -52,6 +52,7 @@
         "url": "/api/v2/location/500/"
     },
     "name": "mt-ember-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

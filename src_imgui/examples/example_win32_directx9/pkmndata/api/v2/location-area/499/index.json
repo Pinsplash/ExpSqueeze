@@ -118,6 +118,7 @@
         "url": "/api/v2/location/502/"
     },
     "name": "icefall-cave-back-cave",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

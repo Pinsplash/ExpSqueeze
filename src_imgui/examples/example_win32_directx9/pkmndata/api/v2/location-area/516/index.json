@@ -30,6 +30,7 @@
         "url": "/api/v2/location/509/"
     },
     "name": "three-isle-port-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {
