@@ -294,6 +294,23 @@ struct Milestone
 	bool userselected = false;
 };
 
+struct Party
+{
+	string code_name;
+	int map_num = 0;
+	//what point in the game the new team appears at
+	//0 = not a trainer that changes teams
+	//1 = original team
+	//2 = obtained vs seeker
+	//3 = reached celadon city
+	//4 = reached fuchsia city
+	//5 = became champion
+	//6 = gave sapphire to celio
+	//none of these are possible to do out of order (except obtaining the vs seeker which is itself optional, but that's irrelevant)
+	int progress_indicator = 0;
+	vector<string> mondata;
+};
+
 vector<MethodObject*> g_methods;
 vector<EncounterTable> maintables;
 vector<Milestone> g_milestones;
@@ -1726,6 +1743,11 @@ static int ParseLocationDataFile(int iFile, string *placename)
 	return 1;
 }
 
+static bool compareByPartyMap(const Party a, const Party b)
+{
+	return a.map_num > b.map_num;
+}
+
 static bool compareByExp(const EncounterTable a, const EncounterTable b)
 {
 	//cout << a.averageYields[OFFSET_EXP] << " > " << b.averageYields[OFFSET_EXP] << "\n";
@@ -2842,6 +2864,191 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				WriteFile.close();
 				ReadFile.close();
 			}
+		}
+		if (ImGui::Button("Make FRLG Trainer Data"))
+		{
+			vector<Party> parties;
+			//trainers that use new teams when rematched
+			for (int i = 1; i <= 6; i++)
+			{
+				string rematchpath = g_pkmndatapath + "frlgtrainerdata/rematch" + to_string(i) + ".csv";
+				struct stat filestatus;
+				if (stat(rematchpath.c_str(), &filestatus) != 0)
+				{
+					cout << "missing " << to_string(i) << "\n";
+					break;
+				}
+				ifstream ReadFile(rematchpath);
+				string textLine;
+				while (getline(ReadFile, textLine))
+				{
+					string str1;
+					StripComment(textLine, &str1);
+
+					if (str1.empty())
+						continue;
+
+					size_t nameEnd = textLine.find(',');
+					string partyName = textLine.substr(0, nameEnd);
+					string mapName = textLine.substr(nameEnd + 1);
+					//cout << "party " << partyName << " on map " << mapName << "\n";
+					Party newParty;
+					newParty.code_name = partyName;
+					newParty.map_num = stoi(mapName);
+					newParty.progress_indicator = i;
+					parties.push_back(newParty);
+				}
+				ReadFile.close();
+			}
+			//all overworld trainers
+			string rematchpath = g_pkmndatapath + "frlgtrainerdata/overworld_party_names.txt";
+			struct stat filestatus;
+			if (stat(rematchpath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing overworld_party_names.txt\n";
+			}
+			else
+			{
+				ifstream ReadFile(rematchpath);
+				string textLine;
+				string mapName;
+				while (getline(ReadFile, textLine))
+				{
+					string str1;
+					StripComment(textLine, &str1);
+
+					if (str1.empty())
+						continue;
+
+					//check if string is a number
+					if (strspn(str1.c_str(), "0123456789") == str1.size())
+					{
+						mapName = str1;
+					}
+					else if (!mapName.empty())
+					{
+						string partyName = str1;
+						//cout << "party " << partyName << " on map " << mapName << "\n";
+						//don't duplicate
+						bool foundDupe = false;
+						for (Party party : parties)
+						{
+							if (party.code_name == partyName)
+							{
+								foundDupe = true;
+								break;
+							}
+						}
+						if (foundDupe)
+						{
+							continue;
+						}
+						else
+						{
+							Party newParty;
+							newParty.code_name = partyName;
+							newParty.map_num = stoi(mapName);
+							newParty.progress_indicator = 0;
+							parties.push_back(newParty);
+						}
+					}
+					else
+					{
+						cout << "Got party name, but no mapname: '" << textLine << "'\n";
+						break;
+					}
+
+				}
+				ReadFile.close();
+			}
+			//find pokemon in teams from combined list
+			string partypath = g_pkmndatapath + "frlgtrainerdata/party_defs.txt";
+			if (stat(partypath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing overworld_party_names.txt\n";
+			}
+			else
+			{
+				for (Party& party : parties)
+				{
+					ifstream ReadFile(partypath);
+					string textLine;
+					bool reachedParty = false;
+					string level;
+					string mon;
+					while (getline(ReadFile, textLine))
+					{
+						string str1;
+						StripComment(textLine, &str1);
+
+						if (str1.empty())
+							continue;
+
+						if (reachedParty)
+						{
+							if (strspn(str1.c_str(), "0123456789") == str1.size() && level.empty())
+							{
+								level = str1;
+								mon.clear();
+							}
+							else if (mon.empty())
+							{
+								mon = str1;
+								std::transform(mon.begin(), mon.end(), mon.begin(), [](unsigned char c) { return std::tolower(c); });
+								std::replace(mon.begin(), mon.end(), '_', '-');
+								party.mondata.push_back(mon + "," + level);
+								//cout << mon << "," << level << "\n";
+								assert(party.mondata.size() <= 6);
+								level.clear();
+							}
+							//signifies end of team data block
+							else if (str1 == "};")
+							{
+								break;
+							}
+							else
+							{
+								cout << "Didn't know what to do with data: '" << textLine << "'\n";
+								break;
+							}
+						}
+						else if (str1 == party.code_name)
+						{
+							reachedParty = true;
+						}
+					}
+					ReadFile.close();
+				}
+			}
+			//sort parties by map number
+			std::sort(parties.begin(), parties.end(), compareByPartyMap);
+			//write to files
+			int placeinfile = 1;
+			int lastmapnum = 0;
+			ofstream WriteFile;
+			for (int iParty = 0; iParty < parties.size(); iParty++)
+			{
+				Party p = parties[iParty];
+				if (lastmapnum != p.map_num)
+				{
+					placeinfile = 1;
+					WriteFile.close();
+					string dest = g_pkmndatapath + "frlgtrainerdata/output/" + to_string(p.map_num) + ".txt";
+					WriteFile.open(dest);
+				}
+				WriteFile << "//" << to_string(placeinfile) << "\n";
+				WriteFile << p.code_name << "\n";
+				WriteFile << "{\n";
+				WriteFile << "version:firered\n";
+				WriteFile << "version:leafgreen\n";
+				for (int iData = 0; iData < p.mondata.size(); iData++)
+					WriteFile << p.mondata[iData] << "\n";
+				WriteFile << "}\n";
+				//keep at bottom of loop
+				lastmapnum = p.map_num;
+				placeinfile++;
+			}
+			WriteFile.close();
 		}
 #endif
 	}
