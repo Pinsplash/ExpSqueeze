@@ -168,20 +168,23 @@ enum MilestoneType
 };
 
 //offsets for bulba's yield tables and EncounterTable's averageYields vector
-#define OFFSET_HP 0
-#define OFFSET_ATTACK 1
-#define OFFSET_DEFENSE 2
-#define OFFSET_SP_ATTACK 3//gen 1 special stat goes in both spa and spd
-#define OFFSET_SP_DEFENSE 4//gen 1 special stat goes in both spa and spd
-#define OFFSET_SPEED 5
-#define OFFSET_TOTAL 6
-#define OFFSET_EXP 7
-#define OFFSET_BEY 8
+enum StatOffset
+{
+	OFFSET_HP,
+	OFFSET_ATTACK,
+	OFFSET_DEFENSE,
+	OFFSET_SP_ATTACK,//gen 1 special stat goes in both spa and spd
+	OFFSET_SP_DEFENSE,//gen 1 special stat goes in both spa and spd
+	OFFSET_SPEED,
+	OFFSET_TOTAL,
+	OFFSET_EXP,
+	OFFSET_BEY
+};
 
-#define GENERATION_ALL 0
+constexpr int GENERATION_ALL = 0;
 
-#define PROGRESSPOINT_DONTCHECK 0
-#define TRAINERINDEX_NOTATRAINER 0
+constexpr int PROGRESSPOINT_DONTCHECK = 0;
+constexpr int TRAINERINDEX_NOTATRAINER = 0;
 
 struct Settings
 {
@@ -270,8 +273,6 @@ struct GameObject
 	vector<int> folderRanges;
 };
 
-vector<GameObject*> g_games;
-
 struct MethodObject
 {
 	string uiname;
@@ -316,6 +317,7 @@ struct Party
 	vector<string> mondata;
 };
 
+vector<GameObject*> g_games;
 vector<MethodObject*> g_methods;
 vector<EncounterTable> maintables;
 vector<Milestone> g_milestones;
@@ -1959,7 +1961,8 @@ static void ReadTables()
 		if (table.filterReason == Reason_None || table.filterReason == Reason_BadType)
 		{
 			if (g_settings.printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
-			table.averageYields[OFFSET_EXP - 1] = 0;
+			int slot = OFFSET_EXP - 1;
+			table.averageYields[slot] = 0;
 			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
 
 			bool specialswarm = false;
@@ -2022,7 +2025,7 @@ static void ReadTables()
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
 			bool errorfound = false;
-			if ((g_settings.repellevel == 0 && g_settings.maxallowedlevel == 100) && table.totalchance != (extrachance + 100))
+			if ((g_settings.repellevel == 0 && g_settings.maxallowedlevel == 100) && table.totalchance != ((__int64)extrachance + 100))
 				errorfound = true;
 			//this check was to find tables that were being deleted incorrectly. now that we don't delete tables for this purpose, this appears to be pointless, but testing is needed.
 			else if (table.totalchance != table.expectedtotalpercent + extrachance)
@@ -2419,7 +2422,6 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		//main milestone list
 		float w = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.y);
 		ImGui::SetNextItemWidth(w);
-		static int selected_checkpoint_slot = 0;
 		if (ImGui::BeginListBox("##"))
 		{
 			for (int slot = 0; slot < g_milestones.size(); slot++)
@@ -2442,8 +2444,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 									if (ms.name == ms2.name)
 									{
 										pastmyself = true;
-										selected_checkpoint_slot = slot;
-										g_newsettings.selected_checkpoint_slot = selected_checkpoint_slot;
+										g_newsettings.selected_checkpoint_slot = slot;
 									}
 								}
 							}
@@ -2470,7 +2471,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			//running check is because we don't want the user to change settings during iteration
 			if (!g_settingswindowdata.running && ms.type == MILESTONE_CHECKBOX)
 			{
-				if (MilestoneIsRelevant(slot, 0, selected_checkpoint_slot))
+				if (MilestoneIsRelevant(slot, 0, g_newsettings.selected_checkpoint_slot))
 				{
 					ImGui::Checkbox(ms.name.c_str(), &checked[ms.id]);
 					ms.userselected = checked[ms.id];
@@ -3263,7 +3264,6 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 			static const char* emptylabels[] = { "", "", "", "", "", "", "" };
 			int gen = g_games[table.version_index]->generation;
 			double graphmax = ceil(table.averageYields[OFFSET_TOTAL]);
-			int ticks = gen >= 3 ? 16 : 13;
 			ImPlot::PushColormap(gen == 1 ? ImPlotColormap_PKMNstatsGen1 : ImPlotColormap_PKMNstats);
 			if (ImPlot::BeginPlot("##xxAverage EV yields", ImVec2(-1, 0), ImPlotFlags_NoInputs))
 			{
@@ -3288,7 +3288,7 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 }
 
 //progress file describes how areas unlock with game progress. see yellow.pro for an explanation of most features.
-void ParseProgressFile(int game_index)
+static void ParseProgressFile(int game_index)
 {
 	g_milestones.clear();
 	g_checkpointnames.clear();
@@ -3508,6 +3508,7 @@ static void UIMainWindow()
 	{
 		if (GameHasProgressFile(g_newsettings.wantedgame_index))
 			ParseProgressFile(g_newsettings.wantedgame_index);
+		g_newsettings.selected_checkpoint_slot = 0;
 	}
 	
 	UIMiscSettings(game, allgames, rse, dpp, hgss);
