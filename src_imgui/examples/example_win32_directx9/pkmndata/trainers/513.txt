@@ -1,5 +1,5 @@
 //1
-sParty_SwimmerFemaleAmara
+Swimmer Amara
 {
 version:firered
 version:leafgreen

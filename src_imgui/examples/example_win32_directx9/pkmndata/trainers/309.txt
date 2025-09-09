@@ -1,5 +1,5 @@
 //1
-sParty_CueBallLuke
+Cue Ball Luke
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ mankey,29
 machop,29
 }
 //2
-sParty_BikerRuben2
+Biker Ruben
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ weezing,48
 weezing,48
 }
 //3
-sParty_CueBallCamron2
+Cue Ball Camron
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ primeape,49
 machoke,49
 }
 //4
-sParty_YoungCoupleLeaJed
+Young Couple Lea & Jed
 {
 version:firered
 version:leafgreen
@@ -34,7 +34,7 @@ rapidash,29
 ninetales,29
 }
 //5
-sParty_CueBallCamron
+Cue Ball Camron
 {
 version:firered
 version:leafgreen
@@ -42,14 +42,14 @@ mankey,29
 machop,29
 }
 //6
-sParty_BikerHideo
+Biker Hideo
 {
 version:firered
 version:leafgreen
 weezing,33
 }
 //7
-sParty_BikerRuben
+Biker Ruben
 {
 version:firered
 version:leafgreen
@@ -58,7 +58,7 @@ koffing,28
 weezing,28
 }
 //8
-sParty_CueBallKoji
+Cue Ball Koji
 {
 version:firered
 version:leafgreen
@@ -67,7 +67,7 @@ mankey,28
 machop,28
 }
 //9
-sParty_BikerLao
+Biker Lao
 {
 version:firered
 version:leafgreen

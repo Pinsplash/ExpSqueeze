@@ -1,5 +1,5 @@
 //1
-sParty_LassJanice2
+Lass Janice
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ pidgeotto,20
 pidgeotto,20
 }
 //2
-sParty_BugCatcherColton3
+Bug Catcher Colton
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ kakuna,27
 butterfree,27
 }
 //3
-sParty_BugCatcherColton2
+Bug Catcher Colton
 {
 version:firered
 version:leafgreen
@@ -28,7 +28,7 @@ weedle,19
 metapod,19
 }
 //4
-sParty_YoungsterBen
+Youngster Ben
 {
 version:firered
 version:leafgreen
@@ -36,7 +36,7 @@ rattata,11
 ekans,11
 }
 //5
-sParty_BugCatcherColton
+Bug Catcher Colton
 {
 version:firered
 version:leafgreen
@@ -45,7 +45,7 @@ weedle,10
 caterpie,10
 }
 //6
-sParty_LassJanice
+Lass Janice
 {
 version:firered
 version:leafgreen
@@ -53,14 +53,14 @@ pidgey,9
 pidgey,9
 }
 //7
-sParty_YoungsterCalvin
+Youngster Calvin
 {
 version:firered
 version:leafgreen
 spearow,14
 }
 //8
-sParty_BugCatcherGreg
+Bug Catcher Greg
 {
 version:firered
 version:leafgreen
@@ -70,7 +70,7 @@ caterpie,9
 metapod,9
 }
 //9
-sParty_LassSally
+Lass Sally
 {
 version:firered
 version:leafgreen
@@ -78,7 +78,7 @@ rattata,10
 nidoran-f,10
 }
 //10
-sParty_BugCatcherJames
+Bug Catcher James
 {
 version:firered
 version:leafgreen
@@ -86,14 +86,14 @@ caterpie,11
 metapod,11
 }
 //11
-sParty_LassRobin
+Lass Robin
 {
 version:firered
 version:leafgreen
 jigglypuff,14
 }
 //12
-sParty_LassJanice3
+Lass Janice
 {
 version:firered
 version:leafgreen
@@ -102,7 +102,7 @@ pidgeotto,28
 pidgeotto,28
 }
 //13
-sParty_YoungsterBen2
+Youngster Ben
 {
 version:firered
 version:leafgreen
@@ -111,7 +111,7 @@ rattata,17
 ekans,17
 }
 //14
-sParty_BugCatcherColton4
+Bug Catcher Colton
 {
 version:firered
 version:leafgreen
@@ -121,7 +121,7 @@ beedrill,54
 butterfree,51
 }
 //15
-sParty_YoungsterBen3
+Youngster Ben
 {
 version:firered
 version:leafgreen
@@ -130,7 +130,7 @@ raticate,28
 ekans,28
 }
 //16
-sParty_YoungsterBen4
+Youngster Ben
 {
 version:firered
 version:leafgreen

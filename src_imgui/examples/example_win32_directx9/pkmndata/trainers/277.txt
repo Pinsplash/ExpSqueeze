@@ -1,5 +1,5 @@
 //1
-sParty_SwimmerMaleRichard
+Swimmer Richard
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ tentacool,30
 shellder,30
 }
 //2
-sParty_SwimmerMaleReece
+Swimmer Reece
 {
 version:firered
 version:leafgreen
@@ -16,7 +16,7 @@ horsea,29
 staryu,29
 }
 //3
-sParty_SwimmerFemaleAnya
+Swimmer Anya
 {
 version:firered
 version:leafgreen
@@ -27,7 +27,7 @@ goldeen,27
 poliwag,27
 }
 //4
-sParty_SwimmerFemaleConnie
+Swimmer Connie
 {
 version:firered
 version:leafgreen
@@ -36,7 +36,7 @@ staryu,29
 staryu,29
 }
 //5
-sParty_SisAndBroLiaLuc
+Sis And Bro Lia & Luc
 {
 version:firered
 version:leafgreen
@@ -44,7 +44,7 @@ goldeen,30
 seaking,30
 }
 //6
-sParty_SwimmerMaleAxle
+Swimmer Axle
 {
 version:firered
 version:leafgreen
@@ -55,7 +55,7 @@ horsea,27
 tentacruel,27
 }
 //7
-sParty_SwimmerMaleDavid
+Swimmer David
 {
 version:firered
 version:leafgreen
@@ -64,7 +64,7 @@ shellder,29
 seaking,29
 }
 //8
-sParty_SwimmerFemaleAlice
+Swimmer Alice
 {
 version:firered
 version:leafgreen
@@ -72,7 +72,7 @@ goldeen,30
 seaking,30
 }
 //9
-sParty_SwimmerMaleDouglas
+Swimmer Douglas
 {
 version:firered
 version:leafgreen
@@ -82,7 +82,7 @@ tentacool,27
 goldeen,27
 }
 //10
-sParty_SwimmerMaleTony
+Swimmer Tony
 {
 version:firered
 version:leafgreen
@@ -90,7 +90,7 @@ horsea,30
 horsea,30
 }
 //11
-sParty_SwimmerFemaleAlice2
+Swimmer Alice
 {
 version:firered
 version:leafgreen
@@ -99,7 +99,7 @@ seaking,49
 seaking,49
 }
 //12
-sParty_SwimmerMaleTony2
+Swimmer Tony
 {
 version:firered
 version:leafgreen
@@ -108,7 +108,7 @@ seadra,49
 seadra,49
 }
 //13
-sParty_SwimmerMaleMatthew2
+Swimmer Matthew
 {
 version:firered
 version:leafgreen
@@ -117,7 +117,7 @@ poliwhirl,49
 poliwrath,49
 }
 //14
-sParty_SwimmerMaleMatthew
+Swimmer Matthew
 {
 version:firered
 version:leafgreen

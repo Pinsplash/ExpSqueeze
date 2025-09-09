@@ -1,5 +1,5 @@
 //1
-sParty_BikerIsaac
+Biker Isaac
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ grimer,28
 koffing,28
 }
 //2
-sParty_BikerMalik
+Biker Malik
 {
 version:firered
 version:leafgreen
@@ -16,14 +16,14 @@ koffing,29
 grimer,29
 }
 //3
-sParty_BirdKeeperDonald
+Bird Keeper Donald
 {
 version:firered
 version:leafgreen
 farfetchd,33
 }
 //4
-sParty_BirdKeeperBeck
+Bird Keeper Beck
 {
 version:firered
 version:leafgreen
@@ -31,7 +31,7 @@ pidgeotto,29
 fearow,29
 }
 //5
-sParty_BirdKeeperMarlon
+Bird Keeper Marlon
 {
 version:firered
 version:leafgreen
@@ -40,7 +40,7 @@ doduo,28
 fearow,28
 }
 //6
-sParty_BirdKeeperBenny
+Bird Keeper Benny
 {
 version:firered
 version:leafgreen
@@ -48,7 +48,7 @@ spearow,29
 fearow,29
 }
 //7
-sParty_BirdKeeperMarlon3
+Bird Keeper Marlon
 {
 version:firered
 version:leafgreen
@@ -58,7 +58,7 @@ dodrio,48
 fearow,48
 }
 //8
-sParty_BirdKeeperBenny3
+Bird Keeper Benny
 {
 version:firered
 version:leafgreen
@@ -67,7 +67,7 @@ fearow,49
 fearow,49
 }
 //9
-sParty_BirdKeeperBenny2
+Bird Keeper Benny
 {
 version:firered
 version:leafgreen
@@ -76,7 +76,7 @@ fearow,32
 fearow,32
 }
 //10
-sParty_BikerLukas2
+Biker Lukas
 {
 version:firered
 version:leafgreen
@@ -87,7 +87,7 @@ muk,47
 weezing,47
 }
 //11
-sParty_BirdKeeperMitch
+Bird Keeper Mitch
 {
 version:firered
 version:leafgreen
@@ -97,7 +97,7 @@ pidgey,26
 fearow,26
 }
 //12
-sParty_BirdKeeperCarter
+Bird Keeper Carter
 {
 version:firered
 version:leafgreen
@@ -106,7 +106,7 @@ doduo,28
 pidgeotto,28
 }
 //13
-sParty_BikerLukas
+Biker Lukas
 {
 version:firered
 version:leafgreen
@@ -116,7 +116,7 @@ grimer,26
 koffing,26
 }
 //14
-sParty_TwinsKiriJan
+Twins Kiri & Jan
 {
 version:firered
 version:leafgreen
@@ -124,7 +124,7 @@ charmander,29
 squirtle,29
 }
 //15
-sParty_BirdKeeperMarlon2
+Bird Keeper Marlon
 {
 version:firered
 version:leafgreen
@@ -134,7 +134,7 @@ doduo,30
 fearow,30
 }
 //16
-sParty_BikerGerald
+Biker Gerald
 {
 version:firered
 version:leafgreen

@@ -1,5 +1,5 @@
 //1
-sParty_HikerTrent
+Hiker Trent
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ onix,19
 graveler,19
 }
 //2
-sParty_PicnickerHeidi
+Picnicker Heidi
 {
 version:firered
 version:leafgreen
@@ -15,7 +15,7 @@ pikachu,20
 clefairy,20
 }
 //3
-sParty_PokemaniacHerman
+Pokemaniac Herman
 {
 version:firered
 version:leafgreen
@@ -23,7 +23,7 @@ cubone,20
 slowpoke,20
 }
 //4
-sParty_HikerClark
+Hiker Clark
 {
 version:firered
 version:leafgreen
@@ -31,7 +31,7 @@ geodude,21
 onix,21
 }
 //5
-sParty_PokemaniacMark
+Pokemaniac Mark
 {
 version:firered
 version:leafgreen
@@ -39,7 +39,7 @@ rhyhorn,29
 lickitung,29
 }
 //6
-sParty_PokemaniacHerman3
+Pokemaniac Herman
 {
 version:firered
 version:leafgreen
@@ -48,7 +48,7 @@ marowak,54
 slowbro,54
 }
 //7
-sParty_PokemaniacMark3
+Pokemaniac Mark
 {
 version:firered
 version:leafgreen
@@ -57,7 +57,7 @@ rhydon,54
 lickitung,54
 }
 //8
-sParty_PicnickerCarol
+Picnicker Carol
 {
 version:firered
 version:leafgreen
@@ -65,7 +65,7 @@ pidgey,21
 pidgeotto,21
 }
 //9
-sParty_HikerTrent2
+Hiker Trent
 {
 version:firered
 version:leafgreen
@@ -74,7 +74,7 @@ onix,31
 graveler,31
 }
 //10
-sParty_PokemaniacHerman2
+Pokemaniac Herman
 {
 version:firered
 version:leafgreen
@@ -83,7 +83,7 @@ marowak,29
 slowbro,29
 }
 //11
-sParty_PokemaniacMark2
+Pokemaniac Mark
 {
 version:firered
 version:leafgreen

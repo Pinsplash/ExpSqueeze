@@ -1,5 +1,5 @@
 //1
-sParty_RuinManiacLarry2
+Ruin Maniac Larry
 {
 version:firered
 version:leafgreen
@@ -8,14 +8,14 @@ machoke,54
 machoke,54
 }
 //2
-sParty_HikerDaryl
+Hiker Daryl
 {
 version:firered
 version:leafgreen
 sudowoodo,50
 }
 //3
-sParty_PokemaniacHector2
+Pokemaniac Hector
 {
 version:firered
 version:leafgreen
@@ -24,7 +24,7 @@ rhydon,55
 kangaskhan,55
 }
 //4
-sParty_RuinManiacStanly
+Ruin Maniac Stanly
 {
 version:firered
 version:leafgreen
@@ -33,14 +33,14 @@ onix,48
 graveler,48
 }
 //5
-sParty_RuinManiacFoster
+Ruin Maniac Foster
 {
 version:firered
 version:leafgreen
 golem,50
 }
 //6
-sParty_RuinManiacLarry
+Ruin Maniac Larry
 {
 version:firered
 version:leafgreen
@@ -48,7 +48,7 @@ machoke,49
 machoke,49
 }
 //7
-sParty_PokemaniacHector
+Pokemaniac Hector
 {
 version:firered
 version:leafgreen

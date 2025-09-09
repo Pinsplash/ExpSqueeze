@@ -1,5 +1,5 @@
 //1
-sParty_SuperNerdGlenn
+Super Nerd Glenn
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ muk,22
 grimer,22
 }
 //2
-sParty_SuperNerdAidan
+Super Nerd Aidan
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ voltorb,20
 magnemite,20
 }
 //3
-sParty_LassAndrea
+Lass Andrea
 {
 version:firered
 version:leafgreen
@@ -27,7 +27,7 @@ meowth,24
 meowth,24
 }
 //4
-sParty_LassJulia
+Lass Julia
 {
 version:firered
 version:leafgreen
@@ -35,7 +35,7 @@ clefairy,22
 clefairy,22
 }
 //5
-sParty_BikerJaren
+Biker Jaren
 {
 version:firered
 version:leafgreen
@@ -43,7 +43,7 @@ grimer,24
 grimer,24
 }
 //6
-sParty_BikerRicardo
+Biker Ricardo
 {
 version:firered
 version:leafgreen
@@ -52,7 +52,7 @@ koffing,22
 grimer,23
 }
 //7
-sParty_TwinsEliAnne
+Twins Eli & Anne
 {
 version:firered
 version:leafgreen
@@ -60,7 +60,7 @@ clefairy,22
 jigglypuff,22
 }
 //8
-sParty_LassMegan
+Lass Megan
 {
 version:firered
 version:leafgreen
@@ -71,7 +71,7 @@ meowth,19
 pikachu,19
 }
 //9
-sParty_BikerJaren2
+Biker Jaren
 {
 version:firered
 version:leafgreen
@@ -80,7 +80,7 @@ muk,28
 muk,30
 }
 //10
-sParty_GamerRich2
+Gamer Rich
 {
 version:firered
 version:leafgreen
@@ -89,7 +89,7 @@ growlithe,30
 vulpix,30
 }
 //11
-sParty_SuperNerdGlenn2
+Super Nerd Glenn
 {
 version:firered
 version:leafgreen
@@ -99,7 +99,7 @@ muk,28
 muk,28
 }
 //12
-sParty_GamerStan
+Gamer Stan
 {
 version:firered
 version:leafgreen
@@ -108,7 +108,7 @@ poliwag,22
 poliwhirl,22
 }
 //13
-sParty_LassPaige
+Lass Paige
 {
 version:firered
 version:leafgreen
@@ -116,14 +116,14 @@ nidoran-f,23
 nidorina,23
 }
 //14
-sParty_SuperNerdLeslie
+Super Nerd Leslie
 {
 version:firered
 version:leafgreen
 koffing,26
 }
 //15
-sParty_LassMegan3
+Lass Megan
 {
 version:firered
 version:leafgreen
@@ -135,7 +135,7 @@ persian,47
 raichu,48
 }
 //16
-sParty_TwinsEliAnne2
+Twins Eli & Anne
 {
 version:firered
 version:leafgreen
@@ -144,7 +144,7 @@ clefairy,28
 jigglypuff,28
 }
 //17
-sParty_LassMegan2
+Lass Megan
 {
 version:firered
 version:leafgreen
@@ -156,7 +156,7 @@ meowth,21
 pikachu,22
 }
 //18
-sParty_GamerRich
+Gamer Rich
 {
 version:firered
 version:leafgreen

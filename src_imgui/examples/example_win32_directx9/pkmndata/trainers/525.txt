@@ -1,5 +1,5 @@
 //1
-sParty_PsychicDario2
+Psychic Dario
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ progresspoint:6
 girafarig,56
 }
 //2
-sParty_PsychicRodette2
+Psychic Rodette
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ hypno,53
 hypno,53
 }
 //3
-sParty_PsychicRodette
+Psychic Rodette
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ drowzee,48
 hypno,50
 }
 //4
-sParty_PsychicDario
+Psychic Dario
 {
 version:firered
 version:leafgreen

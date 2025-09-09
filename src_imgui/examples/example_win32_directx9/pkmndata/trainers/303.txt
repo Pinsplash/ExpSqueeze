@@ -1,5 +1,5 @@
 //1
-sParty_PicnickerAlicia
+Picnicker Alicia
 {
 version:firered
 version:leafgreen
@@ -9,7 +9,7 @@ oddish,18
 bellsprout,18
 }
 //2
-sParty_HikerJeremy
+Hiker Jeremy
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ machop,20
 onix,20
 }
 //3
-sParty_HikerAlan
+Hiker Alan
 {
 version:firered
 version:leafgreen
@@ -25,7 +25,7 @@ geodude,21
 onix,21
 }
 //4
-sParty_CamperChris
+Camper Chris
 {
 version:firered
 version:leafgreen
@@ -33,7 +33,7 @@ growlithe,21
 charmander,21
 }
 //5
-sParty_BugCatcherBrent
+Bug Catcher Brent
 {
 version:firered
 version:leafgreen
@@ -41,7 +41,7 @@ beedrill,19
 beedrill,19
 }
 //6
-sParty_CamperChris4
+Camper Chris
 {
 version:firered
 version:leafgreen
@@ -50,7 +50,7 @@ arcanine,54
 charmeleon,54
 }
 //7
-sParty_BugCatcherConner
+Bug Catcher Conner
 {
 version:firered
 version:leafgreen
@@ -59,7 +59,7 @@ weedle,20
 venonat,20
 }
 //8
-sParty_HikerBrice
+Hiker Brice
 {
 version:firered
 version:leafgreen
@@ -68,14 +68,14 @@ machop,20
 geodude,20
 }
 //9
-sParty_PicnickerCaitlin
+Picnicker Caitlin
 {
 version:firered
 version:leafgreen
 meowth,23
 }
 //10
-sParty_CamperDrew
+Camper Drew
 {
 version:firered
 version:leafgreen
@@ -85,7 +85,7 @@ ekans,19
 sandshrew,19
 }
 //11
-sParty_PicnickerAlicia4
+Picnicker Alicia
 {
 version:firered
 version:leafgreen
@@ -93,7 +93,7 @@ progresspoint:6
 persian,55
 }
 //12
-sParty_CamperChris2
+Camper Chris
 {
 version:firered
 version:leafgreen
@@ -102,7 +102,7 @@ growlithe,24
 charmander,24
 }
 //13
-sParty_PicnickerAlicia2
+Picnicker Alicia
 {
 version:firered
 version:leafgreen
@@ -110,7 +110,7 @@ progresspoint:3
 meowth,25
 }
 //14
-sParty_CamperChris3
+Camper Chris
 {
 version:firered
 version:leafgreen
@@ -119,7 +119,7 @@ growlithe,29
 charmeleon,29
 }
 //15
-sParty_PicnickerAlicia3
+Picnicker Alicia
 {
 version:firered
 version:leafgreen
@@ -127,7 +127,7 @@ progresspoint:4
 persian,30
 }
 //16
-sParty_HikerJeremy2
+Hiker Jeremy
 {
 version:firered
 version:leafgreen

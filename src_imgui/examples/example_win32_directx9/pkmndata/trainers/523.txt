@@ -1,5 +1,5 @@
 //1
-sParty_AromaLadyRose
+Aroma Lady Rose
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ sunkern,49
 sunflora,49
 }
 //2
-sParty_HikerEarl2
+Hiker Earl
 {
 version:firered
 version:leafgreen
@@ -16,7 +16,7 @@ onix,54
 machamp,54
 }
 //3
-sParty_SwimmerMaleSamir2
+Swimmer Samir
 {
 version:firered
 version:leafgreen
@@ -24,7 +24,7 @@ progresspoint:6
 gyarados,55
 }
 //4
-sParty_JugglerEdward
+Juggler Edward
 {
 version:firered
 version:leafgreen
@@ -34,7 +34,7 @@ electrode,47
 mr-mime,48
 }
 //5
-sParty_SwimmerFemaleDenise
+Swimmer Denise
 {
 version:firered
 version:leafgreen
@@ -42,14 +42,14 @@ chinchou,49
 lanturn,49
 }
 //6
-sParty_SwimmerMaleSamir
+Swimmer Samir
 {
 version:firered
 version:leafgreen
 gyarados,50
 }
 //7
-sParty_TwinsMiuMia
+Twins Miu & Mia
 {
 version:firered
 version:leafgreen
@@ -57,7 +57,7 @@ pikachu,50
 pikachu,50
 }
 //8
-sParty_HikerEarl
+Hiker Earl
 {
 version:firered
 version:leafgreen

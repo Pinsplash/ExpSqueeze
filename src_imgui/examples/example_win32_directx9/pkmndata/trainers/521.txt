@@ -1,5 +1,5 @@
 //1
-sParty_SwimmerMaleMymo
+Swimmer Mymo
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ kingler,49
 wartortle,49
 }
 //2
-sParty_SisAndBroAvaGeb
+Sis And Bro Ava & Geb
 {
 version:firered
 version:leafgreen
@@ -15,7 +15,7 @@ poliwhirl,50
 starmie,50
 }
 //3
-sParty_SwimmerFemaleNicole2
+Swimmer Nicole
 {
 version:firered
 version:leafgreen
@@ -23,14 +23,14 @@ progresspoint:6
 marill,54
 }
 //4
-sParty_SwimmerFemaleNicole
+Swimmer Nicole
 {
 version:firered
 version:leafgreen
 marill,50
 }
 //5
-sParty_FishermanTylor
+Fisherman Tylor
 {
 version:firered
 version:leafgreen

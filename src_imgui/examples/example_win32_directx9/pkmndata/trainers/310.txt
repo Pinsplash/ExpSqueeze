@@ -1,5 +1,5 @@
 //1
-sParty_BikerJaxon
+Biker Jaxon
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ weezing,29
 muk,29
 }
 //2
-sParty_BikerWilliam
+Biker William
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ koffing,25
 weezing,25
 }
 //3
-sParty_CueBallCorey
+Cue Ball Corey
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ primeape,29
 machoke,29
 }
 //4
-sParty_BikerNikolas
+Biker Nikolas
 {
 version:firered
 version:leafgreen
@@ -34,14 +34,14 @@ voltorb,29
 voltorb,29
 }
 //5
-sParty_CueBallZeek
+Cue Ball Zeek
 {
 version:firered
 version:leafgreen
 machoke,33
 }
 //6
-sParty_CueBallIsaiah2
+Cue Ball Isaiah
 {
 version:firered
 version:leafgreen
@@ -50,7 +50,7 @@ machoke,49
 machamp,49
 }
 //7
-sParty_CueBallRaul
+Cue Ball Raul
 {
 version:firered
 version:leafgreen
@@ -58,7 +58,7 @@ mankey,29
 primeape,29
 }
 //8
-sParty_CueBallCorey2
+Cue Ball Corey
 {
 version:firered
 version:leafgreen
@@ -67,7 +67,7 @@ primeape,49
 machamp,49
 }
 //9
-sParty_CueBallIsaiah
+Cue Ball Isaiah
 {
 version:firered
 version:leafgreen
@@ -75,7 +75,7 @@ machop,29
 machamp,29
 }
 //10
-sParty_BikerVirgil
+Biker Virgil
 {
 version:firered
 version:leafgreen
@@ -84,7 +84,7 @@ koffing,28
 weezing,28
 }
 //11
-sParty_BikerJaxon2
+Biker Jaxon
 {
 version:firered
 version:leafgreen
@@ -93,7 +93,7 @@ weezing,49
 muk,49
 }
 //12
-sParty_CueBallJamal
+Cue Ball Jamal
 {
 version:firered
 version:leafgreen
@@ -103,7 +103,7 @@ machamp,26
 machop,26
 }
 //13
-sParty_BikerBilly
+Biker Billy
 {
 version:firered
 version:leafgreen

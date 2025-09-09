@@ -1,5 +1,5 @@
 //1
-sParty_CrushKinMikKia2
+Crush Kin Mik & Kia
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ machoke,51
 primeape,51
 }
 //2
-sParty_BlackBeltHugh2
+Black Belt Hugh
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ machoke,50
 machoke,50
 }
 //3
-sParty_BlackBeltShea2
+Black Belt Shea
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ machoke,50
 machoke,50
 }
 //4
-sParty_CrushGirlTanya2
+Crush Girl Tanya
 {
 version:firered
 version:leafgreen
@@ -35,7 +35,7 @@ hitmonlee,50
 hitmonchan,50
 }
 //5
-sParty_SwimmerFemaleAbigail
+Swimmer Abigail
 {
 version:firered
 version:leafgreen
@@ -44,7 +44,7 @@ psyduck,36
 golduck,37
 }
 //6
-sParty_CrushGirlSharon2
+Crush Girl Sharon
 {
 version:firered
 version:leafgreen
@@ -53,7 +53,7 @@ mankey,50
 primeape,50
 }
 //7
-sParty_SwimmerMaleFinn2
+Swimmer Finn
 {
 version:firered
 version:leafgreen
@@ -61,7 +61,7 @@ progresspoint:5
 starmie,50
 }
 //8
-sParty_BlackBeltShea
+Black Belt Shea
 {
 version:firered
 version:leafgreen
@@ -69,7 +69,7 @@ machop,38
 machoke,38
 }
 //9
-sParty_BlackBeltHugh
+Black Belt Hugh
 {
 version:firered
 version:leafgreen
@@ -77,7 +77,7 @@ machop,37
 machoke,37
 }
 //10
-sParty_PicnickerClaire
+Picnicker Claire
 {
 version:firered
 version:leafgreen
@@ -87,7 +87,7 @@ pikachu,35
 clefairy,35
 }
 //11
-sParty_CamperBryce
+Camper Bryce
 {
 version:firered
 version:leafgreen
@@ -96,7 +96,7 @@ raticate,36
 sandslash,36
 }
 //12
-sParty_CrushGirlSharon3
+Crush Girl Sharon
 {
 version:firered
 version:leafgreen
@@ -105,7 +105,7 @@ primeape,55
 primeape,55
 }
 //13
-sParty_CrushGirlTanya3
+Crush Girl Tanya
 {
 version:firered
 version:leafgreen
@@ -114,7 +114,7 @@ hitmonlee,55
 hitmonchan,55
 }
 //14
-sParty_BlackBeltHugh3
+Black Belt Hugh
 {
 version:firered
 version:leafgreen
@@ -123,7 +123,7 @@ machoke,55
 machamp,55
 }
 //15
-sParty_CrushKinMikKia3
+Crush Kin Mik & Kia
 {
 version:firered
 version:leafgreen
@@ -132,7 +132,7 @@ machamp,56
 primeape,56
 }
 //16
-sParty_CrushKinMikKia
+Crush Kin Mik & Kia
 {
 version:firered
 version:leafgreen
@@ -140,14 +140,14 @@ machoke,39
 primeape,39
 }
 //17
-sParty_SwimmerMaleFinn
+Swimmer Finn
 {
 version:firered
 version:leafgreen
 starmie,38
 }
 //18
-sParty_BlackBeltShea3
+Black Belt Shea
 {
 version:firered
 version:leafgreen
@@ -156,7 +156,7 @@ machoke,55
 machamp,55
 }
 //19
-sParty_SwimmerMaleGarrett
+Swimmer Garrett
 {
 version:firered
 version:leafgreen
@@ -165,7 +165,7 @@ cloyster,35
 wartortle,38
 }
 //20
-sParty_FishermanTommy
+Fisherman Tommy
 {
 version:firered
 version:leafgreen
@@ -176,7 +176,7 @@ seaking,35
 seaking,35
 }
 //21
-sParty_CrushGirlSharon
+Crush Girl Sharon
 {
 version:firered
 version:leafgreen
@@ -184,7 +184,7 @@ mankey,37
 primeape,37
 }
 //22
-sParty_CrushGirlTanya
+Crush Girl Tanya
 {
 version:firered
 version:leafgreen
@@ -192,7 +192,7 @@ hitmonlee,38
 hitmonchan,38
 }
 //23
-sParty_SwimmerFemaleMaria
+Swimmer Maria
 {
 version:firered
 version:leafgreen

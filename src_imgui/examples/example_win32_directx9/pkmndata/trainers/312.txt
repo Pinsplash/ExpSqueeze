@@ -1,5 +1,5 @@
 //1
-sParty_SisAndBroLilIan3
+Sis And Bro Lil & Ian
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ seadra,55
 starmie,55
 }
 //2
-sParty_FishermanWade
+Fisherman Wade
 {
 version:firered
 version:leafgreen
@@ -20,7 +20,7 @@ magikarp,27
 magikarp,27
 }
 //3
-sParty_SwimmerMaleRoland
+Swimmer Roland
 {
 version:firered
 version:leafgreen
@@ -29,7 +29,7 @@ tentacool,32
 seadra,32
 }
 //4
-sParty_SwimmerMaleJerome
+Swimmer Jerome
 {
 version:firered
 version:leafgreen
@@ -37,7 +37,7 @@ staryu,33
 wartortle,33
 }
 //5
-sParty_FishermanNolan
+Fisherman Nolan
 {
 version:firered
 version:leafgreen
@@ -45,7 +45,7 @@ seaking,33
 goldeen,33
 }
 //6
-sParty_FishermanClaude
+Fisherman Claude
 {
 version:firered
 version:leafgreen
@@ -53,7 +53,7 @@ shellder,31
 cloyster,31
 }
 //7
-sParty_FishermanRonald
+Fisherman Ronald
 {
 version:firered
 version:leafgreen
@@ -63,14 +63,14 @@ seaking,28
 seaking,28
 }
 //8
-sParty_SwimmerMaleJack
+Swimmer Jack
 {
 version:firered
 version:leafgreen
 starmie,37
 }
 //9
-sParty_SisAndBroLilIan
+Sis And Bro Lil & Ian
 {
 version:firered
 version:leafgreen
@@ -78,7 +78,7 @@ seadra,33
 starmie,33
 }
 //10
-sParty_SwimmerMaleSpencer
+Swimmer Spencer
 {
 version:firered
 version:leafgreen
@@ -86,7 +86,7 @@ seadra,33
 tentacruel,33
 }
 //11
-sParty_FishermanWade2
+Fisherman Wade
 {
 version:firered
 version:leafgreen
@@ -99,7 +99,7 @@ magikarp,47
 magikarp,47
 }
 //12
-sParty_SwimmerMaleJack2
+Swimmer Jack
 {
 version:firered
 version:leafgreen
@@ -107,7 +107,7 @@ progresspoint:5
 starmie,50
 }
 //13
-sParty_SisAndBroLilIan2
+Sis And Bro Lil & Ian
 {
 version:firered
 version:leafgreen

@@ -1,5 +1,5 @@
 //1
-sParty_PkmnRangerNicolas2
+PKMN Ranger Nicolas
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ victreebel,55
 victreebel,55
 }
 //2
-sParty_JugglerMason2
+Juggler Mason
 {
 version:firered
 version:leafgreen
@@ -19,7 +19,7 @@ electrode,52
 pineco,52
 }
 //3
-sParty_PkmnRangerMadeline2
+PKMN Ranger Madeline
 {
 version:firered
 version:leafgreen
@@ -28,7 +28,7 @@ vileplume,55
 vileplume,55
 }
 //4
-sParty_YoungCoupleEveJon
+Young Couple Eve & Jon
 {
 version:firered
 version:leafgreen
@@ -36,7 +36,7 @@ golduck,50
 psyduck,50
 }
 //5
-sParty_AromaLadyMiah
+Aroma Lady Miah
 {
 version:firered
 version:leafgreen
@@ -44,7 +44,7 @@ bellossom,50
 bellossom,50
 }
 //6
-sParty_PkmnRangerNicolas
+PKMN Ranger Nicolas
 {
 version:firered
 version:leafgreen
@@ -52,7 +52,7 @@ weepinbell,51
 victreebel,51
 }
 //7
-sParty_PkmnRangerMadeline
+PKMN Ranger Madeline
 {
 version:firered
 version:leafgreen
@@ -60,7 +60,7 @@ gloom,51
 vileplume,51
 }
 //8
-sParty_JugglerMason
+Juggler Mason
 {
 version:firered
 version:leafgreen

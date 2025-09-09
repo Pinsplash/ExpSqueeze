@@ -1,5 +1,5 @@
 //1
-sParty_YoungsterDestin2
+Youngster Destin
 {
 version:firered
 version:leafgreen
@@ -8,14 +8,14 @@ raticate,53
 pidgeot,53
 }
 //2
-sParty_PainterDaisy
+Painter Daisy
 {
 version:firered
 version:leafgreen
 smeargle,50
 }
 //3
-sParty_PainterRayna2
+Painter Rayna
 {
 version:firered
 version:leafgreen
@@ -23,21 +23,21 @@ progresspoint:6
 smeargle,54
 }
 //4
-sParty_PainterCelina
+Painter Celina
 {
 version:firered
 version:leafgreen
 smeargle,50
 }
 //5
-sParty_PainterRayna
+Painter Rayna
 {
 version:firered
 version:leafgreen
 smeargle,50
 }
 //6
-sParty_LadyJacki
+Lady Jacki
 {
 version:firered
 version:leafgreen
@@ -45,7 +45,7 @@ hoppip,48
 skiploom,50
 }
 //7
-sParty_LadyGillian
+Lady Gillian
 {
 version:firered
 version:leafgreen
@@ -54,7 +54,7 @@ mareep,48
 flaaffy,49
 }
 //8
-sParty_YoungsterDestin
+Youngster Destin
 {
 version:firered
 version:leafgreen
@@ -62,7 +62,7 @@ raticate,48
 pidgeotto,48
 }
 //9
-sParty_SwimmerMaleToby
+Swimmer Toby
 {
 version:firered
 version:leafgreen

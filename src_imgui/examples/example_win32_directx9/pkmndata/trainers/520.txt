@@ -1,5 +1,5 @@
 //1
-sParty_BirdKeeperMilo2
+Bird Keeper Milo
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ pidgeotto,53
 pidgeot,55
 }
 //2
-sParty_BirdKeeperChaz2
+Bird Keeper Chaz
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ fearow,53
 fearow,55
 }
 //3
-sParty_BirdKeeperHarold2
+Bird Keeper Harold
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ noctowl,53
 noctowl,55
 }
 //4
-sParty_BirdKeeperHarold
+Bird Keeper Harold
 {
 version:firered
 version:leafgreen
@@ -34,7 +34,7 @@ hoothoot,47
 noctowl,49
 }
 //5
-sParty_BirdKeeperChaz
+Bird Keeper Chaz
 {
 version:firered
 version:leafgreen
@@ -42,7 +42,7 @@ spearow,47
 fearow,49
 }
 //6
-sParty_BirdKeeperMilo
+Bird Keeper Milo
 {
 version:firered
 version:leafgreen

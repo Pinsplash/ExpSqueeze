@@ -1,5 +1,5 @@
 //1
-sParty_PicnickerYazmin
+Picnicker Yazmin
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ oddish,29
 tangela,29
 }
 //2
-sParty_BirdKeeperEdwin
+Bird Keeper Edwin
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ doduo,26
 pidgey,26
 }
 //3
-sParty_BirdKeeperChester
+Bird Keeper Chester
 {
 version:firered
 version:leafgreen
@@ -27,7 +27,7 @@ doduo,28
 doduo,28
 }
 //4
-sParty_PicnickerKindra
+Picnicker Kindra
 {
 version:firered
 version:leafgreen
@@ -36,7 +36,7 @@ oddish,28
 oddish,28
 }
 //5
-sParty_BeautyOlivia
+Beauty Olivia
 {
 version:firered
 version:leafgreen
@@ -44,7 +44,7 @@ bulbasaur,29
 ivysaur,29
 }
 //6
-sParty_BikerAlex
+Biker Alex
 {
 version:firered
 version:leafgreen
@@ -53,7 +53,7 @@ grimer,28
 weezing,28
 }
 //7
-sParty_BikerErnest
+Biker Ernest
 {
 version:firered
 version:leafgreen
@@ -64,7 +64,7 @@ koffing,25
 grimer,25
 }
 //8
-sParty_CrushKinRonMya3
+Crush Kin Ron & Mya
 {
 version:firered
 version:leafgreen
@@ -73,14 +73,14 @@ hitmonchan,51
 hitmonlee,51
 }
 //9
-sParty_PicnickerCelia
+Picnicker Celia
 {
 version:firered
 version:leafgreen
 clefairy,33
 }
 //10
-sParty_BirdKeeperChester2
+Bird Keeper Chester
 {
 version:firered
 version:leafgreen
@@ -90,7 +90,7 @@ dodrio,30
 doduo,30
 }
 //11
-sParty_PicnickerBecky2
+Picnicker Becky
 {
 version:firered
 version:leafgreen
@@ -99,7 +99,7 @@ pikachu,32
 raichu,32
 }
 //12
-sParty_CrushKinRonMya2
+Crush Kin Ron & Mya
 {
 version:firered
 version:leafgreen
@@ -108,7 +108,7 @@ hitmonchan,33
 hitmonlee,33
 }
 //13
-sParty_PicnickerBecky
+Picnicker Becky
 {
 version:firered
 version:leafgreen
@@ -116,7 +116,7 @@ pikachu,29
 raichu,29
 }
 //14
-sParty_PicnickerBecky4
+Picnicker Becky
 {
 version:firered
 version:leafgreen
@@ -125,7 +125,7 @@ raichu,54
 raichu,54
 }
 //15
-sParty_BeautyGrace
+Beauty Grace
 {
 version:firered
 version:leafgreen
@@ -133,7 +133,7 @@ pidgeotto,29
 wigglytuff,29
 }
 //16
-sParty_CrushKinRonMya4
+Crush Kin Ron & Mya
 {
 version:firered
 version:leafgreen
@@ -142,7 +142,7 @@ hitmonchan,56
 hitmonlee,56
 }
 //17
-sParty_BeautyGrace2
+Beauty Grace
 {
 version:firered
 version:leafgreen
@@ -151,7 +151,7 @@ pidgeot,49
 wigglytuff,49
 }
 //18
-sParty_BirdKeeperChester3
+Bird Keeper Chester
 {
 version:firered
 version:leafgreen
@@ -161,7 +161,7 @@ dodrio,48
 dodrio,48
 }
 //19
-sParty_PicnickerBecky3
+Picnicker Becky
 {
 version:firered
 version:leafgreen
@@ -170,7 +170,7 @@ pikachu,49
 raichu,49
 }
 //20
-sParty_CrushKinRonMya
+Crush Kin Ron & Mya
 {
 version:firered
 version:leafgreen

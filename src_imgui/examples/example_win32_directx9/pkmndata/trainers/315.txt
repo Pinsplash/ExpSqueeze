@@ -1,5 +1,5 @@
 //1
-sParty_HikerNob
+Hiker Nob
 {
 version:firered
 version:leafgreen
@@ -9,7 +9,7 @@ machop,13
 geodude,13
 }
 //2
-sParty_CamperFlint
+Camper Flint
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ rattata,14
 ekans,14
 }
 //3
-sParty_YoungsterChad
+Youngster Chad
 {
 version:firered
 version:leafgreen
@@ -25,7 +25,7 @@ ekans,14
 sandshrew,14
 }
 //4
-sParty_LassHaley
+Lass Haley
 {
 version:firered
 version:leafgreen
@@ -34,7 +34,7 @@ pidgey,13
 oddish,13
 }
 //5
-sParty_HikerFranklin2
+Hiker Franklin
 {
 version:firered
 version:leafgreen
@@ -43,7 +43,7 @@ machoke,25
 graveler,25
 }
 //6
-sParty_PicnickerKelsey2
+Picnicker Kelsey
 {
 version:firered
 version:leafgreen
@@ -52,7 +52,7 @@ nidoran-m,21
 nidoran-f,21
 }
 //7
-sParty_PicnickerKelsey3
+Picnicker Kelsey
 {
 version:firered
 version:leafgreen
@@ -61,7 +61,7 @@ nidorino,29
 nidorina,29
 }
 //8
-sParty_YoungsterChad3
+Youngster Chad
 {
 version:firered
 version:leafgreen
@@ -70,7 +70,7 @@ arbok,28
 sandshrew,28
 }
 //9
-sParty_YoungsterChad2
+Youngster Chad
 {
 version:firered
 version:leafgreen
@@ -79,7 +79,7 @@ ekans,20
 sandshrew,20
 }
 //10
-sParty_PicnickerKelsey4
+Picnicker Kelsey
 {
 version:firered
 version:leafgreen
@@ -88,7 +88,7 @@ nidorino,49
 nidorina,49
 }
 //11
-sParty_HikerFranklin
+Hiker Franklin
 {
 version:firered
 version:leafgreen
@@ -96,7 +96,7 @@ machop,15
 geodude,15
 }
 //12
-sParty_YoungsterChad4
+Youngster Chad
 {
 version:firered
 version:leafgreen
@@ -105,7 +105,7 @@ arbok,48
 sandslash,48
 }
 //13
-sParty_YoungsterJoey
+Youngster Joey
 {
 version:firered
 version:leafgreen
@@ -113,7 +113,7 @@ rattata,15
 spearow,15
 }
 //14
-sParty_PicnickerKelsey
+Picnicker Kelsey
 {
 version:firered
 version:leafgreen
@@ -121,14 +121,14 @@ nidoran-m,15
 nidoran-f,15
 }
 //15
-sParty_HikerWayne
+Hiker Wayne
 {
 version:firered
 version:leafgreen
 onix,17
 }
 //16
-sParty_YoungsterDan
+Youngster Dan
 {
 version:firered
 version:leafgreen

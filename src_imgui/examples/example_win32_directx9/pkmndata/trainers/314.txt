@@ -1,5 +1,5 @@
 //1
-sParty_LassReli2
+Lass Reli
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ pidgey,20
 nidoran-f,20
 }
 //2
-sParty_BugCatcherCale
+Bug Catcher Cale
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ metapod,10
 kakuna,10
 }
 //3
-sParty_CamperShane
+Camper Shane
 {
 version:firered
 version:leafgreen
@@ -26,7 +26,7 @@ rattata,14
 ekans,14
 }
 //4
-sParty_YoungsterTimmy4
+Youngster Timmy
 {
 version:firered
 version:leafgreen
@@ -36,7 +36,7 @@ arbok,52
 golbat,52
 }
 //5
-sParty_YoungsterTimmy2
+Youngster Timmy
 {
 version:firered
 version:leafgreen
@@ -46,14 +46,14 @@ ekans,19
 zubat,19
 }
 //6
-sParty_CamperEthan
+Camper Ethan
 {
 version:firered
 version:leafgreen
 mankey,18
 }
 //7
-sParty_LassReli
+Lass Reli
 {
 version:firered
 version:leafgreen
@@ -61,7 +61,7 @@ nidoran-m,16
 nidoran-f,16
 }
 //8
-sParty_YoungsterTimmy3
+Youngster Timmy
 {
 version:firered
 version:leafgreen
@@ -71,7 +71,7 @@ ekans,27
 golbat,27
 }
 //9
-sParty_LassReli3
+Lass Reli
 {
 version:firered
 version:leafgreen
@@ -80,7 +80,7 @@ pidgeotto,28
 nidorina,28
 }
 //10
-sParty_YoungsterTimmy
+Youngster Timmy
 {
 version:firered
 version:leafgreen
@@ -88,7 +88,7 @@ sandshrew,14
 ekans,14
 }
 //11
-sParty_LassAli
+Lass Ali
 {
 version:firered
 version:leafgreen

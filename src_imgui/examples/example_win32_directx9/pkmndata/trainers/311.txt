@@ -1,5 +1,5 @@
 //1
-sParty_BirdKeeperWilton
+Bird Keeper Wilton
 {
 version:firered
 version:leafgreen
@@ -7,14 +7,14 @@ spearow,29
 fearow,29
 }
 //2
-sParty_BirdKeeperRamiro
+Bird Keeper Ramiro
 {
 version:firered
 version:leafgreen
 dodrio,34
 }
 //3
-sParty_BirdKeeperJacob
+Bird Keeper Jacob
 {
 version:firered
 version:leafgreen
@@ -24,7 +24,7 @@ fearow,26
 spearow,26
 }
 //4
-sParty_BirdKeeperJacob2
+Bird Keeper Jacob
 {
 version:firered
 version:leafgreen
@@ -35,7 +35,7 @@ fearow,28
 spearow,28
 }
 //5
-sParty_BirdKeeperJacob3
+Bird Keeper Jacob
 {
 version:firered
 version:leafgreen

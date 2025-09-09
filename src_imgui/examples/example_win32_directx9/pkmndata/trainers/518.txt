@@ -1,5 +1,5 @@
 //1
-sParty_PkmnBreederAlize2
+PKMN Breeder Alize
 {
 version:firered
 version:leafgreen
@@ -9,7 +9,7 @@ clefairy,53
 marill,53
 }
 //2
-sParty_PkmnBreederAlize
+PKMN Breeder Alize
 {
 version:firered
 version:leafgreen

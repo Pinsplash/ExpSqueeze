@@ -1,5 +1,5 @@
 //1
-sParty_TwinsJoyMeg
+Twins Joy & Meg
 {
 version:firered
 version:leafgreen
@@ -7,14 +7,14 @@ clefairy,37
 clefairy,37
 }
 //2
-sParty_SwimmerFemaleTisha
+Swimmer Tisha
 {
 version:firered
 version:leafgreen
 kingler,38
 }
 //3
-sParty_TuberAlexis
+Tuber Alexis
 {
 version:firered
 version:leafgreen
@@ -24,7 +24,7 @@ krabby,34
 krabby,34
 }
 //4
-sParty_TuberAmira
+Tuber Amira
 {
 version:firered
 version:leafgreen
@@ -33,7 +33,7 @@ poliwhirl,35
 poliwag,34
 }
 //5
-sParty_AromaLadyViolet
+Aroma Lady Violet
 {
 version:firered
 version:leafgreen
@@ -42,7 +42,7 @@ ivysaur,36
 ivysaur,36
 }
 //6
-sParty_AromaLadyNikki
+Aroma Lady Nikki
 {
 version:firered
 version:leafgreen
@@ -50,7 +50,7 @@ bellsprout,37
 weepinbell,37
 }
 //7
-sParty_TuberAmira2
+Tuber Amira
 {
 version:firered
 version:leafgreen
@@ -60,7 +60,7 @@ poliwhirl,47
 poliwhirl,47
 }
 //8
-sParty_TwinsJoyMeg2
+Twins Joy & Meg
 {
 version:firered
 version:leafgreen

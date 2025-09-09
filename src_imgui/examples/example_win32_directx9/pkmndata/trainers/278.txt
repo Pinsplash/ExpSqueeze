@@ -1,5 +1,5 @@
 //1
-sParty_SwimmerMaleBarry
+Swimmer Barry
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ shellder,31
 cloyster,31
 }
 //2
-sParty_PicnickerMissy3
+Picnicker Missy
 {
 version:firered
 version:leafgreen
@@ -16,7 +16,7 @@ seaking,54
 seaking,54
 }
 //3
-sParty_SwimmerFemaleMelissa
+Swimmer Melissa
 {
 version:firered
 version:leafgreen
@@ -24,7 +24,7 @@ poliwag,31
 seaking,31
 }
 //4
-sParty_PicnickerMissy
+Picnicker Missy
 {
 version:firered
 version:leafgreen
@@ -32,7 +32,7 @@ goldeen,31
 seaking,31
 }
 //5
-sParty_PicnickerMissy2
+Picnicker Missy
 {
 version:firered
 version:leafgreen
@@ -41,14 +41,14 @@ seaking,49
 seaking,49
 }
 //6
-sParty_SwimmerFemaleTiffany
+Swimmer Tiffany
 {
 version:firered
 version:leafgreen
 seaking,35
 }
 //7
-sParty_SwimmerFemaleShirley
+Swimmer Shirley
 {
 version:firered
 version:leafgreen
@@ -57,7 +57,7 @@ horsea,30
 seadra,30
 }
 //8
-sParty_SwimmerMaleDarrin
+Swimmer Darrin
 {
 version:firered
 version:leafgreen
@@ -67,7 +67,7 @@ seadra,28
 horsea,28
 }
 //9
-sParty_PicnickerIrene
+Picnicker Irene
 {
 version:firered
 version:leafgreen
@@ -76,7 +76,7 @@ horsea,30
 seel,30
 }
 //10
-sParty_SwimmerMaleDarrin2
+Swimmer Darrin
 {
 version:firered
 version:leafgreen
@@ -87,14 +87,14 @@ seadra,52
 seadra,52
 }
 //11
-sParty_SwimmerMaleDean
+Swimmer Dean
 {
 version:firered
 version:leafgreen
 staryu,35
 }
 //12
-sParty_BirdKeeperRoger
+Bird Keeper Roger
 {
 version:firered
 version:leafgreen
@@ -103,7 +103,7 @@ fearow,30
 pidgeotto,30
 }
 //13
-sParty_SwimmerFemaleNora
+Swimmer Nora
 {
 version:firered
 version:leafgreen
@@ -112,7 +112,7 @@ shellder,30
 cloyster,30
 }
 //14
-sParty_SwimmerFemaleMelissa2
+Swimmer Melissa
 {
 version:firered
 version:leafgreen

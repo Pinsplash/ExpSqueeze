@@ -1,5 +1,5 @@
 //1
-sParty_PsychicJaclyn2
+Psychic Jaclyn
 {
 version:firered
 version:leafgreen
@@ -9,7 +9,7 @@ slowbro,52
 kadabra,54
 }
 //2
-sParty_PsychicJaclyn
+Psychic Jaclyn
 {
 version:firered
 version:leafgreen

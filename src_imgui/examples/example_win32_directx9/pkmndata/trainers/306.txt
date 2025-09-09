@@ -1,5 +1,5 @@
 //1
-sParty_PicnickerValerie
+Picnicker Valerie
 {
 version:firered
 version:leafgreen
@@ -7,7 +7,7 @@ poliwag,30
 poliwag,30
 }
 //2
-sParty_BirdKeeperRobert3
+Bird Keeper Robert
 {
 version:firered
 version:leafgreen
@@ -18,7 +18,7 @@ fearow,47
 fearow,47
 }
 //3
-sParty_PicnickerSusie3
+Picnicker Susie
 {
 version:firered
 version:leafgreen
@@ -30,7 +30,7 @@ pikachu,47
 persian,47
 }
 //4
-sParty_PicnickerGwen
+Picnicker Gwen
 {
 version:firered
 version:leafgreen
@@ -40,7 +40,7 @@ pidgey,27
 pidgeotto,27
 }
 //5
-sParty_BirdKeeperRobert2
+Bird Keeper Robert
 {
 version:firered
 version:leafgreen
@@ -51,7 +51,7 @@ fearow,28
 fearow,28
 }
 //6
-sParty_PicnickerSusie2
+Picnicker Susie
 {
 version:firered
 version:leafgreen
@@ -63,7 +63,7 @@ pikachu,27
 meowth,27
 }
 //7
-sParty_BirdKeeperSebastian
+Bird Keeper Sebastian
 {
 version:firered
 version:leafgreen
@@ -71,7 +71,7 @@ pidgey,29
 pidgeotto,29
 }
 //8
-sParty_PicnickerAlma
+Picnicker Alma
 {
 version:firered
 version:leafgreen
@@ -80,7 +80,7 @@ poliwag,28
 horsea,28
 }
 //9
-sParty_BirdKeeperPerry
+Bird Keeper Perry
 {
 version:firered
 version:leafgreen
@@ -91,7 +91,7 @@ spearow,25
 spearow,25
 }
 //10
-sParty_PicnickerSusie
+Picnicker Susie
 {
 version:firered
 version:leafgreen
@@ -102,7 +102,7 @@ pikachu,24
 meowth,24
 }
 //11
-sParty_BeautySheila
+Beauty Sheila
 {
 version:firered
 version:leafgreen
@@ -110,7 +110,7 @@ clefairy,29
 meowth,29
 }
 //12
-sParty_BeautyLola
+Beauty Lola
 {
 version:firered
 version:leafgreen
@@ -119,7 +119,7 @@ pikachu,27
 rattata,27
 }
 //13
-sParty_BikerJared
+Biker Jared
 {
 version:firered
 version:leafgreen
@@ -128,7 +128,7 @@ koffing,28
 koffing,28
 }
 //14
-sParty_BirdKeeperRobert
+Bird Keeper Robert
 {
 version:firered
 version:leafgreen
@@ -138,7 +138,7 @@ spearow,26
 fearow,26
 }
 //15
-sParty_BeautySheila2
+Beauty Sheila
 {
 version:firered
 version:leafgreen
@@ -147,7 +147,7 @@ clefairy,49
 persian,49
 }
 //16
-sParty_PicnickerSusie4
+Picnicker Susie
 {
 version:firered
 version:leafgreen

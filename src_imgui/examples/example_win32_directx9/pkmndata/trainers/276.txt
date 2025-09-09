@@ -1,5 +1,5 @@
 //1
-sParty_YoungCoupleGiaJes2
+Young Couple Gia & Jes
 {
 version:firered
 version:leafgreen
@@ -8,7 +8,7 @@ nidorina,30
 nidorino,30
 }
 //2
-sParty_RockerLuca2
+Rocker Luca
 {
 version:firered
 version:leafgreen
@@ -17,7 +17,7 @@ electrode,33
 electrode,33
 }
 //3
-sParty_RockerLuca
+Rocker Luca
 {
 version:firered
 version:leafgreen
@@ -25,7 +25,7 @@ voltorb,29
 electrode,29
 }
 //4
-sParty_CamperJustin
+Camper Justin
 {
 version:firered
 version:leafgreen
@@ -33,7 +33,7 @@ nidoran-m,29
 nidorino,29
 }
 //5
-sParty_FishermanAndrew
+Fisherman Andrew
 {
 version:firered
 version:leafgreen
@@ -41,7 +41,7 @@ magikarp,24
 magikarp,24
 }
 //6
-sParty_YoungCoupleGiaJes
+Young Couple Gia & Jes
 {
 version:firered
 version:leafgreen
@@ -49,7 +49,7 @@ nidoran-m,24
 nidoran-f,24
 }
 //7
-sParty_YoungCoupleGiaJes3
+Young Couple Gia & Jes
 {
 version:firered
 version:leafgreen
@@ -58,7 +58,7 @@ nidoking,55
 nidoqueen,55
 }
 //8
-sParty_FishermanElliot2
+Fisherman Elliot
 {
 version:firered
 version:leafgreen
@@ -69,7 +69,7 @@ seaking,28
 seadra,28
 }
 //9
-sParty_FishermanNed
+Fisherman Ned
 {
 version:firered
 version:leafgreen
@@ -78,7 +78,7 @@ poliwag,22
 goldeen,22
 }
 //10
-sParty_FishermanChip
+Fisherman Chip
 {
 version:firered
 version:leafgreen
@@ -86,7 +86,7 @@ tentacool,24
 goldeen,24
 }
 //11
-sParty_FishermanElliot
+Fisherman Elliot
 {
 version:firered
 version:leafgreen
@@ -96,7 +96,7 @@ goldeen,21
 horsea,21
 }
 //12
-sParty_FishermanHank
+Fisherman Hank
 {
 version:firered
 version:leafgreen

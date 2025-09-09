@@ -1,5 +1,5 @@
 //1
-sParty_RuinManiacBenjamin
+Ruin Maniac Benjamin
 {
 version:firered
 version:leafgreen
@@ -8,14 +8,14 @@ graveler,48
 graveler,48
 }
 //2
-sParty_PainterEdna
+Painter Edna
 {
 version:firered
 version:leafgreen
 smeargle,50
 }
 //3
-sParty_GentlemanClifford
+Gentleman Clifford
 {
 version:firered
 version:leafgreen
@@ -23,7 +23,7 @@ marowak,49
 golduck,49
 }
 //4
-sParty_RuinManiacBrandon
+Ruin Maniac Brandon
 {
 version:firered
 version:leafgreen

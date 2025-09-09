@@ -1,5 +1,5 @@
 //1
-sParty_CooltrainerMichelle2
+Cooltrainer Michelle
 {
 version:firered
 version:leafgreen
@@ -11,14 +11,14 @@ rapidash,54
 girafarig,56
 }
 //2
-sParty_PkmnRangerKatelyn
+PKMN Ranger Katelyn
 {
 version:firered
 version:leafgreen
 chansey,52
 }
 //3
-sParty_CooltrainerLeroy
+Cooltrainer Leroy
 {
 version:firered
 version:leafgreen
@@ -29,7 +29,7 @@ machoke,48
 ursaring,50
 }
 //4
-sParty_CoolCoupleLexNya2
+Cool Couple Lex & Nya
 {
 version:firered
 version:leafgreen
@@ -38,7 +38,7 @@ miltank,57
 tauros,57
 }
 //5
-sParty_PkmnRangerJackson
+PKMN Ranger Jackson
 {
 version:firered
 version:leafgreen
@@ -47,7 +47,7 @@ exeggcute,49
 exeggutor,49
 }
 //6
-sParty_CooltrainerMichelle
+Cooltrainer Michelle
 {
 version:firered
 version:leafgreen
@@ -58,7 +58,7 @@ rapidash,48
 girafarig,50
 }
 //7
-sParty_CooltrainerLeroy2
+Cooltrainer Leroy
 {
 version:firered
 version:leafgreen
@@ -70,7 +70,7 @@ machamp,52
 ursaring,55
 }
 //8
-sParty_CrushGirlCyndy2
+Crush Girl Cyndy
 {
 version:firered
 version:leafgreen
@@ -80,7 +80,7 @@ hitmontop,54
 machamp,54
 }
 //9
-sParty_PkmnRangerKatelyn2
+PKMN Ranger Katelyn
 {
 version:firered
 version:leafgreen
@@ -88,7 +88,7 @@ progresspoint:6
 chansey,56
 }
 //10
-sParty_TamerEvan2
+Tamer Evan
 {
 version:firered
 version:leafgreen
@@ -98,7 +98,7 @@ lickitung,52
 ursaring,55
 }
 //11
-sParty_PkmnRangerJackson2
+PKMN Ranger Jackson
 {
 version:firered
 version:leafgreen
@@ -108,7 +108,7 @@ exeggutor,54
 exeggutor,55
 }
 //12
-sParty_CoolCoupleLexNya
+Cool Couple Lex & Nya
 {
 version:firered
 version:leafgreen
@@ -116,7 +116,7 @@ miltank,52
 tauros,52
 }
 //13
-sParty_CrushGirlCyndy
+Crush Girl Cyndy
 {
 version:firered
 version:leafgreen
@@ -125,7 +125,7 @@ hitmontop,48
 machoke,48
 }
 //14
-sParty_TamerEvan
+Tamer Evan
 {
 version:firered
 version:leafgreen
