@@ -3,7 +3,6 @@ sParty_LassCrissy
 {
 version:firered
 version:leafgreen
-progresspoint:2
 paras,31
 paras,31
 parasect,31

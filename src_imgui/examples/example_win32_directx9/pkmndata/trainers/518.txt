@@ -1,13 +1,4 @@
 //1
-sParty_PkmnBreederAlize
-{
-version:firered
-version:leafgreen
-pikachu,48
-clefairy,48
-marill,48
-}
-//2
 sParty_PkmnBreederAlize2
 {
 version:firered
@@ -16,4 +7,13 @@ progresspoint:6
 pikachu,53
 clefairy,53
 marill,53
+}
+//2
+sParty_PkmnBreederAlize
+{
+version:firered
+version:leafgreen
+pikachu,48
+clefairy,48
+marill,48
 }
