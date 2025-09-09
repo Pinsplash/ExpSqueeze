@@ -155,7 +155,8 @@ enum FilterReasons
 	Reason_NoGoodEVs,
 	Reason_OverLevelCap,
 	Reason_BadProgress,
-	Reason_LackingDuplicateMons
+	Reason_LackingDuplicateMons,
+	Reason_TeamSuperceded
 };
 
 enum MilestoneType
@@ -178,6 +179,9 @@ enum MilestoneType
 #define OFFSET_BEY 8
 
 #define GENERATION_ALL 0
+
+#define PROGRESSPOINT_DONTCHECK 0
+#define TRAINERINDEX_NOTATRAINER 0
 
 struct Settings
 {
@@ -253,6 +257,7 @@ struct EncounterTable
 	bool goodEVs = false;
 	std::vector<double> averageYields = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 	EfficientEVData efficientEVs[7];
+	int progresspoint = PROGRESSPOINT_DONTCHECK;
 };
 
 struct GameObject
@@ -292,8 +297,8 @@ struct Milestone
 	vector<string> unlocks;
 	vector<MethodExclude*> excludes;
 	bool userselected = false;
+	int progresspoint = PROGRESSPOINT_DONTCHECK;
 };
-
 struct Party
 {
 	string code_name;
@@ -307,7 +312,7 @@ struct Party
 	//5 = became champion
 	//6 = gave sapphire to celio
 	//none of these are possible to do out of order (except obtaining the vs seeker which is itself optional, but that's irrelevant)
-	int progress_indicator = 0;
+	int progresspoint = PROGRESSPOINT_DONTCHECK;
 	vector<string> mondata;
 };
 
@@ -506,11 +511,12 @@ static bool MilestoneIsRelevant(int subjectslot, int start, int checkpoint_curre
 	return pastownslot;
 }
 
-static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
+static bool EncounterIsAccessible(int tablenum, string method, int trainerindex, int trainerprogresspoint)
 {
 	bool excludebymethod = false;
 	bool foundtable = false;
 	bool removed = false;
+	int gameprogresspoint = PROGRESSPOINT_DONTCHECK;
 	vector<string> unlockedmethods;
 	for (int Islot = 0; Islot < g_milestones.size(); Islot++)
 	{
@@ -522,6 +528,10 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
 				//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because oneway\n";
 				return false;
 			}
+			if (ms.progresspoint > gameprogresspoint)
+			{
+				gameprogresspoint = ms.progresspoint;
+			}
 			for (int Jslot = 0; Jslot < ms.tables.size(); Jslot++)
 			{
 				int table = ms.tables[Jslot];
@@ -531,7 +541,8 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
 					if (ms.type == MILESTONE_ONEWAY)
 					{
 						//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " oneway special case\n";
-						return true;
+						bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
+						return methodavailable;
 					}
 					foundtable = true;
 					removed = false;
@@ -549,7 +560,7 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
 									thistableexcludes = true;
 								}
 								string rematchstr = "remnum:" + to_string(trainerindex);
-								if (trainerindex && exclude->str.find(rematchstr) != string::npos)
+								if (trainerindex != TRAINERINDEX_NOTATRAINER && exclude->str.find(rematchstr) != string::npos)
 								{
 									//don't return yet. there might be a later milestone that unlocks our target trainer.
 									excludebymethod = true;
@@ -585,20 +596,24 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex)
 			}
 		}
 	}
+	//tells if trainer team was UNLOCKED by progressing through story
+	//does not tell if a later checkpoint unlocked another team that trainer has
+	//superceded teams are culled in post process
+	bool teamunlocked = trainerprogresspoint == TRAINERINDEX_NOTATRAINER || trainerprogresspoint <= gameprogresspoint;
 	bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
-	//if (!foundtable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because didn't find table\n";
-	//if (excludebymethod) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because method excluded\n";
-	//if (!methodavailable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because method not yet available\n";
-	//if (removed) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because table removed\n";
-	return foundtable && !excludebymethod && methodavailable && !removed;
+	//if (!foundtable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because didn't find table\n";
+	//if (excludebymethod) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method excluded\n";
+	//if (!methodavailable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method not yet available\n";
+	//if (removed) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because table removed\n";
+	return foundtable && !excludebymethod && methodavailable && !removed && teamunlocked;
 }
 
-static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs, int trainerindex, string trainername)
+static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs, int trainerindex, string trainername, int progresspoint)
 {
 	if (g_settings.repellevel > maxlevel && method_index != METHOD_REMATCH)
 		return;
-	
-	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname, trainerindex))
+
+	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname, trainerindex, progresspoint))
 	{
 		filterReason = Reason_BadProgress;
 		//cout << "table " << to_string(i) << " " << g_methods[method_index]->internalname << " trainer " << to_string(trainerindex) << " bad progress\n";
@@ -665,6 +680,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 		newTable->highestlevel = maxlevel;
 		newTable->goodtype = goodtype;
 		newTable->goodEVs = goodEVs;
+		newTable->progresspoint = progresspoint;
 		//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 		newTable->encounters.push_back(newEnc);
 
@@ -1100,7 +1116,7 @@ static bool ParseEncounterDetails(json_value* encdetailblock, string pokemonname
 	__int64 chance = FindValueInObjectByKey(encdetailblock, "chance")->u.integer;
 	__int64 maxlevel = FindValueInObjectByKey(encdetailblock, "max_level")->u.integer;
 	__int64 minlevel = FindValueInObjectByKey(encdetailblock, "min_level")->u.integer;
-	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, walkstring, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs, 0, "");
+	RegisterEncounter(chance, minlevel, maxlevel, pokemonname, placename, walkstring, method_index, version_index, iFile, filterReason, warning, goodtype, goodEVs, TRAINERINDEX_NOTATRAINER, "", PROGRESSPOINT_DONTCHECK);
 	return true;
 }
 
@@ -1182,11 +1198,11 @@ static bool IsPokemonInEVRange(string version, string pokemonname)
 	return true;
 }
 
-static void ParseRematchDetails(string pokemonname, string level, string placename, string trainername, int version_index, int iFile, int trainerindex)
+static void ParseRematchDetails(string pokemonname, string level, string placename, string trainername, int version_index, int iFile, int trainerindex, int progresspoint)
 {
 	int result = 0;
 	StringFlagsContainStringFlag("rematch", g_settings.methodflags, g_methods[METHOD_REMATCH]->internalname, g_methods[METHOD_REMATCH]->flag, &result);
-	if (result != 0)
+	if (result != 2)
 		return;
 
 	bool filterReason = Reason_None;
@@ -1206,7 +1222,7 @@ static void ParseRematchDetails(string pokemonname, string level, string placena
 		goodtype = IsPokemonMatchingType(g_games[version_index]->internalname, g_settings.pkmnrequiretypeflags, pokemonname, &warning);
 	}
 	bool goodEVs = IsPokemonInEVRange(g_games[version_index]->internalname, pokemonname);
-	RegisterEncounter(100, stoi(level), stoi(level), pokemonname, placename, "", METHOD_REMATCH, version_index, iFile, filterReason, warning, goodtype, goodEVs, trainerindex, trainername);
+	RegisterEncounter(100, stoi(level), stoi(level), pokemonname, placename, "", METHOD_REMATCH, version_index, iFile, filterReason, warning, goodtype, goodEVs, trainerindex, trainername, progresspoint);
 }
 
 static bool GameHasProgressFile(int index)
@@ -1527,6 +1543,7 @@ static int ParseTrainerFile(int iFile, string placename)
 	ifstream ReadFile(trainerpath);
 	string textLine;
 	int trainerindex = 1;
+	int progresspoint = PROGRESSPOINT_DONTCHECK;
 	while (getline(ReadFile, textLine))
 	{
 		string str1;
@@ -1550,16 +1567,17 @@ static int ParseTrainerFile(int iFile, string placename)
 					{
 						for (int j = 0; j < relevantgames.size(); j++)
 						{
-							ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, relevantgames[j], iFile, trainerindex);
+							ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, relevantgames[j], iFile, trainerindex, progresspoint);
 						}
 					}
 					else
-						ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, g_settings.wantedgame_index, iFile, trainerindex);
+						ParseRematchDetails(mondata[i], mondata[i + 1], placename, trainername, g_settings.wantedgame_index, iFile, trainerindex, progresspoint);
 				}
 			}
 
 			//clear out data for next trainer block
 			trainername = "";
+			progresspoint = PROGRESSPOINT_DONTCHECK;
 			insidetrainerblock = false;
 			foundtargetversion = false;
 			relevantgames.clear();
@@ -1588,6 +1606,10 @@ static int ParseTrainerFile(int iFile, string placename)
 					foundtargetversion = true;
 					continue;
 				}
+			}
+			else if (str1.find("progresspoint:") != string::npos)
+			{
+				progresspoint = stoi(str1.substr(14));//"progresspoint:" is 14 chars
 			}
 			//pokemon data - line tells one of the pokemon the trainer has
 			else if (str1.find(",") != string::npos)
@@ -2076,6 +2098,10 @@ static void TablePostProcess()
 				break;
 			}
 		}
+		if (table.progresspoint != PROGRESSPOINT_DONTCHECK)
+			for (EncounterTable& table2 : maintables)
+				if (table.progresspoint < table2.progresspoint && table.trainername == table2.trainername)
+					table.filterReason = Reason_TeamSuperceded;
 	}
 }
 
@@ -2278,7 +2304,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		if (allgames || game->generation == 3)
 		{
 			ImGui::CheckboxFlags("Rematch", &methodflags, MethodFilterFlags_Rematch);
-			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)\nOnly final versions of opponent teams are shown.");
+			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)\nOnly infinitely rematchable versions of teams are shown.");
 		}
 
 		if (allgames || game->generation == 5)
@@ -2869,7 +2895,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{
 			vector<Party> parties;
 			//trainers that use new teams when rematched
-			for (int i = 1; i <= 6; i++)
+			for (int i = 2; i <= 6; i++)
 			{
 				string rematchpath = g_pkmndatapath + "frlgtrainerdata/rematch" + to_string(i) + ".csv";
 				struct stat filestatus;
@@ -2895,7 +2921,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					Party newParty;
 					newParty.code_name = partyName;
 					newParty.map_num = stoi(mapName);
-					newParty.progress_indicator = i;
+					newParty.progresspoint = i;
 					parties.push_back(newParty);
 				}
 				ReadFile.close();
@@ -2948,7 +2974,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 							Party newParty;
 							newParty.code_name = partyName;
 							newParty.map_num = stoi(mapName);
-							newParty.progress_indicator = 0;
+							newParty.progresspoint = PROGRESSPOINT_DONTCHECK;
 							parties.push_back(newParty);
 						}
 					}
@@ -3041,6 +3067,8 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				WriteFile << "{\n";
 				WriteFile << "version:firered\n";
 				WriteFile << "version:leafgreen\n";
+				if (p.progresspoint != PROGRESSPOINT_DONTCHECK)
+					WriteFile << "progresspoint:" << to_string(p.progresspoint) << "\n";
 				for (int iData = 0; iData < p.mondata.size(); iData++)
 					WriteFile << p.mondata[iData] << "\n";
 				WriteFile << "}\n";
@@ -3067,6 +3095,39 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 		{
 			bool wishiwashi = false;
 			bool minior = false;
+			if (table.method_index == METHOD_REMATCH)
+			{
+				if (table.version_index == GAME_FIRERED || table.version_index == GAME_LEAFGREEN)
+				{
+					switch (table.progresspoint)
+					{
+					case 0:
+						//trainer doesn't change team
+						break;
+					case 1:
+						//trainer's original team if they're one that eventually changes their team. we don't represent this properly in data. should be unused.
+						assert(0);
+						break;
+					case 2:
+						ImGui::Text("Available immediately after obtaining Vs. Seeker");
+						break;
+					case 3:
+						ImGui::Text("Available after reaching Celadon City");
+						break;
+					case 4:
+						ImGui::Text("Available after reaching Fuchsia City");
+						break;
+					case 5:
+						ImGui::Text("Available after becoming Champion");
+						break;
+					case 6:
+						ImGui::Text("Available after giving the Sapphire to Celio");
+						break;
+					}
+				}
+				//diamond/pearl...
+				//platinum...
+			}
 			if (ImGui::BeginTable("showencountertable", table.method_index == METHOD_REMATCH ? 4 : 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
 				if (table.method_index != METHOD_REMATCH)
@@ -3303,7 +3364,7 @@ void ParseProgressFile(int game_index)
 
 			if (str1.find("remove ") != string::npos)
 			{
-				size_t s2End = str1.find(" ", 7);
+				size_t s2End = str1.find(" ", 7);//"remove " is 7 chars
 				string str2 = str1.substr(7, s2End - 7);
 				g_milestones[lastmilestoneslot].removes.push_back(stoi(str2));
 				continue;
@@ -3311,7 +3372,7 @@ void ParseProgressFile(int game_index)
 
 			if (str1.find("cancel ") != string::npos)
 			{
-				size_t s2End = str1.find(" ", 7);
+				size_t s2End = str1.find(" ", 7);//"cancel " is 7 chars
 				string str2 = str1.substr(7, s2End - 7);
 				int idtocancel = stoi(str2);
 				for (Milestone ms : g_milestones)
@@ -3327,6 +3388,12 @@ void ParseProgressFile(int game_index)
 					}
 				}
 				g_milestones[lastmilestoneslot].cancels.push_back(stoi(str2));
+				continue;
+			}
+
+			if (str1.find("progresspoint ") != string::npos)
+			{
+				g_milestones[lastmilestoneslot].progresspoint = stoi(str1.substr(14));//"progresspoint " is 14 chars
 				continue;
 			}
 

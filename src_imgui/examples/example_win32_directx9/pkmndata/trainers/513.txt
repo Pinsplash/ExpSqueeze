@@ -3,15 +3,7 @@ sParty_SwimmerFemaleAmara
 {
 version:firered
 version:leafgreen
-seel,36
-seel,36
-dewgong,36
-}
-//2
-sParty_SwimmerFemaleAmara
-{
-version:firered
-version:leafgreen
+progresspoint:2
 seel,36
 seel,36
 dewgong,36

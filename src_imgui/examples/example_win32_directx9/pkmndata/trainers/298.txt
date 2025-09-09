@@ -3,15 +3,7 @@ sParty_LassCrissy
 {
 version:firered
 version:leafgreen
-paras,31
-paras,31
-parasect,31
-}
-//2
-sParty_LassCrissy
-{
-version:firered
-version:leafgreen
+progresspoint:2
 paras,31
 paras,31
 parasect,31

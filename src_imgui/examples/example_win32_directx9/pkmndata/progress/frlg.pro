@@ -1,3 +1,5 @@
+//NOTE: this progress file does not detail which trainers, if any, are only accessible after beating other trainers as the value is perceived as too low for how much work that would entail. There are also too many checkboxes for my liking as is.
+
 //game progress description file. see gen1.pro for explanations of most features.
 checkpoint Battled Rival for the first time
 unlock walk
@@ -23,7 +25,8 @@ checkpoint Defeated Bug Catcher James (Route 3)
 327//mt-moon-b2f
 
 oneway 1 Crossed over final ledge on Route 4
-298//kanto-route-4
+//single trainer on route requires surf
+298 exclude rematch//kanto-route-4
 281//cerulean-city
 346//cerulean-gym
 
@@ -42,6 +45,10 @@ unlock old-rod
 349//vermilion-city-port
 305//kanto-route-11
 317//digletts-cave
+
+checkbox 25 Obtained Vs. Seeker
+unlock rematch
+progresspoint 2
 
 checkbox 2 S.S. Anne departed
 remove 349//vermilion-city-port
@@ -84,6 +91,9 @@ checkbox 10 Defeated Gamer Rich or Lass Julia (Route 8)
 309//kanto-route-16
 //doing this from west grants us nothing new
 
+checkbox 24 Reached Celadon City
+progresspoint 3
+
 checkbox 9 Obtained Rainbow Badge
 329 exclude walk//kanto-route-23
 
@@ -111,28 +121,22 @@ unlock super-rod
 //bikers are avoidable
 307//kanto-route-14
 308//kanto-route-15
+
+checkbox 24 Reached Fuchsia City
+progresspoint 4
 311 exclude surf,old-rod,good-rod,super-rod//kanto-route-18
 284//fuchsia-city
 unlock good-rod
 277//kanto-sea-route-19
 
-checkbox 4 Obtained Bicycle
+checkbox 13 Obtained Bicycle
 310//kanto-route-17
 311//kanto-route-18
 
 checkpoint Obtained ability to use Surf
-//cancel several boxes because this checkpoint means we reached Fuchsia and all of those places are now reachable while avoiding any battles
-//don't cancel #4 because routes 16 and 17 remain unreachable until you get a bicycle (which is never required)
-cancel 3
-cancel 7
-cancel 8
-cancel 4//explained this in gen1.pro
-//put their contents here too
-276//kanto-route-12
-unlock super-rod
-306//kanto-route-13
-307//kanto-route-14
-308//kanto-route-15
+cancel 13//explained this in gen1.pro
+cancel 24
+progresspoint 4
 311 exclude surf,old-rod,good-rod,super-rod//kanto-route-18
 284//fuchsia-city
 unlock good-rod
@@ -152,16 +156,18 @@ unlock surf
 344//pokemon-mansion-b1f
 312//kanto-sea-route-21
 330//power-plant
+//single trainer on route requires surf
+298//kanto-route-4
 
 //explained this in gen1.pro
-checkbox 13 Obtained Bicycle
+checkbox 26 Obtained Bicycle
 310//kanto-route-17
 311//kanto-route-18
 
 checkbox 11 Obtained Marsh Badge and haven't defeated Giovanni
 329//kanto-route-23
 
-checkbox 14 Traveled to Sevii Islands
+checkbox 14 Traveled to Sevii Islands (first visit)
 561//one-island
 512//kindle-road
 513//treasure-beach
@@ -197,6 +203,9 @@ cancel 11
 checkpoint Obtained Strength HM
 318//kanto-victory-road-2f
 319//kanto-victory-road-3f
+
+checkpoint Became Champion
+progresspoint 5
 
 checkpoint Obtained National Pokedex
 561//one-island
@@ -259,7 +268,12 @@ checkbox 22 Defeated Hiker Earl (Water Path)
 checkbox 23 Solved Tanoby Key puzzle
 450//tanoby-chambers
 
-checkpoint Saved Lostelle and Delivered the Ruby and Sapphire to Celio
+checkbox 27 Delivered the Sapphire to Celio
+progresspoint 6
+
+checkpoint Saved Lostelle and Delivered the Sapphire to Celio
+cancel 27
+progresspoint 6
 323//cerulean-cave-1f
 324//cerulean-cave-2f
 325//cerulean-cave-b1f

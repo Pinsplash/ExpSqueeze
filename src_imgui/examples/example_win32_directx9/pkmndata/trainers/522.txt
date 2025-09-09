@@ -3,6 +3,7 @@ sParty_PsychicJaclyn2
 {
 version:firered
 version:leafgreen
+progresspoint:6
 natu,52
 slowbro,52
 kadabra,54
