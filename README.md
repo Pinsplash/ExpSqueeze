@@ -5,14 +5,17 @@ ExpSqueeze finds the average amount of experience in Pokemon that can be gained 
 
 * Accounting for factors that change encounter tables, like the time of day.
 * Ability to filter by the types of pokemon.
+* Rematchable trainers.
 * Adjusting calculated experience when repels are used.
 * Filtering and sorting by EV yields.
+* Filter tables by what part of the game you're in.
 * And a lot more!
 
 # Acknowledgements
 * `location-area` (encounter tables): [PokeAPI](https://github.com/PokeAPI/api-data/) (fixed up considerably)
 * `pokemon` (species data, used for type filtering): [PokeAPI](https://github.com/PokeAPI/api-data/)
-* `exp-gain-stats` (yield stats): Adapted from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield_(Generation_III))
+* `exp-gain-stats` (yield stats): Adapted from Bulbapedia ([1](https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield_(Generation_III)), [2](https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_in_Generation_I))
+* `frlgtrainerdata` and `trainers` (data about trainer rematches): Mostly adapted from pret disassembly projects, some from Bulbapedia.
 * `progress` (data for progress filtering): Self made
 * `swarm-data` (Generation 3 and 5 swarm encounter tables): Adapted from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Mass_outbreak)
 * UI: [Imgui](https://github.com/ocornut/imgui)
