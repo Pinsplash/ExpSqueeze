@@ -158,6 +158,10 @@ checkpoint Defeated Cooltrainer Beth (Route 26)
 318//kanto-victory-road-2f
 319//kanto-victory-road-3f
 
+checkpoint Became Champion
+//rematch league
+328//indigo-plateau
+
 checkpoint Deboarded the S.S. Aqua
 349//vermilion-city-ss-anne-dock
 282//vermilion-city

@@ -2093,12 +2093,15 @@ static void TablePostProcess()
 			table.filterReason = Reason_NoGoodTypes;
 		if (!table.goodEVs)
 			table.filterReason = Reason_NoGoodEVs;
-		for (int i = 0; i < OFFSET_TOTAL + 1; i++)
+		if (table.method_index != METHOD_REMATCH)
 		{
-			if (table.averageYields[i] < g_settings.minAvgEV[i] || table.averageYields[i] > g_settings.maxAvgEV[i])
+			for (int i = 0; i < OFFSET_TOTAL + 1; i++)
 			{
-				table.filterReason = Reason_BadEVs;
-				break;
+				if (table.averageYields[i] < g_settings.minAvgEV[i] || table.averageYields[i] > g_settings.maxAvgEV[i])
+				{
+					table.filterReason = Reason_BadEVs;
+					break;
+				}
 			}
 		}
 		if (table.progresspoint != PROGRESSPOINT_DONTCHECK)
@@ -2304,7 +2307,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				"\"Headbutt Low\" is:\n-\"Low chances of battle\" on Bulba individual route pages\n-\"Moderate-encounter trees\" on Bulba's \"Headbutt tree\" page\n-\"Headbutt - Special Trees\" on Serebii");
 		}
 
-		if (allgames || game->generation == 3)
+		if (allgames || game->generation <= 3)
 		{
 			ImGui::CheckboxFlags("Rematch", &methodflags, MethodFilterFlags_Rematch);
 			ImGui::SameLine(); HelpMarker("Rematching trainers through whatever means is applicable. (Trainer's Eyes, Vs. Seeker, etc)\nOnly infinitely rematchable versions of teams are shown.");
@@ -2496,7 +2499,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{0.0f, 0.0f, 0.8f} };
 	if (ImGui::CollapsingHeader("Effort Values", ImGuiTreeNodeFlags_None))
 	{
-		ImGui::Text("Average EV range filtering: Tables must have average EV yields\nin the defined ranges. This may allow you to EV train faster by\nfinding places with multiple Pokemon who yield the desired stat.");
+		ImGui::Text("Average EV range filtering: Tables must have average EV yields\nin the defined ranges. This may allow you to EV train faster by\nfinding places with multiple Pokemon who yield the desired stat.\nDoes not apply to trainer rematches.");
 		static std::vector<const char*> Gen1avgstatLabels = { "%.f\nHiP", "%.f\nAtk", "%.f\nDef", "%.f\nSpc", "%.f\nSpD", "%.f\nSpe", " %.f\nTotal" };
 		static std::vector<const char*> Gen2avgstatLabels = { "%.f\nHiP", "%.f\nAtk", "%.f\nDef", "%.f\nSpA", "%.f\nSpD", "%.f\nSpe", " %.f\nTotal" };
 		static std::vector<const char*> Gen3avgstatLabels = { "%.1f\nHiP", "%.1f\nAtk", "%.1f\nDef", "%.1f\nSpA", "%.1f\nSpD", "%.1f\nSpe", " %.1f\nTotal" };

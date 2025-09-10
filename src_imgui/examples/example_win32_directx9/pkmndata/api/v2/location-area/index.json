@@ -1084,6 +1084,10 @@
             "url": "/api/v2/location-area/327/"
         },
         {
+            "name": "indigo-plateau",
+            "url": "/api/v2/location-area/328/"
+        },
+        {
             "name": "kanto-route-23-area",
             "url": "/api/v2/location-area/329/"
         },

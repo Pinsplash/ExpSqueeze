@@ -206,8 +206,12 @@ checkpoint Obtained Strength HM
 
 checkpoint Became Champion
 progresspoint 5
+//rematch league
+328 exclude remnum:11,remnum:12,remnum:13//indigo-plateau
 
 checkpoint Obtained National Pokedex
+//rematch league
+328 exclude remnum:8,remnum:9,remnum:10//indigo-plateau
 561//one-island
 512//kindle-road
 513//treasure-beach

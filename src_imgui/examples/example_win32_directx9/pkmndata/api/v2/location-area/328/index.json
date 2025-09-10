@@ -1,0 +1,21 @@
+{
+    "comment": "placeholder, trainer data",
+
+    "encounter_method_rates": [],
+    "game_index": 79,
+    "id": 328,
+    "location": {
+        "name": "indigo-plateau"
+    },
+    "name": "indigo-plateau",
+    "names": [
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Indigo Plateau"
+        }
+    ],
+    "pokemon_encounters": []
+}

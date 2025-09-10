@@ -236,3 +236,5 @@ checkpoint Became Champion
 323//cerulean-cave-1f
 324//cerulean-cave-2f
 325//cerulean-cave-b1f
+//rematch league
+328//indigo-plateau
