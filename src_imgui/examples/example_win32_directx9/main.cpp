@@ -3633,8 +3633,8 @@ static void RegisterGames()
 	RegisterGame("FireRed", "firered", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
 	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
 	//g4
-	RegisterGame("Diamond", "diamond", "gen4_exp.csv", "", 4, { 1, 183 });
-	RegisterGame("Pearl", "pearl", "gen4_exp.csv", "", 4, { 1, 183 });
+	RegisterGame("Diamond", "diamond", "gen4_exp.csv", "diamondpearl.pro", 4, { 1, 183 });
+	RegisterGame("Pearl", "pearl", "gen4_exp.csv", "diamondpearl.pro", 4, { 1, 183 });
 	RegisterGame("Platinum", "platinum", "gen4_exp.csv", "", 4, { 1, 183 });
 	RegisterGame("HeartGold", "heartgold", "gen4_exp.csv", "", 4, { 184, 349 });
 	RegisterGame("SoulSilver", "soulsilver", "gen4_exp.csv", "", 4, { 184, 349 });
