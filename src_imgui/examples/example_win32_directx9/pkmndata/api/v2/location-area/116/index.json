@@ -36,14 +36,14 @@
         "name": "ruin-maniac-cave",
         "url": "/api/v2/location/22/"
     },
-    "name": "ruin-maniac-cave-10-25-different-unown-caught",
+    "name": "ruin-maniac-cave-10-25-different-unown-seen",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Ruin Maniac Cave (10\u201325 different Unown caught)"
+            "name": "Ruin Maniac Cave (10\u201325 different Unown seen)"
         },
         {
             "language": {

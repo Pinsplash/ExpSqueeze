@@ -36,21 +36,21 @@
         "name": "mt-coronet",
         "url": "/api/v2/location/10/"
     },
-    "name": "mt-coronet-4f-small-room",
+    "name": "mt-coronet-4f-l-room",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Mount Coronet (4F small room)"
+            "name": "Mount Coronet (4F L room)"
         },
         {
             "language": {
                 "name": "fr",
                 "url": "/api/v2/language/5/"
             },
-            "name": "Mont Couronn\u00e9 (3e \u00e9t., petite salle)"
+            "name": "Mont Couronn\u00e9 (3e \u00e9t., L salle)"
         }
     ],
     "pokemon_encounters": [

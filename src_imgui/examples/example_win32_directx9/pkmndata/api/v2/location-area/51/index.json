@@ -152,14 +152,14 @@
         "name": "sinnoh-victory-road",
         "url": "/api/v2/location/13/"
     },
-    "name": "sinnoh-victory-road-inside-b1f",
+    "name": "sinnoh-victory-road-back-main",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road (inside B1F)"
+            "name": "Victory Road (Back Main Room)"
         },
         {
             "language": {

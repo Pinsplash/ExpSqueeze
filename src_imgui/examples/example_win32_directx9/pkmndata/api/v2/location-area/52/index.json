@@ -36,14 +36,14 @@
         "name": "sinnoh-victory-road",
         "url": "/api/v2/location/13/"
     },
-    "name": "sinnoh-victory-road-inside",
+    "name": "sinnoh-victory-road-back-entrance",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Victory Road (inside)"
+            "name": "Victory Road (Back Area Entrance)"
         },
         {
             "language": {

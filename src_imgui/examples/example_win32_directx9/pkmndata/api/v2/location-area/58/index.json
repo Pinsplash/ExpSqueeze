@@ -36,14 +36,14 @@
         "name": "stark-mountain",
         "url": "/api/v2/location/16/"
     },
-    "name": "stark-mountain-entrance",
+    "name": "stark-mountain-first-room",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Stark Mountain entrance"
+            "name": "Stark Mountain (first room)"
         },
         {
             "language": {

@@ -123,14 +123,14 @@
         "name": "iron-island",
         "url": "/api/v2/location/24/"
     },
-    "name": "iron-island-area",
+    "name": "iron-island-outside",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Iron Island area"
+            "name": "Iron Island (outside)"
         },
         {
             "language": {

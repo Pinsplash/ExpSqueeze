@@ -36,14 +36,14 @@
         "name": "maniac-tunnel",
         "url": "/api/v2/location/180/"
     },
-    "name": "maniac-tunnel-26-plus-different-unown-caught",
+    "name": "maniac-tunnel-26-plus-different-unown-seen",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Maniac Tunnel (26+ different Unown caught)"
+            "name": "Maniac Tunnel (26+ different Unown seen)"
         },
         {
             "language": {

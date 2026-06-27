@@ -56,11 +56,11 @@
             "url": "/api/v2/location-area/13/"
         },
         {
-            "name": "mt-coronet-exterior-snowfall",
+            "name": "mt-coronet-exterior",
             "url": "/api/v2/location-area/14/"
         },
         {
-            "name": "mt-coronet-exterior-blizzard",
+            "name": "mt-coronet-4f-small-room",
             "url": "/api/v2/location-area/15/"
         },
         {
@@ -68,7 +68,7 @@
             "url": "/api/v2/location-area/16/"
         },
         {
-            "name": "mt-coronet-4f-small-room",
+            "name": "mt-coronet-4f-l-room",
             "url": "/api/v2/location-area/17/"
         },
         {
@@ -80,7 +80,7 @@
             "url": "/api/v2/location-area/19/"
         },
         {
-            "name": "mt-coronet-1f-from-exterior",
+            "name": "mt-coronet-tunnel-room",
             "url": "/api/v2/location-area/20/"
         },
         {
@@ -96,76 +96,8 @@
             "url": "/api/v2/location-area/23/"
         },
         {
-            "name": "solaceon-ruins-2f",
+            "name": "solaceon-ruins-area",
             "url": "/api/v2/location-area/30/"
-        },
-        {
-            "name": "solaceon-ruins-1f",
-            "url": "/api/v2/location-area/31/"
-        },
-        {
-            "name": "solaceon-ruins-b1f-a",
-            "url": "/api/v2/location-area/32/"
-        },
-        {
-            "name": "solaceon-ruins-b1f-b",
-            "url": "/api/v2/location-area/33/"
-        },
-        {
-            "name": "solaceon-ruins-b1f-c",
-            "url": "/api/v2/location-area/34/"
-        },
-        {
-            "name": "solaceon-ruins-b2f-a",
-            "url": "/api/v2/location-area/35/"
-        },
-        {
-            "name": "solaceon-ruins-b2f-b",
-            "url": "/api/v2/location-area/36/"
-        },
-        {
-            "name": "solaceon-ruins-b2f-c",
-            "url": "/api/v2/location-area/37/"
-        },
-        {
-            "name": "solaceon-ruins-b3f-a",
-            "url": "/api/v2/location-area/38/"
-        },
-        {
-            "name": "solaceon-ruins-b3f-b",
-            "url": "/api/v2/location-area/39/"
-        },
-        {
-            "name": "solaceon-ruins-b3f-c",
-            "url": "/api/v2/location-area/40/"
-        },
-        {
-            "name": "solaceon-ruins-b3f-d",
-            "url": "/api/v2/location-area/41/"
-        },
-        {
-            "name": "solaceon-ruins-b3f-e",
-            "url": "/api/v2/location-area/42/"
-        },
-        {
-            "name": "solaceon-ruins-b4f-a",
-            "url": "/api/v2/location-area/43/"
-        },
-        {
-            "name": "solaceon-ruins-b4f-b",
-            "url": "/api/v2/location-area/44/"
-        },
-        {
-            "name": "solaceon-ruins-b4f-c",
-            "url": "/api/v2/location-area/45/"
-        },
-        {
-            "name": "solaceon-ruins-b4f-d",
-            "url": "/api/v2/location-area/46/"
-        },
-        {
-            "name": "solaceon-ruins-b5f",
-            "url": "/api/v2/location-area/47/"
         },
         {
             "name": "sinnoh-victory-road-1f",
@@ -180,15 +112,15 @@
             "url": "/api/v2/location-area/50/"
         },
         {
-            "name": "sinnoh-victory-road-inside-b1f",
+            "name": "sinnoh-victory-road-back-main",
             "url": "/api/v2/location-area/51/"
         },
         {
-            "name": "sinnoh-victory-road-inside",
+            "name": "sinnoh-victory-road-back-entrance",
             "url": "/api/v2/location-area/52/"
         },
         {
-            "name": "sinnoh-victory-road-inside-exit",
+            "name": "sinnoh-victory-road-back-exit",
             "url": "/api/v2/location-area/53/"
         },
         {
@@ -204,11 +136,11 @@
             "url": "/api/v2/location-area/56/"
         },
         {
-            "name": "stark-mountain-area",
+            "name": "stark-mountain-exterior",
             "url": "/api/v2/location-area/57/"
         },
         {
-            "name": "stark-mountain-entrance",
+            "name": "stark-mountain-first-room",
             "url": "/api/v2/location-area/58/"
         },
         {
@@ -244,10 +176,6 @@
             "url": "/api/v2/location-area/76/"
         },
         {
-            "name": "turnback-cave-after-pillar-3",
-            "url": "/api/v2/location-area/82/"
-        },
-        {
             "name": "snowpoint-temple-1f",
             "url": "/api/v2/location-area/107/"
         },
@@ -280,15 +208,15 @@
             "url": "/api/v2/location-area/114/"
         },
         {
-            "name": "ruin-maniac-cave-0-9-different-unown-caught",
+            "name": "ruin-maniac-cave-0-9-different-unown-seen",
             "url": "/api/v2/location-area/115/"
         },
         {
-            "name": "ruin-maniac-cave-10-25-different-unown-caught",
+            "name": "ruin-maniac-cave-10-25-different-unown-seen",
             "url": "/api/v2/location-area/116/"
         },
         {
-            "name": "maniac-tunnel-26-plus-different-unown-caught",
+            "name": "maniac-tunnel-26-plus-different-unown-seen",
             "url": "/api/v2/location-area/117/"
         },
         {
@@ -296,7 +224,7 @@
             "url": "/api/v2/location-area/118/"
         },
         {
-            "name": "iron-island-area",
+            "name": "iron-island-outside",
             "url": "/api/v2/location-area/119/"
         },
         {
@@ -324,40 +252,12 @@
             "url": "/api/v2/location-area/125/"
         },
         {
-            "name": "old-chateau-entrance",
+            "name": "old-chateau-area",
             "url": "/api/v2/location-area/126/"
-        },
-        {
-            "name": "old-chateau-dining-room",
-            "url": "/api/v2/location-area/127/"
-        },
-        {
-            "name": "old-chateau-2f-private-room",
-            "url": "/api/v2/location-area/128/"
-        },
-        {
-            "name": "old-chateau-2f",
-            "url": "/api/v2/location-area/129/"
-        },
-        {
-            "name": "old-chateau-2f-leftmost-room",
-            "url": "/api/v2/location-area/130/"
-        },
-        {
-            "name": "old-chateau-2f-left-room",
-            "url": "/api/v2/location-area/131/"
-        },
-        {
-            "name": "old-chateau-2f-middle-room",
-            "url": "/api/v2/location-area/132/"
         },
         {
             "name": "old-chateau-2f-right-room",
             "url": "/api/v2/location-area/133/"
-        },
-        {
-            "name": "old-chateau-2f-rightmost-room",
-            "url": "/api/v2/location-area/134/"
         },
         {
             "name": "lake-verity-before-galactic-intervention",

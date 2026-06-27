@@ -36,14 +36,14 @@
         "name": "stark-mountain",
         "url": "/api/v2/location/16/"
     },
-    "name": "stark-mountain-area",
+    "name": "stark-mountain-exterior",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Stark Mountain exterior"
+            "name": "Stark Mountain (Exterior)"
         },
         {
             "language": {

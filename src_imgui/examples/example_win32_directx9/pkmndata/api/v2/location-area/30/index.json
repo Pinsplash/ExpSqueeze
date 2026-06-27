@@ -36,21 +36,21 @@
         "name": "solaceon-ruins",
         "url": "/api/v2/location/12/"
     },
-    "name": "solaceon-ruins-2f",
+    "name": "solaceon-ruins-area",
     "names": [
         {
             "language": {
                 "name": "en",
                 "url": "/api/v2/language/9/"
             },
-            "name": "Solaceon Ruins (2F)"
+            "name": "Solaceon Ruins"
         },
         {
             "language": {
                 "name": "fr",
                 "url": "/api/v2/language/5/"
             },
-            "name": "Ruines Bonville (\u00e9tage)"
+            "name": "Ruines Bonville"
         }
     ],
     "pokemon_encounters": [
