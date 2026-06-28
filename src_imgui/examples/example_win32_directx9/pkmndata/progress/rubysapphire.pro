@@ -57,7 +57,7 @@ checkpoint Defeated Cooltrainer Brooke (Route 111)
 406//hoenn-route-114
 356//meteor-falls-1f
 
-checkpoint Defeated Team Magma at Mt. Chimney
+checkpoint Defeated Team Magma/Aqua at Mt. Chimney
 417//mt-chimney
 366//jagged-pass
 //no wild pokemon in lavaridge town
@@ -114,7 +114,7 @@ checkbox 4 Obtained ability to use Cut
 408//hoenn-route-116
 415//hoenn-route-123
 
-checkpoint Defeated Tabitha at Magma Hideout
+checkpoint Defeated Tabitha/Matt at Magma/Aqua Hideout
 416 exclude walk//hoenn-route-124
 418//hoenn-route-125
 353//mossdeep-city
@@ -138,7 +138,7 @@ checkpoint Obtained ability to use Dive
 354//sootopolis-city
 376//seafloor-cavern
 
-checkpoint Defeated Maxie at Seafloor Cavern
+checkpoint Defeated Maxie/Archie at Seafloor Cavern
 377//cave-of-origin-entrance
 378//cave-of-origin-1f
 379//cave-of-origin-b1f
