@@ -56,6 +56,7 @@ checkpoint Obtained Bicycle
 
 checkpoint Obtained Vs. Seeker
 unlock rematch
+progresspoint 2
 11//mt-coronet-1f-route-207
 150//sinnoh-route-208
 //TODO: this excludes Fisher Cody, Hiker Alexander (even in platinum and bdsp)
@@ -67,6 +68,7 @@ unlock good-rod
 checkpoint Defeated Twins Emma & Lil (Route 209)
 30//solaceon-ruins
 157//sinnoh-route-210-south-towards-solaceon-town
+//TODO: This excludes the ninja boys just north of the psyduck
 165//sinnoh-route-215
 152//lost-tower-1f
 153//lost-tower-2f
@@ -110,7 +112,7 @@ checkpoint Defeated Bird Keeper Brianna (North Route 210)
 22//mt-coronet-1f-route-211
 
 checkpoint Defeated Fantina
-progresspoint 2
+progresspoint 3
 150//sinnoh-route-208
 //TODO: this excludes Hiker Alexander (even in platinum and bdsp)
 169//sinnoh-route-219
@@ -195,6 +197,7 @@ checkpoint Defeated Cyrus
 
 checkpoint Defeated Dialga/Palkia
 137//lake-valor
+progresspoint 4
 
 checkpoint Defeated Sailor Luther
 4//sunyshore-city
@@ -222,6 +225,7 @@ checkpoint Defeated Black Belt Miles (Victory Road 1F)
 checkpoint Became Champion
 //rematches
 5//sinnoh-pokemon-league
+progresspoint 5
 
 checkpoint Obtained National Pokedex
 52//sinnoh-victory-road-back-entrance
@@ -265,3 +269,6 @@ checkbox 7 Defeated Ace Trainer Meagan (Route 228), Psychic Daisy, or Bird Keepe
 57//stark-mountain-exterior
 58//stark-mountain-first-room
 59//stark-mountain-inside
+
+checkpoint Defeated Heatran
+progresspoint 6

@@ -308,10 +308,10 @@ struct Party
 	//0 = not a trainer that changes teams
 	//1 = original team
 	//2 = obtained vs seeker
-	//3 = reached celadon city
-	//4 = reached fuchsia city
+	//3 = reached celadon city (frlg)/defeated fantina (dp)/reached celestic town (pt)
+	//4 = reached fuchsia city (frlg)/defeated dialga/palkia/giratina (dppt)
 	//5 = became champion
-	//6 = gave sapphire to celio
+	//6 = gave sapphire to celio (frlg)/defeated heatran (dppt)
 	//none of these are possible to do out of order (except obtaining the vs seeker which is itself optional, but that's irrelevant)
 	int progresspoint = PROGRESSPOINT_DONTCHECK;
 	vector<string> mondata;
@@ -2898,7 +2898,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		if (ImGui::Button("Make FRLG Trainer Data"))
 		{
 			vector<Party> parties;
-			//trainers that use new teams when rematched
+			//Iterate through the rematchX.csv files. For each one, make a new Party struct for every line of the file.
 			for (int i = 2; i <= 6; i++)
 			{
 				string rematchpath = g_pkmndatapath + "frlgtrainerdata/rematch" + to_string(i) + ".csv";
@@ -2930,7 +2930,8 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				}
 				ReadFile.close();
 			}
-			//all overworld trainers
+			//Read overworld_party_names.txt. Essentially the same process as creating Party structs from the first step, but we check for duplicates.
+			//overworld_party_names.txt tells us all rematchable trainers, but not which ones upgrade their teams, which is the job of the rematchX.csv files.
 			string rematchpath = g_pkmndatapath + "frlgtrainerdata/overworld_party_names.txt";
 			struct stat filestatus;
 			if (stat(rematchpath.c_str(), &filestatus) != 0)
@@ -2991,7 +2992,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				}
 				ReadFile.close();
 			}
-			//find pokemon in teams from combined list
+			//Now that we've obtained all the data about what parties should exist, extract the data about the Pokemon in the parties by referring to party_defs.txt.
 			string partypath = g_pkmndatapath + "frlgtrainerdata/party_defs.txt";
 			if (stat(partypath.c_str(), &filestatus) != 0)
 			{
@@ -3050,7 +3051,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					ReadFile.close();
 				}
 			}
-			//sort parties by map number
+			//Sort Party list by table number, then iterate through Party list, and write data out to files, with a new file being made every time the party number changes from what it was on the last iteration.
 			std::sort(parties.begin(), parties.end(), compareByPartyMap);
 			//write to files
 			int placeinfile = 1;
@@ -3082,6 +3083,93 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			}
 			WriteFile.close();
 		}
+		if (ImGui::Button("Make DP Trainer Data"))
+		{
+			vector<Party> parties;
+			//Iterate through the rematchX.txt files. For each one, make a new Party struct for every line of the file.
+			//For DP the first file tells us all base teams (includes all that are rematchable and some who are not, also doesn't include some numbered guys who are incidentally not rematchable)
+			for (int i = 1; i <= 6; i++)
+			{
+				string rematchpath = g_pkmndatapath + "dptrainerdata/rematch" + to_string(i) + ".txt";
+				struct stat filestatus;
+				if (stat(rematchpath.c_str(), &filestatus) != 0)
+				{
+					cout << "missing " << to_string(i) << "\n";
+					break;
+				}
+				ifstream ReadFile(rematchpath);
+				string textLine;
+				while (getline(ReadFile, textLine))
+				{
+					string str1;
+					StripComment(textLine, &str1);
+
+					if (str1.empty())
+						continue;
+
+					Party newParty;
+					newParty.code_name = textLine;
+					//map number will come from the name of the bulba file
+					newParty.progresspoint = i = 1 ? PROGRESSPOINT_DONTCHECK : i;
+					parties.push_back(newParty);
+				}
+				ReadFile.close();
+			}
+			//trainer_locations_2.txt tells the locations of trainers
+			string rematchpath = g_pkmndatapath + "dptrainerdata/trainer_locations_2.txt";
+			struct stat filestatus;
+			if (stat(rematchpath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing overworld_party_names.txt\n";
+			}
+			else
+			{
+				ifstream ReadFile(rematchpath);
+				string textLine;
+				string mapName;
+				while (getline(ReadFile, textLine))
+				{
+					string str1;
+					StripComment(textLine, &str1);
+
+					if (str1.empty())
+						continue;
+
+					//check if string is a number
+					if (strspn(str1.c_str(), "0123456789") == str1.size())
+					{
+						mapName = str1;
+					}
+					else if (!mapName.empty())
+					{
+						string partyName = str1;
+						//we expect to find something this time
+						bool found = false;
+						for (Party party : parties)
+						{
+							if (party.code_name == partyName)
+							{
+								found = true;
+								party.map_num = stoi(mapName);
+								break;
+							}
+						}
+						if (!found)
+						{
+							std::cout << "Party " << partyName << " was in trainer_locations_2.txt but not in any rematchX file\n";
+							assert(0);
+						}
+					}
+					else
+					{
+						cout << "Got party name, but no mapname: '" << textLine << "'\n";
+						break;
+					}
+
+				}
+				ReadFile.close();
+			}
+		}
 #endif
 	}
 }
@@ -3101,36 +3189,46 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 			bool minior = false;
 			if (table.method_index == METHOD_REMATCH)
 			{
-				if (table.version_index == GAME_FIRERED || table.version_index == GAME_LEAFGREEN)
+				switch (table.progresspoint)
 				{
-					switch (table.progresspoint)
-					{
-					case 0:
-						//trainer doesn't change team
-						break;
-					case 1:
-						//trainer's original team if they're one that eventually changes their team. we don't represent this properly in data. should be unused.
-						assert(0);
-						break;
-					case 2:
-						ImGui::Text("Available immediately after obtaining Vs. Seeker");
-						break;
-					case 3:
+				case 0:
+					//trainer doesn't change team
+					break;
+				case 1:
+					//trainer's original team if they're one that eventually changes their team. we don't represent this properly in data. should be unused.
+					assert(0);
+					break;
+				case 2:
+					ImGui::Text("Available immediately after obtaining Vs. Seeker");
+					break;
+				case 3:
+					if (table.version_index == GAME_PLATINUM)
+						ImGui::Text("Available after reaching Celestic Town");
+					else if (table.version_index == GAME_DIAMOND || table.version_index == GAME_PEARL)
+						ImGui::Text("Available after defeating Fantina");
+					else
 						ImGui::Text("Available after reaching Celadon City");
-						break;
-					case 4:
+					break;
+				case 4:
+					if (table.version_index == GAME_FIRERED || table.version_index == GAME_LEAFGREEN)
 						ImGui::Text("Available after reaching Fuchsia City");
-						break;
-					case 5:
-						ImGui::Text("Available after becoming Champion");
-						break;
-					case 6:
+					else if (table.version_index == GAME_PLATINUM)
+						ImGui::Text("Available after defeating Giratina");
+					else if (table.version_index == GAME_DIAMOND)
+						ImGui::Text("Available after defeating Dialga");
+					else
+						ImGui::Text("Available after defeating Palkia");
+					break;
+				case 5:
+					ImGui::Text("Available after becoming Champion");
+					break;
+				case 6:
+					if (table.version_index == GAME_FIRERED || table.version_index == GAME_LEAFGREEN)
 						ImGui::Text("Available after giving the Sapphire to Celio");
-						break;
-					}
+					else
+						ImGui::Text("Available after defeating Heatran");
+					break;
 				}
-				//diamond/pearl...
-				//platinum...
 			}
 			if (ImGui::BeginTable("showencountertable", table.method_index == METHOD_REMATCH ? 4 : 6, ImGuiTableFlags_Hideable | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable))
 			{
@@ -3627,8 +3725,8 @@ static void RegisterGames()
 	RegisterGame("Silver", "silver", "gen2_exp.csv", "silver.pro", 2, { 184, 349, 798, 798 });
 	RegisterGame("Crystal", "crystal", "gen2_exp.csv", "crystal.pro", 2, { 184, 349, 798, 798 });
 	//g3
-	RegisterGame("Ruby", "ruby", "gen3_exp.csv", "ruby.pro", 3, { 350, 434 });
-	RegisterGame("Sapphire", "sapphire", "gen3_exp.csv", "sapphire.pro", 3, { 350, 434 });
+	RegisterGame("Ruby", "ruby", "gen3_exp.csv", "rubysapphire.pro", 3, { 350, 434 });
+	RegisterGame("Sapphire", "sapphire", "gen3_exp.csv", "rubysapphire.pro", 3, { 350, 434 });
 	RegisterGame("Emerald", "emerald", "gen3_exp.csv", "emerald.pro", 3, { 350, 441 });
 	RegisterGame("FireRed", "firered", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
 	RegisterGame("LeafGreen", "leafgreen", "gen3_exp.csv", "frlg.pro", 3, { 258, 349, 441, 563, 825, 825 });
