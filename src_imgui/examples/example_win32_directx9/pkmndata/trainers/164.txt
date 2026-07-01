@@ -1,0 +1,134 @@
+//1
+Beauty Devon
+{
+version:diamond
+version:pearl
+wormadam,25
+}
+//2
+Collector Brady
+{
+version:diamond
+version:pearl
+ponyta,22
+ponyta,20
+ponyta,24
+}
+//3
+Collector Douglas
+{
+version:diamond
+version:pearl
+roselia,20
+roselia,22
+roselia,24
+}
+//4
+Collector Jamal
+{
+version:diamond
+version:pearl
+buizel,21
+buizel,21
+buizel,24
+}
+//5
+PI Carlos
+{
+version:diamond
+version:pearl
+goldeen,23
+goldeen,23
+goldeen,23
+}
+//6
+PI Carlos
+{
+version:diamond
+version:pearl
+progresspoint:4
+goldeen,36
+seaking,37
+seaking,38
+}
+//7
+PI Carlos
+{
+version:diamond
+version:pearl
+progresspoint:6
+seaking,56
+seaking,57
+seaking,58
+}
+//8
+Psychic Abigail
+{
+version:diamond
+version:pearl
+gastly,22
+misdreavus,23
+kadabra,24
+}
+//9
+Psychic Abigail
+{
+version:diamond
+version:pearl
+progresspoint:4
+haunter,37
+misdreavus,39
+kadabra,38
+}
+//10
+Psychic Abigail
+{
+version:diamond
+version:pearl
+progresspoint:6
+gengar,58
+misdreavus,57
+alakazam,59
+}
+//11
+Psychic Mitchell
+{
+version:diamond
+version:pearl
+haunter,23
+kadabra,23
+}
+//12
+Psychic Mitchell
+{
+version:diamond
+version:pearl
+progresspoint:4
+haunter,38
+kadabra,42
+}
+//13
+Psychic Mitchell
+{
+version:diamond
+version:pearl
+progresspoint:6
+gengar,58
+alakazam,58
+}
+//14
+Ruin Maniac Bryan
+{
+version:diamond
+version:pearl
+cranidos,24
+geodude,22
+bronzor,23
+}
+//15
+Ruin Maniac Hunter
+{
+version:diamond
+version:pearl
+shieldon,26
+}

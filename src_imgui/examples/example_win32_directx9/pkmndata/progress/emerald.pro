@@ -19,8 +19,8 @@ checkpoint Completed catching tutorial
 checkpoint Defeated Twins Gina & Mia (Route 104 North) or avoid by having 1 Pokemon in party
 //no wild pokemon in rustboro city
 407 exclude walk,rematch//hoenn-route-115
-//karen is in grass now
-408 exclude remnum:2//hoenn-route-116
+//karen is in grass in emerald
+408 exclude remnum:2,//hoenn-route-116
 
 checkpoint Defeated Hiker Devan (Route 116)
 360//rusturf-tunnel
@@ -43,13 +43,13 @@ checkpoint Delivered letter to Steven
 351//slateport-city
 402//hoenn-route-110
 
-checkpoint Defeated Psychic Edward and Triathlete Alyssa (Route 110)
+checkpoint Defeated Psychic Edward and Triathlete Alyssa (Route 110)//confirmed can't be skipped by having 1 pokemon
 //no wild pokemon in mauville city
 409//hoenn-route-117
 //no wild pokemon in verdanturf town
 403 exclude walk//hoenn-route-111
 
-checkbox 5 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)
+checkbox 5 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)//confirmed can't be skipped by having 1 pokemon
 410 exclude walk//hoenn-route-118
 
 checkpoint Obtained ability to use Rock Smash
@@ -78,7 +78,7 @@ checkpoint Obtained Balance Badge
 unlock rematch
 //remnum means exclude the specified trainer (indices based on order in file in trainers/ folder)
 //expert timothy only reachable by surf, but two others are rematchable now
-407 exclude walk,remnum:4//hoenn-route-115
+407 exclude walk,remnum:4,//hoenn-route-115
 
 //hm given by wally's dad after getting petalburg badge
 checkpoint Obtained Surf HM
@@ -95,7 +95,7 @@ unlock good-rod
 399//hoenn-route-107
 cancel 5
 
-checkbox 6 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)
+checkbox 6 Defeated Aroma Lady Rose and Youngster Deandre (Route 118)//confirmed can't be skipped by having 1 pokemon
 410//hoenn-route-118
 
 checkbox 1 Obtained Basement Key
@@ -103,7 +103,7 @@ checkbox 1 Obtained Basement Key
 
 checkpoint Defeated Rival on Route 119
 //no wild pokemon in fortree city
-412 exclude surf,old-rod,good-rod,super-rod,remnum:3//hoenn-route-120
+412 exclude surf,old-rod,good-rod,super-rod,remnum:3,//hoenn-route-120
 cancel 6
 410//hoenn-route-118
 
@@ -117,7 +117,7 @@ checkpoint Obtained Devon Scope
 374//mt-pyre-outside
 375//mt-pyre-summit
 414//hoenn-route-122
-415 exclude remnum:4//hoenn-route-123
+415 exclude remnum:4,//hoenn-route-123
 cancel 3
 
 checkbox 4 Obtained ability to use Cut
@@ -143,7 +143,7 @@ checkpoint Defeated Cooltrainer Cristin (Route 121)
 checkpoint Defeated Matt at Aqua Hideout
 416 exclude walk,rematch//hoenn-route-124
 
-checkpoint Defeated Swimmers Grace and Declan (Route 124)
+checkpoint Defeated Swimmers Grace and Declan (Route 124)//confirmed can't be skipped by having 1 pokemon
 416 exclude walk//hoenn-route-124
 418//hoenn-route-125
 353//mossdeep-city

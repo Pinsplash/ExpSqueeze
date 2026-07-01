@@ -1,0 +1,40 @@
+//1
+Ace Trainer Mikayla
+{
+version:diamond
+version:pearl
+meowth,56
+persian,56
+hypno,56
+}
+//2
+Ace Trainer Saul
+{
+version:diamond
+version:pearl
+tauros,55
+}
+//3
+Ace Trainer Saul
+{
+version:diamond
+version:pearl
+progresspoint:6
+tauros,62
+}
+//4
+Black Belt Griffin
+{
+version:diamond
+version:pearl
+cacturne,57
+machamp,57
+}
+//5
+Pokémon Ranger Felicia
+{
+version:diamond
+version:pearl
+lickitung,57
+vigoroth,57
+}

@@ -1,0 +1,150 @@
+//1
+Cowgirl Shelley
+{
+version:diamond
+version:pearl
+bidoof,14
+bidoof,15
+bidoof,16
+bidoof,15
+bidoof,15
+}
+//2
+Jogger Raul
+{
+version:diamond
+version:pearl
+staravia,19
+}
+//3
+Jogger Richard
+{
+version:diamond
+version:pearl
+luxio,19
+}
+//4
+Pokémon Breeder Jennifer
+{
+version:diamond
+version:pearl
+mime-jr,16
+budew,15
+cleffa,17
+}
+//5
+Pokémon Breeder Jennifer
+{
+version:diamond
+version:pearl
+progresspoint:3
+mime-jr,28
+roselia,27
+clefairy,29
+}
+//6
+Pokémon Breeder Jennifer
+{
+version:diamond
+version:pearl
+progresspoint:4
+mr-mime,37
+roselia,36
+clefairy,38
+}
+//7
+Pokémon Breeder Jennifer
+{
+version:diamond
+version:pearl
+progresspoint:5
+mr-mime,52
+roselia,51
+clefable,53
+}
+//8
+Pokémon Breeder Albert
+{
+version:diamond
+version:pearl
+bonsly,16
+budew,15
+pichu,17
+}
+//9
+Pokémon Breeder Albert
+{
+version:diamond
+version:pearl
+progresspoint:3
+sudowoodo,27
+roselia,29
+pikachu,28
+}
+//10
+Pokémon Breeder Albert
+{
+version:diamond
+version:pearl
+progresspoint:4
+sudowoodo,37
+roselia,38
+pikachu,36
+}
+//11
+Pokémon Breeder Albert
+{
+version:diamond
+version:pearl
+progresspoint:5
+sudowoodo,52
+roselia,51
+raichu,53
+}
+//12
+Poké Kid Danielle
+{
+version:diamond
+version:pearl
+pikachu,19
+}
+//13
+Poké Kid Danielle
+{
+version:diamond
+version:pearl
+progresspoint:3
+pikachu,31
+}
+//14
+Poké Kid Danielle
+{
+version:diamond
+version:pearl
+progresspoint:4
+pikachu,40
+}
+//15
+Poké Kid Danielle
+{
+version:diamond
+version:pearl
+progresspoint:5
+pikachu,55
+}
+//16
+Twins Emma & Lil
+{
+version:diamond
+version:pearl
+bonsly,19
+mime-jr,19
+}
+//17
+Young Couple Ty & Sue
+{
+version:diamond
+version:pearl
+machop,19
+meditite,19
+}

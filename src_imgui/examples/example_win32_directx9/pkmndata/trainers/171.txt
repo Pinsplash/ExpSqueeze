@@ -1,0 +1,139 @@
+//1
+Beauty Nicola
+{
+version:diamond
+version:pearl
+lopunny,43
+}
+//2
+Fisherman Alec
+{
+version:diamond
+version:pearl
+magikarp,40
+gyarados,42
+}
+//3
+Fisherman Alec
+{
+version:diamond
+version:pearl
+progresspoint:5
+gyarados,53
+gyarados,53
+}
+//4
+Fisherman Brett
+{
+version:diamond
+version:pearl
+magikarp,39
+finneon,42
+feebas,39
+}
+//5
+Fisherman Cole
+{
+version:diamond
+version:pearl
+gyarados,41
+remoraid,38
+gyarados,41
+}
+//6
+Fisherman George
+{
+version:diamond
+version:pearl
+magikarp,38
+finneon,40
+remoraid,40
+gyarados,42
+}
+//7
+Poké Kid Janet
+{
+version:diamond
+version:pearl
+pikachu,41
+pikachu,41
+}
+//8
+Policeman Thomas
+{
+version:diamond
+version:pearl
+noctowl,42
+machoke,42
+}
+//9
+Rich Boy Trey
+{
+version:diamond
+version:pearl
+luxio,43
+}
+//10
+Rich Boy Trey
+{
+version:diamond
+version:pearl
+progresspoint:5
+luxio,55
+}
+//11
+Rich Boy Trey
+{
+version:diamond
+version:pearl
+progresspoint:6
+luxio,60
+}
+//12
+Sailor Luther
+{
+version:diamond
+version:pearl
+feebas,37
+machoke,40
+gastrodon,43
+}
+//13
+Sailor Marc
+{
+version:diamond
+version:pearl
+mantyke,43
+}
+//14
+Sailor Marc
+{
+version:diamond
+version:pearl
+progresspoint:5
+mantine,54
+pelipper,52
+}
+//15
+Sailor Marc
+{
+version:diamond
+version:pearl
+progresspoint:6
+mantine,57
+pelipper,59
+}
+//16
+Tuber Holly
+{
+version:diamond
+version:pearl
+remoraid,43
+}
+//17
+Tuber Conner
+{
+version:diamond
+version:pearl
+remoraid,43
+}

@@ -1,0 +1,124 @@
+//1
+Gentleman Jeremy
+{
+version:diamond
+version:pearl
+chatot,19
+}
+//2
+Gentleman Jeremy
+{
+version:diamond
+version:pearl
+progresspoint:3
+chatot,31
+}
+//3
+Gentleman Jeremy
+{
+version:diamond
+version:pearl
+progresspoint:4
+chatot,40
+}
+//4
+Gentleman Jeremy
+{
+version:diamond
+version:pearl
+progresspoint:6
+chatot,60
+}
+//5
+Lady Melissa
+{
+version:diamond
+version:pearl
+buneary,19
+}
+//6
+Lady Melissa
+{
+version:diamond
+version:pearl
+progresspoint:3
+buneary,31
+}
+//7
+Lady Melissa
+{
+version:diamond
+version:pearl
+progresspoint:4
+lopunny,40
+}
+//8
+Lady Melissa
+{
+version:diamond
+version:pearl
+progresspoint:6
+lopunny,60
+}
+//9
+Policeman Alex
+{
+version:diamond
+version:pearl
+hoothoot,18
+machop,18
+}
+//10
+Policeman Bobby
+{
+version:diamond
+version:pearl
+hoothoot,18
+machop,18
+}
+//11
+Policeman Caleb
+{
+version:diamond
+version:pearl
+hoothoot,17
+meditite,19
+}
+//12
+Policeman Dylan
+{
+version:diamond
+version:pearl
+hoothoot,18
+meditite,18
+}
+//13
+Rich Boy Jason
+{
+version:diamond
+version:pearl
+luxio,19
+}
+//14
+Socialite Reina
+{
+version:diamond
+version:pearl
+roselia,19
+}
+//15
+Socialite Reina
+{
+version:diamond
+version:pearl
+progresspoint:4
+roselia,40
+}
+//16
+Socialite Reina
+{
+version:diamond
+version:pearl
+progresspoint:6
+roselia,60
+}

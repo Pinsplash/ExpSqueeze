@@ -69,7 +69,7 @@ checkpoint Obtained Balance Badge
 unlock rematch
 //remnum means exclude the specified trainer (indices based on order in file in trainers/ folder)
 //expert timothy only reachable by surf, but two others are rematchable now
-407 exclude walk,remnum:2//hoenn-route-115
+407 exclude walk,remnum:2,//hoenn-route-115
 
 //hm given by wally's dad after getting petalburg badge
 checkpoint Obtained Surf HM
@@ -91,7 +91,7 @@ checkbox 1 Obtained Basement Key
 
 checkpoint Defeated Rival on Route 119
 //no wild pokemon in fortree city
-412 exclude surf,old-rod,good-rod,super-rod,remnum:1//hoenn-route-120
+412 exclude surf,old-rod,good-rod,super-rod,remnum:1,//hoenn-route-120
 
 checkpoint Obtained Devon Scope
 412//hoenn-route-120
@@ -107,7 +107,7 @@ checkpoint Obtained Devon Scope
 375//mt-pyre-summit
 352//lilycove-city
 414//hoenn-route-122
-415 exclude remnum:1//hoenn-route-123
+415 exclude remnum:1,//hoenn-route-123
 cancel 3
 
 checkbox 4 Obtained ability to use Cut

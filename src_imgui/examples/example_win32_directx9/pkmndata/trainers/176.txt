@@ -1,0 +1,31 @@
+//1
+Ace Trainer Dana
+{
+version:diamond
+version:pearl
+mightyena,55
+kirlia,55
+}
+//2
+Ace Trainer Sandra
+{
+version:diamond
+version:pearl
+granbull,57
+}
+//3
+Ace Trainer Felix
+{
+version:diamond
+version:pearl
+dusclops,55
+salamence,55
+}
+//4
+Pokémon Ranger Deshawn
+{
+version:diamond
+version:pearl
+spinda,55
+kecleon,55
+}

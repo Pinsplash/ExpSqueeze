@@ -1,0 +1,125 @@
+//1
+Beauty Cyndy
+{
+version:diamond
+version:pearl
+glameow,23
+}
+//2
+Beauty Cyndy
+{
+version:diamond
+version:pearl
+progresspoint:4
+glameow,40
+}
+//3
+Beauty Cyndy
+{
+version:diamond
+version:pearl
+progresspoint:6
+purugly,60
+}
+//4
+Fisherman Kenneth
+{
+version:diamond
+version:pearl
+magikarp,19
+remoraid,19
+gyarados,22
+}
+//5
+Sailor Paul
+{
+version:diamond
+version:pearl
+gyarados,31
+machop,31
+}
+//6
+Swimmer Haley
+{
+version:diamond
+version:pearl
+marill,31
+azumarill,31
+}
+//7
+Swimmer Mary
+{
+version:diamond
+version:pearl
+marill,32
+pelipper,30
+}
+//8
+Swimmer Evan
+{
+version:diamond
+version:pearl
+golduck,30
+golduck,32
+}
+//9
+Swimmer Sheltin
+{
+version:diamond
+version:pearl
+gyarados,30
+gyarados,29
+gyarados,31
+}
+//10
+Tuber Chelsea
+{
+version:diamond
+version:pearl
+bibarel,23
+}
+//11
+Tuber Chelsea
+{
+version:diamond
+version:pearl
+progresspoint:4
+bibarel,40
+}
+//12
+Tuber Chelsea
+{
+version:diamond
+version:pearl
+progresspoint:5
+bibarel,55
+}
+//13
+Tuber Jared
+{
+version:diamond
+version:pearl
+shellos,19
+shellos,21
+shellos,20
+}
+//14
+Tuber Jared
+{
+version:diamond
+version:pearl
+progresspoint:3
+shellos,28
+shellos,27
+shellos,29
+}
+//15
+Tuber Jared
+{
+version:diamond
+version:pearl
+progresspoint:5
+gastrodon,52
+gastrodon,53
+gastrodon,51
+}

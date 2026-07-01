@@ -1,0 +1,51 @@
+//1
+Fisherman Luc
+{
+version:diamond
+version:pearl
+magikarp,26
+magikarp,26
+magikarp,26
+gyarados,31
+magikarp,26
+}
+//2
+Fisherman Miguel
+{
+version:diamond
+version:pearl
+gyarados,29
+gyarados,29
+}
+//3
+Fisherman Miguel
+{
+version:diamond
+version:pearl
+progresspoint:5
+gyarados,53
+gyarados,53
+}
+//4
+Guitarist Tony
+{
+version:diamond
+version:pearl
+luxio,31
+}
+//5
+Guitarist Tony
+{
+version:diamond
+version:pearl
+progresspoint:5
+luxio,55
+}
+//6
+Sailor Skyler
+{
+version:diamond
+version:pearl
+mantyke,27
+gyarados,31
+}

@@ -1,0 +1,58 @@
+//1
+Swimmer Claire
+{
+version:diamond
+version:pearl
+buizel,31
+}
+//2
+Swimmer Erica
+{
+version:diamond
+version:pearl
+remoraid,29
+psyduck,29
+}
+//3
+Swimmer Jessica
+{
+version:diamond
+version:pearl
+goldeen,28
+goldeen,28
+goldeen,28
+goldeen,28
+}
+//4
+Swimmer Katelyn
+{
+version:diamond
+version:pearl
+buizel,28
+medicham,28
+seaking,28
+}
+//5
+Swimmer Adrian
+{
+version:diamond
+version:pearl
+mantyke,26
+remoraid,29
+tentacool,29
+}
+//6
+Swimmer Erik
+{
+version:diamond
+version:pearl
+gyarados,31
+}
+//7
+Swimmer Vincent
+{
+version:diamond
+version:pearl
+pelipper,29
+whiscash,29
+}

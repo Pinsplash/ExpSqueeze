@@ -1,0 +1,46 @@
+//1
+Lass Samantha
+{
+version:diamond
+version:pearl
+budew,7
+}
+//2
+Lass Samantha
+{
+version:diamond
+version:pearl
+progresspoint:2
+budew,19
+}
+//3
+Lass Samantha
+{
+version:diamond
+version:pearl
+progresspoint:3
+roselia,31
+}
+//4
+Lass Samantha
+{
+version:diamond
+version:pearl
+progresspoint:5
+roselia,55
+}
+//5
+Lass Sarah
+{
+version:diamond
+version:pearl
+bidoof,7
+}
+//6
+Youngster Tyler
+{
+version:diamond
+version:pearl
+magikarp,5
+starly,5
+}

@@ -1,0 +1,149 @@
+//1
+Sailor Zachariah
+{
+version:diamond
+version:pearl
+pelipper,38
+machoke,38
+gastrodon,44
+}
+//2
+Sailor Zachariah
+{
+version:diamond
+version:pearl
+progresspoint:6
+pelipper,55
+machamp,58
+gastrodon,58
+}
+//3
+Swimmer Aubree
+{
+version:diamond
+version:pearl
+azurill,41
+azumarill,41
+}
+//4
+Swimmer Cassandra
+{
+version:diamond
+version:pearl
+finneon,41
+pelipper,41
+}
+//5
+Swimmer Crystal
+{
+version:diamond
+version:pearl
+wingull,41
+seaking,41
+}
+//6
+Swimmer Crystal
+{
+version:diamond
+version:pearl
+progresspoint:6
+pelipper,58
+seaking,58
+}
+//7
+Swimmer Gabrielle
+{
+version:diamond
+version:pearl
+golduck,43
+}
+//8
+Swimmer Miranda
+{
+version:diamond
+version:pearl
+lumineon,43
+}
+//9
+Swimmer Miranda
+{
+version:diamond
+version:pearl
+progresspoint:6
+lumineon,60
+}
+//10
+Swimmer Paige
+{
+version:diamond
+version:pearl
+marill,39
+wingull,40
+golduck,41
+}
+//11
+Swimmer Colton
+{
+version:diamond
+version:pearl
+wingull,37
+quagsire,42
+pelipper,41
+}
+//12
+Swimmer Francisco
+{
+version:diamond
+version:pearl
+tentacool,40
+golduck,42
+}
+//13
+Swimmer Francisco
+{
+version:diamond
+version:pearl
+progresspoint:6
+tentacool,58
+golduck,58
+}
+//14
+Swimmer Oscar
+{
+version:diamond
+version:pearl
+mantyke,38
+remoraid,40
+mantine,42
+}
+//15
+Swimmer Ricardo
+{
+version:diamond
+version:pearl
+tentacruel,43
+}
+//16
+Swimmer Troy
+{
+version:diamond
+version:pearl
+gyarados,43
+}
+//17
+Swimmer Wesley
+{
+version:diamond
+version:pearl
+buizel,41
+tentacruel,41
+}
+//18
+Swimmer Wesley
+{
+version:diamond
+version:pearl
+progresspoint:6
+floatzel,58
+tentacruel,58
+}

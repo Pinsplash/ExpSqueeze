@@ -1,0 +1,76 @@
+//1
+Battle Girl Helen
+{
+version:diamond
+version:pearl
+meditite,18
+machop,18
+}
+//2
+Battle Girl Helen
+{
+version:diamond
+version:pearl
+progresspoint:3
+meditite,31
+machop,33
+}
+//3
+Battle Girl Helen
+{
+version:diamond
+version:pearl
+progresspoint:4
+medicham,38
+machoke,40
+}
+//4
+Battle Girl Helen
+{
+version:diamond
+version:pearl
+progresspoint:6
+medicham,58
+machamp,60
+}
+//5
+Camper Anthony
+{
+version:diamond
+version:pearl
+ponyta,19
+}
+//6
+Hiker Justin
+{
+version:diamond
+version:pearl
+geodude,16
+bronzor,18
+}
+//7
+Hiker Kevin
+{
+version:diamond
+version:pearl
+geodude,15
+geodude,16
+zubat,17
+geodude,16
+}
+//8
+Picnicker Lauren
+{
+version:diamond
+version:pearl
+pachirisu,19
+}
+//9
+Youngster Austin
+{
+version:diamond
+version:pearl
+starly,15
+geodude,15
+chimchar,18
+}

@@ -1,0 +1,44 @@
+//1
+Fisherman Andrew
+{
+version:diamond
+version:pearl
+magikarp,10
+magikarp,10
+magikarp,10
+magikarp,10
+magikarp,10
+magikarp,10
+}
+//2
+Fisherman Joseph
+{
+version:diamond
+version:pearl
+goldeen,14
+}
+//3
+Fisherman Joseph
+{
+version:diamond
+version:pearl
+progresspoint:3
+seaking,31
+}
+//4
+Fisherman Joseph
+{
+version:diamond
+version:pearl
+progresspoint:5
+seaking,55
+}
+//5
+Fisherman Zachary
+{
+version:diamond
+version:pearl
+magikarp,10
+goldeen,13
+magikarp,10
+}

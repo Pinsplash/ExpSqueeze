@@ -1,0 +1,51 @@
+//1
+Aroma Lady Taylor
+{
+version:diamond
+version:pearl
+budew,7
+cherubi,7
+}
+//2
+Bug Catcher Brandon
+{
+version:diamond
+version:pearl
+kricketot,7
+wurmple,7
+}
+//3
+Bug Catcher Brandon
+{
+version:diamond
+version:pearl
+progresspoint:2
+kricketot,17
+silcoon,17
+}
+//4
+Bug Catcher Brandon
+{
+version:diamond
+version:pearl
+progresspoint:3
+kricketune,29
+silcoon,29
+}
+//5
+Bug Catcher Brandon
+{
+version:diamond
+version:pearl
+progresspoint:5
+kricketune,53
+beautifly,53
+}
+//6
+Twins Liv & Liz
+{
+version:diamond
+version:pearl
+pachirisu,9
+pachirisu,9
+}

@@ -1,0 +1,130 @@
+//1
+Ace Trainer Olivia
+{
+version:diamond
+version:pearl
+roselia,37
+seaking,37
+}
+//2
+Ace Trainer Olivia
+{
+version:diamond
+version:pearl
+progresspoint:5
+roselia,55
+seaking,55
+}
+//3
+Ace Trainer Dalton
+{
+version:diamond
+version:pearl
+raichu,34
+pelipper,36
+hippopotas,38
+}
+//4
+Ace Trainer Dalton
+{
+version:diamond
+version:pearl
+progresspoint:5
+raichu,54
+pelipper,54
+hippopotas,54
+}
+//5
+Black Belt Luke
+{
+version:diamond
+version:pearl
+croagunk,36
+onix,35
+machoke,37
+}
+//6
+Ninja Boy Antonio
+{
+version:diamond
+version:pearl
+zubat,33
+golbat,33
+zubat,34
+croagunk,36
+}
+//7
+Ninja Boy Ethan
+{
+version:diamond
+version:pearl
+skorupi,35
+golbat,35
+}
+//8
+Skier Lexie
+{
+version:diamond
+version:pearl
+marill,35
+clefairy,35
+}
+//9
+Skier Madison
+{
+version:diamond
+version:pearl
+snover,37
+}
+//10
+Skier Madison
+{
+version:diamond
+version:pearl
+progresspoint:4
+snover,40
+}
+//11
+Skier Madison
+{
+version:diamond
+version:pearl
+progresspoint:5
+snover,55
+}
+//12
+Skier Bjorn
+{
+version:diamond
+version:pearl
+mantyke,36
+sneasel,38
+}
+//13
+Skier Bjorn
+{
+version:diamond
+version:pearl
+progresspoint:4
+mantine,37
+sneasel,39
+}
+//14
+Skier Bjorn
+{
+version:diamond
+version:pearl
+progresspoint:6
+mantine,58
+sneasel,58
+}
+//15
+Skier Shawn
+{
+version:diamond
+version:pearl
+snover,34
+snover,33
+golduck,34
+snover,35
+}

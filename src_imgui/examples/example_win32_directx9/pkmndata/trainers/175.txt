@@ -1,0 +1,103 @@
+//1
+Ace Trainer Ariana
+{
+version:diamond
+version:pearl
+ambipom,54
+rapidash,54
+chansey,54
+}
+//2
+Ace Trainer Ariana
+{
+version:diamond
+version:pearl
+progresspoint:6
+ambipom,59
+rapidash,59
+chansey,59
+}
+//3
+Ace Trainer Meagan
+{
+version:diamond
+version:pearl
+delcatty,55
+yanma,55
+}
+//4
+Ace Trainer Jose
+{
+version:diamond
+version:pearl
+golduck,55
+sandslash,55
+}
+//5
+Black Belt Davon
+{
+version:diamond
+version:pearl
+mankey,54
+makuhita,53
+hariyama,55
+}
+//6
+Black Belt Davon
+{
+version:diamond
+version:pearl
+progresspoint:6
+primeape,58
+hariyama,59
+hariyama,60
+}
+//7
+Dragon Tamer Keegan
+{
+version:diamond
+version:pearl
+gyarados,58
+}
+//8
+Pokémon Ranger Krista
+{
+version:diamond
+version:pearl
+trapinch,54
+vibrava,56
+}
+//9
+Pokémon Ranger Kyler
+{
+version:diamond
+version:pearl
+exeggcute,52
+ursaring,58
+}
+//10
+Pokémon Ranger Kyler
+{
+version:diamond
+version:pearl
+progresspoint:6
+exeggutor,60
+ursaring,60
+}
+//11
+Psychic Corbin
+{
+version:diamond
+version:pearl
+shuppet,53
+duskull,55
+}
+//12
+Psychic Corbin
+{
+version:diamond
+version:pearl
+progresspoint:6
+banette,58
+dusclops,60
+}

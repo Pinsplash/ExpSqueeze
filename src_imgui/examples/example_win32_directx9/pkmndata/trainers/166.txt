@@ -1,0 +1,111 @@
+//1
+Ace Trainer Laura
+{
+version:diamond
+version:pearl
+lopunny,37
+}
+//2
+Ace Trainer Maria
+{
+version:diamond
+version:pearl
+golduck,34
+ponyta,35
+sudowoodo,33
+}
+//3
+Ace Trainer Blake
+{
+version:diamond
+version:pearl
+ambipom,35
+kadabra,35
+}
+//4
+Ace Trainer Garrett
+{
+version:diamond
+version:pearl
+mr-mime,33
+machoke,34
+sneasel,35
+}
+//5
+Black Belt Philip
+{
+version:diamond
+version:pearl
+machoke,40
+}
+//6
+Black Belt Philip
+{
+version:diamond
+version:pearl
+progresspoint:5
+machamp,57
+}
+//7
+Skier Andrea
+{
+version:diamond
+version:pearl
+staravia,38
+}
+//8
+Skier Andrea
+{
+version:diamond
+version:pearl
+progresspoint:4
+staravia,40
+}
+//9
+Skier Andrea
+{
+version:diamond
+version:pearl
+progresspoint:5
+staraptor,55
+}
+//10
+Skier Kaitlyn
+{
+version:diamond
+version:pearl
+roselia,36
+snover,36
+}
+//11
+Skier Bradley
+{
+version:diamond
+version:pearl
+geodude,35
+graveler,35
+snover,35
+}
+//12
+Skier Edward
+{
+version:diamond
+version:pearl
+sneasel,35
+}
+//13
+Skier Edward
+{
+version:diamond
+version:pearl
+progresspoint:4
+sneasel,40
+}
+//14
+Skier Edward
+{
+version:diamond
+version:pearl
+progresspoint:5
+sneasel,55
+}

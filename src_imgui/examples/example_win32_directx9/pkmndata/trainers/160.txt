@@ -1,0 +1,47 @@
+//1
+Bird Keeper Katherine
+{
+version:diamond
+version:pearl
+noctowl,31
+}
+//2
+Black Belt Sean
+{
+version:diamond
+version:pearl
+croagunk,28
+meditite,27
+machoke,29
+}
+//3
+Ninja Boy Nick
+{
+version:diamond
+version:pearl
+skorupi,27
+golbat,27
+}
+//4
+Ruin Maniac Harry
+{
+version:diamond
+version:pearl
+bronzor,30
+}
+//5
+Ruin Maniac Harry
+{
+version:diamond
+version:pearl
+progresspoint:4
+bronzor,41
+}
+//6
+Ruin Maniac Harry
+{
+version:diamond
+version:pearl
+progresspoint:5
+bronzor,56
+}

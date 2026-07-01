@@ -1,0 +1,231 @@
+//1
+Collector Dominique
+{
+version:diamond
+version:pearl
+geodude,18
+geodude,17
+geodude,19
+}
+//2
+Fisherman Cameron
+{
+version:diamond
+version:pearl
+goldeen,19
+barboach,19
+}
+//3
+Fisherman Juan
+{
+version:diamond
+version:pearl
+gyarados,21
+}
+//4
+Fisherman Travis
+{
+version:diamond
+version:pearl
+barboach,17
+barboach,18
+shellos,20
+barboach,17
+}
+//5
+Parasol Lady Alexa
+{
+version:diamond
+version:pearl
+goldeen,19
+buizel,19
+}
+//6
+Parasol Lady Alexa
+{
+version:diamond
+version:pearl
+progresspoint:3
+goldeen,28
+buizel,30
+}
+//7
+Parasol Lady Alexa
+{
+version:diamond
+version:pearl
+progresspoint:4
+seaking,38
+buizel,38
+}
+//8
+Parasol Lady Alexa
+{
+version:diamond
+version:pearl
+progresspoint:5
+seaking,53
+floatzel,53
+}
+//9
+Parasol Lady Sabrina
+{
+version:diamond
+version:pearl
+psyduck,21
+}
+//10
+Pokémon Ranger Allison
+{
+version:diamond
+version:pearl
+aipom,21
+marill,21
+}
+//11
+Pokémon Ranger Allison
+{
+version:diamond
+version:pearl
+progresspoint:3
+aipom,30
+marill,32
+}
+//12
+Pokémon Ranger Allison
+{
+version:diamond
+version:pearl
+progresspoint:4
+aipom,41
+azumarill,39
+}
+//13
+Pokémon Ranger Allison
+{
+version:diamond
+version:pearl
+progresspoint:6
+ambipom,61
+azumarill,59
+}
+//14
+Pokémon Ranger Jeffrey
+{
+version:diamond
+version:pearl
+prinplup,21
+prinplup,21
+}
+//15
+Pokémon Ranger Taylor
+{
+version:diamond
+version:pearl
+luxio,21
+buizel,21
+}
+//16
+Pokémon Ranger Taylor
+{
+version:diamond
+version:pearl
+progresspoint:3
+luxio,31
+buizel,31
+}
+//17
+Pokémon Ranger Taylor
+{
+version:diamond
+version:pearl
+progresspoint:4
+luxio,40
+floatzel,40
+}
+//18
+Pokémon Ranger Taylor
+{
+version:diamond
+version:pearl
+progresspoint:6
+luxio,60
+floatzel,60
+}
+//19
+Policeman Danny
+{
+version:diamond
+version:pearl
+hoothoot,20
+machop,20
+}
+//20
+Policeman Danny
+{
+version:diamond
+version:pearl
+progresspoint:3
+hoothoot,28
+machoke,30
+}
+//21
+Policeman Danny
+{
+version:diamond
+version:pearl
+progresspoint:4
+noctowl,38
+machoke,40
+}
+//22
+Policeman Danny
+{
+version:diamond
+version:pearl
+progresspoint:5
+noctowl,53
+machamp,55
+}
+//23
+Scientist Shaun
+{
+version:diamond
+version:pearl
+abra,19
+kadabra,19
+}
+//24
+Scientist Shaun
+{
+version:diamond
+version:pearl
+progresspoint:3
+kadabra,30
+kadabra,28
+}
+//25
+Scientist Shaun
+{
+version:diamond
+version:pearl
+progresspoint:4
+kadabra,40
+kadabra,36
+}
+//26
+Scientist Shaun
+{
+version:diamond
+version:pearl
+progresspoint:5
+alakazam,53
+alakazam,53
+}
+//27
+Scientist Stefano
+{
+version:diamond
+version:pearl
+kadabra,21
+}

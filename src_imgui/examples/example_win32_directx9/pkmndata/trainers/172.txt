@@ -1,0 +1,100 @@
+//1
+Ace Trainer Jamie
+{
+version:diamond
+version:pearl
+metagross,56
+}
+//2
+Ace Trainer Ruben
+{
+version:diamond
+version:pearl
+poliwhirl,54
+gyarados,54
+}
+//3
+Black Belt Carl
+{
+version:diamond
+version:pearl
+croagunk,52
+machamp,56
+}
+//4
+Dragon Tamer Hayden
+{
+version:diamond
+version:pearl
+swablu,53
+altaria,57
+}
+//5
+Dragon Tamer Hayden
+{
+version:diamond
+version:pearl
+progresspoint:6
+altaria,60
+altaria,60
+}
+//6
+Psychic Brittney
+{
+version:diamond
+version:pearl
+medicham,52
+alakazam,54
+}
+//7
+Psychic Brittney
+{
+version:diamond
+version:pearl
+progresspoint:6
+medicham,58
+alakazam,58
+}
+//8
+Psychic Maxwell
+{
+version:diamond
+version:pearl
+misdreavus,52
+haunter,54
+}
+//9
+Psychic Maxwell
+{
+version:diamond
+version:pearl
+progresspoint:6
+misdreavus,56
+gengar,58
+}
+//10
+Ruin Maniac Larry
+{
+version:diamond
+version:pearl
+steelix,54
+}
+//11
+Veteran Armando
+{
+version:diamond
+version:pearl
+staravia,52
+pelipper,53
+golbat,54
+}
+//12
+Veteran Armando
+{
+version:diamond
+version:pearl
+progresspoint:6
+staraptor,58
+pelipper,58
+crobat,58
+}

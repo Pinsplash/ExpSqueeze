@@ -1,0 +1,54 @@
+//1
+Bird Keeper Alexandra
+{
+version:diamond
+version:pearl
+hoothoot,19
+}
+//2
+Hiker Louis
+{
+version:diamond
+version:pearl
+geodude,15
+onix,15
+}
+//3
+Ninja Boy Zach
+{
+version:diamond
+version:pearl
+zubat,13
+zubat,14
+zubat,15
+}
+//4
+Ninja Boy Zach
+{
+version:diamond
+version:pearl
+progresspoint:3
+zubat,26
+golbat,29
+golbat,29
+}
+//5
+Ninja Boy Zach
+{
+version:diamond
+version:pearl
+progresspoint:4
+golbat,36
+golbat,37
+golbat,38
+}
+//6
+Ninja Boy Zach
+{
+version:diamond
+version:pearl
+progresspoint:5
+golbat,51
+crobat,52
+crobat,53
+}

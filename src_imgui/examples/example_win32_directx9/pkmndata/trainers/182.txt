@@ -1,0 +1,41 @@
+//1
+Ace Trainer Graham
+{
+version:diamond
+version:pearl
+skarmory,56
+}
+//2
+Bird Keeper Geneva
+{
+version:diamond
+version:pearl
+golbat,53
+xatu,57
+}
+//3
+Dragon Tamer Stanley
+{
+version:diamond
+version:pearl
+seadra,56
+gyarados,56
+}
+//4
+Swimmer Lydia
+{
+version:diamond
+version:pearl
+bibarel,52
+azumarill,52
+sealeo,52
+}
+//5
+Swimmer Wade
+{
+version:diamond
+version:pearl
+carvanha,51
+carvanha,51
+sharpedo,54
+}

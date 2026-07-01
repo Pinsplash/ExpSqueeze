@@ -303,6 +303,7 @@ struct Milestone
 struct Party
 {
 	string code_name;
+	string ui_name;
 	int map_num = 0;
 	//what point in the game the new team appears at
 	//0 = not a trainer that changes teams
@@ -325,6 +326,12 @@ vector<string> g_checkpointnames;
 string g_pkmndatapath = "pkmndata/";
 Settings g_settings, g_newsettings;
 SettingsWindowData g_settingswindowdata;
+
+void ESAssert(bool exp)
+{
+	if (!exp)
+		__debugbreak();
+}
 
 #ifdef _DEBUG
 vector<string> g_debugdata;
@@ -561,7 +568,8 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex,
 									excludebymethod = true;
 									thistableexcludes = true;
 								}
-								string rematchstr = "remnum:" + to_string(trainerindex);
+								//all exclude strings that end with a remnum bit require a trailing comma to avoid mistaking "10" and "1"
+								string rematchstr = "remnum:" + to_string(trainerindex) + ",";
 								if (trainerindex != TRAINERINDEX_NOTATRAINER && exclude->str.find(rematchstr) != string::npos)
 								{
 									//don't return yet. there might be a later milestone that unlocks our target trainer.
@@ -1769,7 +1777,10 @@ static int ParseLocationDataFile(int iFile, string *placename)
 
 static bool compareByPartyMap(const Party a, const Party b)
 {
-	return a.map_num > b.map_num;
+	if (a.map_num != b.map_num)
+		return a.map_num < b.map_num;
+	else
+		return a.code_name < b.code_name;
 }
 
 static bool compareByExp(const EncounterTable a, const EncounterTable b)
@@ -2897,6 +2908,9 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		}
 		if (ImGui::Button("Make FRLG Trainer Data"))
 		{
+			//before you run this code again, understand that the sorting method's behavior has changed since the last time we made this data,
+			//so rematch numbers will change and you may have to edit progress files
+			ESAssert(false);
 			vector<Party> parties;
 			//Iterate through the rematchX.csv files. For each one, make a new Party struct for every line of the file.
 			for (int i = 2; i <= 6; i++)
@@ -2996,7 +3010,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			string partypath = g_pkmndatapath + "frlgtrainerdata/party_defs.txt";
 			if (stat(partypath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing overworld_party_names.txt\n";
+				cout << "missing party_defs.txt\n";
 			}
 			else
 			{
@@ -3053,7 +3067,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			}
 			//Sort Party list by table number, then iterate through Party list, and write data out to files, with a new file being made every time the party number changes from what it was on the last iteration.
 			std::sort(parties.begin(), parties.end(), compareByPartyMap);
-			//write to files
+			//write to files note: output folder has to be created already for it to write
 			int placeinfile = 1;
 			int lastmapnum = 0;
 			ofstream WriteFile;
@@ -3088,13 +3102,13 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			vector<Party> parties;
 			//Iterate through the rematchX.txt files. For each one, make a new Party struct for every line of the file.
 			//For DP the first file tells us all base teams (includes all that are rematchable and some who are not, also doesn't include some numbered guys who are incidentally not rematchable)
-			for (int i = 1; i <= 6; i++)
+			for (int iFile = 1; iFile <= 6; iFile++)
 			{
-				string rematchpath = g_pkmndatapath + "dptrainerdata/rematch" + to_string(i) + ".txt";
+				string rematchpath = g_pkmndatapath + "dptrainerdata/rematch" + to_string(iFile) + ".txt";
 				struct stat filestatus;
 				if (stat(rematchpath.c_str(), &filestatus) != 0)
 				{
-					cout << "missing " << to_string(i) << "\n";
+					cout << "missing " << to_string(iFile) << "\n";
 					break;
 				}
 				ifstream ReadFile(rematchpath);
@@ -3110,21 +3124,22 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					Party newParty;
 					newParty.code_name = textLine;
 					//map number will come from the name of the bulba file
-					newParty.progresspoint = i = 1 ? PROGRESSPOINT_DONTCHECK : i;
+					newParty.progresspoint = iFile == 1 ? PROGRESSPOINT_DONTCHECK : iFile;
+					cout << "Party #" << to_string(parties.size()) << " From File " << to_string(iFile) << " Name: " << newParty.code_name << " PP: " << to_string(newParty.progresspoint) << "\n";
 					parties.push_back(newParty);
 				}
 				ReadFile.close();
 			}
 			//trainer_locations_2.txt tells the locations of trainers
-			string rematchpath = g_pkmndatapath + "dptrainerdata/trainer_locations_2.txt";
+			string locpath = g_pkmndatapath + "dptrainerdata/trainer_locations_2.txt";
 			struct stat filestatus;
-			if (stat(rematchpath.c_str(), &filestatus) != 0)
+			if (stat(locpath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing overworld_party_names.txt\n";
+				cout << "missing trainer_locations_2.txt\n";
 			}
 			else
 			{
-				ifstream ReadFile(rematchpath);
+				ifstream ReadFile(locpath);
 				string textLine;
 				string mapName;
 				while (getline(ReadFile, textLine))
@@ -3145,12 +3160,14 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 						string partyName = str1;
 						//we expect to find something this time
 						bool found = false;
-						for (Party party : parties)
+						for (int iParty = 0; iParty < parties.size(); iParty++)
 						{
-							if (party.code_name == partyName)
+							if (parties[iParty].code_name == partyName)
 							{
 								found = true;
-								party.map_num = stoi(mapName);
+								parties[iParty].map_num = stoi(mapName);
+								cout << "Party " << parties[iParty].code_name << " Location is " << to_string(parties[iParty].map_num) << "\n";
+								ESAssert(parties[iParty].map_num);
 								break;
 							}
 						}
@@ -3169,6 +3186,204 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				}
 				ReadFile.close();
 			}
+			//find parties with an entry in rematch_data.txt and propagate data to associated parties
+			string rematchpath = g_pkmndatapath + "dptrainerdata/rematch_data.txt";
+			if (stat(rematchpath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing rematch_data.txt\n";
+			}
+			else
+			{
+				ifstream ReadFile(rematchpath);
+				string textLine;
+				while (getline(ReadFile, textLine))
+				{
+					string str1;
+					StripComment(textLine, &str1);
+
+					if (str1.empty())
+						continue;
+
+					for (int iParty = 0; iParty < parties.size(); iParty++)
+					{
+						Party p = parties[iParty];
+						string searchName = p.code_name + ",";//include comma to avoid mistaking "john" and "johnathan"
+						size_t commaPos = searchName.length() - 1;
+						size_t oldcommaPos = string::npos;
+						if (textLine.find(searchName) != string::npos)
+						{
+							while (commaPos != string::npos)
+							{
+								commaPos++;
+								oldcommaPos = commaPos;
+								size_t newcommaPos = textLine.find(",", commaPos);
+								string newPartyName = textLine.substr(commaPos, newcommaPos - commaPos);
+								commaPos = newcommaPos;
+								if (!newPartyName.empty())
+								{
+									for (int iParty2 = 0; iParty2 < parties.size(); iParty2++)
+									{
+										if (parties[iParty2].code_name == newPartyName)
+										{
+											cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << "\n";
+											//ESAssert(p.map_num);
+											parties[iParty2].map_num = p.map_num;
+										}
+									}
+								}
+							}
+							//get name after the last comma
+							string lastPartyName = textLine.substr(oldcommaPos);
+							if (!lastPartyName.empty())
+							{
+								for (int iParty2 = 0; iParty2 < parties.size(); iParty2++)
+								{
+									if (parties[iParty2].code_name == lastPartyName)
+									{
+										cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << " (B)\n";
+										parties[iParty2].map_num = p.map_num;
+									}
+								}
+							}
+						}
+					}
+				}
+				ReadFile.close();
+			}
+			//get data of the pokemon now
+			string partypath = g_pkmndatapath + "dptrainerdata/party_defs.txt";
+			if (stat(partypath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing party_defs.txt\n";
+			}
+			else
+			{
+				for (Party& party : parties)
+				{
+					ifstream ReadFile(partypath);
+					string textLine;
+					bool reachedParty = false;
+					string level;
+					string mon;
+					while (getline(ReadFile, textLine))
+					{
+						string str1;
+						StripComment(textLine, &str1);
+
+						if (str1.empty())
+							continue;
+
+						if (reachedParty)
+						{
+							if (strspn(str1.c_str(), "0123456789") == str1.size() && level.empty())
+							{
+								level = str1;
+								mon.clear();
+							}
+							else if (mon.empty())
+							{
+								mon = str1;
+								std::transform(mon.begin(), mon.end(), mon.begin(), [](unsigned char c) { return std::tolower(c); });
+								std::replace(mon.begin(), mon.end(), '_', '-');
+								party.mondata.push_back(mon + "," + level);
+								cout << mon << "," << level << "\n";
+								assert(party.mondata.size() <= 6);
+								level.clear();
+							}
+							//signifies end of team data block
+							else if (str1 == "};")
+							{
+								break;
+							}
+							else
+							{
+								cout << "Didn't know what to do with data: '" << textLine << "'\n";
+								break;
+							}
+						}
+						else if (str1 == party.code_name)
+						{
+							reachedParty = true;
+							cout << party.code_name << "\n";
+						}
+					}
+					ReadFile.close();
+				}
+			}
+			//Get trainer UI names
+			string namespath = g_pkmndatapath + "dptrainerdata/trainer_name_translate.txt";
+			if (stat(namespath.c_str(), &filestatus) != 0)
+			{
+				cout << "missing trainer_name_translate.txt\n";
+			}
+			else
+			{
+				for (Party& party : parties)
+				{
+					ifstream ReadFile(namespath);
+					string textLine;
+					bool reachedParty = false;
+					string level;
+					string mon;
+					while (getline(ReadFile, textLine))
+					{
+						string str1;
+						StripComment(textLine, &str1);
+
+						if (str1.empty())
+						{
+							ESAssert(!reachedParty);
+							continue;
+						}
+
+						if (reachedParty)
+						{
+							party.ui_name = textLine;
+							break;
+						}
+						else if (textLine == party.code_name)
+						{
+							reachedParty = true;
+							continue;
+						}
+					}
+					ESAssert(reachedParty);
+					ReadFile.close();
+				}
+			}
+			//Sort Party list by table number, then iterate through Party list, and write data out to files, with a new file being made every time the party number changes from what it was on the last iteration.
+			std::sort(parties.begin(), parties.end(), compareByPartyMap);
+			//write to files note: output folder has to be created already for it to write
+			int placeinfile = 1;
+			int lastmapnum = 0;
+			ofstream WriteFile;
+			for (int iParty = 0; iParty < parties.size(); iParty++)
+			{
+				Party p = parties[iParty];
+				if (p.map_num == 0)
+					continue;
+				if (lastmapnum != p.map_num)
+				{
+					placeinfile = 1;
+					WriteFile.close();
+					string dest = g_pkmndatapath + "dptrainerdata/output/" + to_string(p.map_num) + ".txt";
+					WriteFile.open(dest);
+				}
+				WriteFile << "//" << to_string(placeinfile) << "\n";
+				WriteFile << p.ui_name << "\n";
+				WriteFile << "{\n";
+				WriteFile << "version:diamond\n";
+				WriteFile << "version:pearl\n";
+				if (p.progresspoint != PROGRESSPOINT_DONTCHECK)
+					WriteFile << "progresspoint:" << to_string(p.progresspoint) << "\n";
+				for (int iData = 0; iData < p.mondata.size(); iData++)
+					WriteFile << p.mondata[iData] << "\n";
+				WriteFile << "}\n";
+				//keep at bottom of loop
+				lastmapnum = p.map_num;
+				placeinfile++;
+			}
+			WriteFile.close();
 		}
 #endif
 	}

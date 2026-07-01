@@ -1,0 +1,65 @@
+//1
+Swimmer Joanna
+{
+version:diamond
+version:pearl
+luvdisc,50
+lapras,54
+}
+//2
+Swimmer Joanna
+{
+version:diamond
+version:pearl
+progresspoint:6
+luvdisc,56
+lapras,60
+}
+//3
+Swimmer Mallory
+{
+version:diamond
+version:pearl
+seel,50
+dewgong,54
+}
+//4
+Swimmer Sophia
+{
+version:diamond
+version:pearl
+mantyke,50
+mantine,52
+}
+//5
+Swimmer Glenn
+{
+version:diamond
+version:pearl
+seel,51
+starmie,51
+}
+//6
+Swimmer Glenn
+{
+version:diamond
+version:pearl
+progresspoint:6
+dewgong,58
+starmie,58
+}
+//7
+Swimmer Kurt
+{
+version:diamond
+version:pearl
+crawdaunt,53
+}
+//8
+Swimmer Sam
+{
+version:diamond
+version:pearl
+chinchou,51
+lanturn,51
+}

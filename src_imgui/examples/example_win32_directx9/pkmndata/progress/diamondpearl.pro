@@ -50,7 +50,7 @@ checkpoint Obtained ability to use Cut
 126//old-chateau
 133//old-chateau-2f-right-room
 
-checkpoint Obtained Bicycle
+checkpoint Obtained Bicycle and Explorer Kit
 148//sinnoh-route-206
 113//wayward-cave-1f
 
@@ -58,17 +58,15 @@ checkpoint Obtained Vs. Seeker
 unlock rematch
 progresspoint 2
 11//mt-coronet-1f-route-207
-150//sinnoh-route-208
-//TODO: this excludes Fisher Cody, Hiker Alexander (even in platinum and bdsp)
+150 exclude remnum:8,remnum:9,//sinnoh-route-208
 
 checkpoint Visited Contest Hall then defeated Barry
 151//sinnoh-route-209
 unlock good-rod
 
-checkpoint Defeated Twins Emma & Lil (Route 209)
+checkpoint Defeated Twins Emma & Lil (Route 209) or avoid by having 1 Pokemon in party//confirmed possible
 30//solaceon-ruins
-157//sinnoh-route-210-south-towards-solaceon-town
-//TODO: This excludes the ninja boys just north of the psyduck
+157 exclude remnum:3,remnum:4,remnum:5,//sinnoh-route-210-south-towards-solaceon-town
 165//sinnoh-route-215
 152//lost-tower-1f
 153//lost-tower-2f
@@ -91,10 +89,9 @@ checkpoint Reached Solaceon Town
 //You could also do a rather unnecessary back-and-forth kind of approach where you beat Dennis and Maya to reach Veilstone, and Allison and Jeffrey to reach Pastoria, without ever meeting Abigail.
 //This all matters because you need to defeat both Wake and the Veilstone Galactic Grunt Pair to trigger the Team Galactic events in Pastoria, to get the SecretPotion, to open the way to Celestic Town, to get the Surf HM, which triggers Fantina to come back to her Gym to allow you to beat her, to obtain the ability to use Surf outside of battle, to ascend Mt. Coronet later, to make the man on Route 222 stop blocking the way to Sunyshore City (and therefore the E4).
 
-checkpoint Defeated Ace Trainers Allison and Jeffrey or Psychic Abigail
+checkpoint Defeated Ace Trainers Allison and Jeffrey or Psychic Abigail//confirmed not avoidable by only having 1 pokemon
 3//pastoria-city
-163//sinnoh-route-213
-//TODO: this excludes Swimmer Haley, Swimmer Sheltin, Sailor Paul, Swimmer Evan, Swimmer Mary (even in platinum and bdsp)
+163 exclude remnum:5,remnum:6,remnum:7,remnum:8,remnum:9,//sinnoh-route-213
 139//valor-lakefront
 164//sinnoh-route-214
 162//sinnoh-route-212-east-towards-pastoria-city
@@ -103,8 +100,7 @@ checkpoint Defeated Ace Trainers Allison and Jeffrey or Psychic Abigail
 117//maniac-tunnel-26-plus-different-unown-seen
 
 checkpoint Gave SecretPotion to Psyduck on Route 210
-158//sinnoh-route-210-west-towards-celestic-town
-//TODO: this excludes Dragon Tamer Patrick (even in platinum and bdsp)
+158 exclude remnum:8,remnum:9,remnum:10,//sinnoh-route-210-west-towards-celestic-town
 
 checkpoint Defeated Bird Keeper Brianna (North Route 210)
 178//celestic-town
@@ -113,8 +109,7 @@ checkpoint Defeated Bird Keeper Brianna (North Route 210)
 
 checkpoint Defeated Fantina
 progresspoint 3
-150//sinnoh-route-208
-//TODO: this excludes Hiker Alexander (even in platinum and bdsp)
+150 exclude remnum:9,//sinnoh-route-208
 169//sinnoh-route-219
 180//sinnoh-sea-route-220
 170//sinnoh-route-221
@@ -137,8 +132,7 @@ checkpoint Defeated Barry in Canalave City
 checkbox 2 Obtained ability to use Strength
 23//mt-coronet-b1f
 21//mt-coronet-1f-route-216
-166//sinnoh-route-216
-//TODO: this excludes Black Belt Philip, Skier Bradley, Skier Kaitlyn, Skier Andrea (even in platinum and bdsp)
+166 exclude remnum:5,remnum:6,remnum:7,remnum:8,remnum:9,remnum:10,remnum:11,//sinnoh-route-216
 114//wayward-cave-b1f
 
 checkbox 3 Defeated Ace Trainer Dalton (Route 217)
@@ -164,8 +158,7 @@ checkpoint Defeated Commander Mars at Lake Verity and Candice
 cancel 2
 23//mt-coronet-b1f
 21//mt-coronet-1f-route-216
-166//sinnoh-route-216
-//TODO: this excludes Black Belt Philip, Skier Bradley, Skier Kaitlyn, Skier Andrea (even in platinum and bdsp)
+166 exclude remnum:5,remnum:6,remnum:7,remnum:8,remnum:9,remnum:10,remnum:11,//sinnoh-route-216
 114//wayward-cave-b1f
 cancel 3
 167//sinnoh-route-217
@@ -272,3 +265,10 @@ checkbox 7 Defeated Ace Trainer Meagan (Route 228), Psychic Daisy, or Bird Keepe
 
 checkpoint Defeated Heatran
 progresspoint 6
+cancel 7
+182//sinnoh-sea-route-226
+174//sinnoh-route-227
+173//sinnoh-route-225
+57//stark-mountain-exterior
+58//stark-mountain-first-room
+59//stark-mountain-inside

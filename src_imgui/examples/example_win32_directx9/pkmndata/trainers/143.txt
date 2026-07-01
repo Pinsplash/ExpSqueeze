@@ -1,0 +1,90 @@
+//1
+Lass Kaitlin
+{
+version:diamond
+version:pearl
+bidoof,4
+budew,4
+starly,4
+}
+//2
+Lass Madeline
+{
+version:diamond
+version:pearl
+starly,5
+bidoof,5
+}
+//3
+Lass Madeline
+{
+version:diamond
+version:pearl
+progresspoint:2
+starly,17
+bidoof,17
+}
+//4
+Lass Madeline
+{
+version:diamond
+version:pearl
+progresspoint:3
+staravia,29
+bibarel,29
+}
+//5
+Lass Madeline
+{
+version:diamond
+version:pearl
+progresspoint:4
+staraptor,38
+bibarel,38
+}
+//6
+Youngster Dallas
+{
+version:diamond
+version:pearl
+kricketot,7
+}
+//7
+Youngster Dallas
+{
+version:diamond
+version:pearl
+progresspoint:2
+kricketune,19
+}
+//8
+Youngster Dallas
+{
+version:diamond
+version:pearl
+progresspoint:3
+kricketune,31
+}
+//9
+Youngster Dallas
+{
+version:diamond
+version:pearl
+progresspoint:5
+kricketune,55
+}
+//10
+Youngster Michael
+{
+version:diamond
+version:pearl
+bidoof,5
+zubat,5
+}
+//11
+Youngster Sebastian
+{
+version:diamond
+version:pearl
+machop,7
+}

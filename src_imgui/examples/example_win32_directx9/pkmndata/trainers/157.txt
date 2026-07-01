@@ -1,0 +1,112 @@
+//1
+Belle & Pa Ava & Matt
+{
+version:diamond
+version:pearl
+stunky,21
+glameow,21
+}
+//2
+Jogger Wyatt
+{
+version:diamond
+version:pearl
+ponyta,21
+}
+//3
+Ninja Boy Brennan
+{
+version:diamond
+version:pearl
+zubat,25
+skorupi,25
+}
+//4
+Ninja Boy Bruce
+{
+version:diamond
+version:pearl
+stunky,27
+}
+//5
+Ninja Boy Fabian
+{
+version:diamond
+version:pearl
+geodude,23
+geodude,23
+geodude,26
+}
+//6
+Pokémon Breeder Amber
+{
+version:diamond
+version:pearl
+cleffa,19
+clefairy,17
+happiny,18
+}
+//7
+Pokémon Breeder Kahlil
+{
+version:diamond
+version:pearl
+pichu,18
+pikachu,19
+happiny,17
+}
+//8
+Rancher Marco
+{
+version:diamond
+version:pearl
+aipom,18
+psyduck,19
+girafarig,17
+}
+//9
+Rancher Marco
+{
+version:diamond
+version:pearl
+progresspoint:4
+ambipom,36
+golduck,37
+girafarig,38
+}
+//10
+Rancher Marco
+{
+version:diamond
+version:pearl
+progresspoint:6
+ambipom,57
+golduck,58
+girafarig,56
+}
+//11
+Twins Teri & Tia
+{
+version:diamond
+version:pearl
+pikachu,21
+clefairy,21
+}
+//12
+Twins Teri & Tia
+{
+version:diamond
+version:pearl
+progresspoint:4
+pikachu,40
+clefairy,40
+}
+//13
+Twins Teri & Tia
+{
+version:diamond
+version:pearl
+progresspoint:6
+raichu,60
+clefable,60
+}

@@ -1,0 +1,132 @@
+//1
+Aroma Lady Elizabeth
+{
+version:diamond
+version:pearl
+budew,14
+}
+//2
+Aroma Lady Elizabeth
+{
+version:diamond
+version:pearl
+progresspoint:2
+budew,19
+}
+//3
+Aroma Lady Elizabeth
+{
+version:diamond
+version:pearl
+progresspoint:3
+roselia,31
+}
+//4
+Aroma Lady Elizabeth
+{
+version:diamond
+version:pearl
+progresspoint:5
+roselia,55
+}
+//5
+Battle Girl Kelsey
+{
+version:diamond
+version:pearl
+machop,15
+}
+//6
+Camper Jacob
+{
+version:diamond
+version:pearl
+ponyta,14
+}
+//7
+Camper Zackary
+{
+version:diamond
+version:pearl
+geodude,14
+}
+//8
+Camper Zackary
+{
+version:diamond
+version:pearl
+progresspoint:2
+geodude,19
+}
+//9
+Camper Zackary
+{
+version:diamond
+version:pearl
+progresspoint:3
+graveler,31
+}
+//10
+Camper Zackary
+{
+version:diamond
+version:pearl
+progresspoint:5
+graveler,55
+}
+//11
+Hiker Daniel
+{
+version:diamond
+version:pearl
+geodude,11
+machop,11
+geodude,11
+bidoof,11
+}
+//12
+Hiker Nicholas
+{
+version:diamond
+version:pearl
+onix,14
+}
+//13
+Picnicker Karina
+{
+version:diamond
+version:pearl
+piplup,14
+}
+//14
+Picnicker Karina
+{
+version:diamond
+version:pearl
+progresspoint:2
+piplup,19
+}
+//15
+Picnicker Karina
+{
+version:diamond
+version:pearl
+progresspoint:3
+prinplup,31
+}
+//16
+Picnicker Karina
+{
+version:diamond
+version:pearl
+progresspoint:5
+empoleon,55
+}
+//17
+Picnicker Siena
+{
+version:diamond
+version:pearl
+shinx,12
+pachirisu,12
+}

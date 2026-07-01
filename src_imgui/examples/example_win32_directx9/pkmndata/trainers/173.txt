@@ -1,0 +1,117 @@
+//1
+Ace Trainer Deanna
+{
+version:diamond
+version:pearl
+flaaffy,53
+tropius,53
+}
+//2
+Ace Trainer Deanna
+{
+version:diamond
+version:pearl
+progresspoint:6
+ampharos,60
+tropius,60
+}
+//3
+Ace Trainer Quinn
+{
+version:diamond
+version:pearl
+pinsir,53
+mightyena,53
+}
+//4
+Ace Trainer Rodolfo
+{
+version:diamond
+version:pearl
+lickitung,53
+miltank,53
+}
+//5
+Ace Trainer Rodolfo
+{
+version:diamond
+version:pearl
+progresspoint:6
+lickitung,60
+miltank,60
+}
+//6
+Bird Keeper Audrey
+{
+version:diamond
+version:pearl
+farfetchd,52
+swellow,54
+}
+//7
+Bird Keeper Audrey
+{
+version:diamond
+version:pearl
+progresspoint:6
+farfetchd,59
+swellow,59
+}
+//8
+Dragon Tamer Geoffrey
+{
+version:diamond
+version:pearl
+dratini,53
+dragonair,55
+}
+//9
+Dragon Tamer Geoffrey
+{
+version:diamond
+version:pearl
+progresspoint:6
+dragonair,61
+dragonair,61
+}
+//10
+Pokémon Ranger Ashlee
+{
+version:diamond
+version:pearl
+zigzagoon,50
+skarmory,56
+}
+//11
+Pokémon Ranger Ashlee
+{
+version:diamond
+version:pearl
+progresspoint:6
+linoone,60
+skarmory,60
+}
+//12
+Pokémon Ranger Dwayne
+{
+version:diamond
+version:pearl
+donphan,55
+}
+//13
+Psychic Daisy
+{
+version:diamond
+version:pearl
+slowpoke,51
+slowbro,55
+}
+//14
+Psychic Daisy
+{
+version:diamond
+version:pearl
+progresspoint:6
+slowbro,58
+slowbro,60
+}

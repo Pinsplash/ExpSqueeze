@@ -1,0 +1,145 @@
+//1
+Cyclist Kayla
+{
+version:diamond
+version:pearl
+pikachu,17
+}
+//2
+Cyclist Kayla
+{
+version:diamond
+version:pearl
+progresspoint:3
+pikachu,31
+}
+//3
+Cyclist Kayla
+{
+version:diamond
+version:pearl
+progresspoint:4
+pikachu,40
+}
+//4
+Cyclist Kayla
+{
+version:diamond
+version:pearl
+progresspoint:6
+raichu,60
+}
+//5
+Cyclist Megan
+{
+version:diamond
+version:pearl
+shinx,17
+}
+//6
+Cyclist Nicole
+{
+version:diamond
+version:pearl
+starly,15
+ponyta,15
+}
+//7
+Cyclist Rachel
+{
+version:diamond
+version:pearl
+shinx,15
+shinx,15
+}
+//8
+Cyclist Axel
+{
+version:diamond
+version:pearl
+staravia,17
+}
+//9
+Cyclist James
+{
+version:diamond
+version:pearl
+ponyta,17
+}
+//10
+Cyclist John
+{
+version:diamond
+version:pearl
+starly,15
+staravia,15
+}
+//11
+Cyclist John
+{
+version:diamond
+version:pearl
+progresspoint:3
+staravia,28
+staravia,30
+}
+//12
+Cyclist John
+{
+version:diamond
+version:pearl
+progresspoint:4
+staravia,37
+staravia,39
+}
+//13
+Cyclist John
+{
+version:diamond
+version:pearl
+progresspoint:6
+staraptor,58
+staraptor,58
+}
+//14
+Cyclist Ryan
+{
+version:diamond
+version:pearl
+zubat,17
+}
+//15
+Hiker Theodore
+{
+version:diamond
+version:pearl
+onix,15
+onix,15
+}
+//16
+Hiker Theodore
+{
+version:diamond
+version:pearl
+progresspoint:3
+onix,29
+onix,29
+}
+//17
+Hiker Theodore
+{
+version:diamond
+version:pearl
+progresspoint:4
+onix,37
+steelix,39
+}
+//18
+Hiker Theodore
+{
+version:diamond
+version:pearl
+progresspoint:6
+steelix,57
+steelix,59
+}

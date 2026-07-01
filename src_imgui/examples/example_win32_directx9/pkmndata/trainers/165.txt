@@ -1,0 +1,123 @@
+//1
+Ace Trainer Maya
+{
+version:diamond
+version:pearl
+glameow,23
+kadabra,23
+}
+//2
+Ace Trainer Maya
+{
+version:diamond
+version:pearl
+progresspoint:4
+glameow,40
+kadabra,40
+}
+//3
+Ace Trainer Maya
+{
+version:diamond
+version:pearl
+progresspoint:6
+purugly,60
+alakazam,60
+}
+//4
+Ace Trainer Dennis
+{
+version:diamond
+version:pearl
+monferno,23
+gyarados,23
+}
+//5
+Ace Trainer Dennis
+{
+version:diamond
+version:pearl
+progresspoint:4
+monferno,39
+luxio,39
+gyarados,39
+}
+//6
+Ace Trainer Dennis
+{
+version:diamond
+version:pearl
+progresspoint:6
+monferno,59
+luxio,59
+gyarados,59
+}
+//7
+Black Belt Derek
+{
+version:diamond
+version:pearl
+croagunk,25
+}
+//8
+Black Belt Gregory
+{
+version:diamond
+version:pearl
+meditite,23
+machop,22
+meditite,21
+}
+//9
+Black Belt Nathaniel
+{
+version:diamond
+version:pearl
+croagunk,21
+meditite,23
+machop,22
+}
+//10
+Jogger Craig
+{
+version:diamond
+version:pearl
+luxio,19
+staravia,21
+ponyta,20
+}
+//11
+Jogger Craig
+{
+version:diamond
+version:pearl
+progresspoint:4
+luxio,36
+staravia,36
+rapidash,39
+}
+//12
+Jogger Craig
+{
+version:diamond
+version:pearl
+progresspoint:6
+luxio,56
+staraptor,57
+rapidash,58
+}
+//13
+Jogger Scott
+{
+version:diamond
+version:pearl
+staravia,23
+}
+//14
+Ruin Maniac Calvin
+{
+version:diamond
+version:pearl
+bronzor,21
+shieldon,23
+}

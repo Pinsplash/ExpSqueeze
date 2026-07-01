@@ -1,0 +1,79 @@
+//1
+Ace Trainer Shannon
+{
+version:diamond
+version:pearl
+cherrim,30
+marill,32
+lopunny,34
+}
+//2
+Ace Trainer Shannon
+{
+version:diamond
+version:pearl
+progresspoint:5
+cherrim,54
+marill,54
+lopunny,54
+}
+//3
+Ace Trainer Jake
+{
+version:diamond
+version:pearl
+staravia,33
+girafarig,33
+}
+//4
+Ace Trainer Jake
+{
+version:diamond
+version:pearl
+progresspoint:5
+staravia,55
+girafarig,55
+}
+//5
+Collector Ivan
+{
+version:diamond
+version:pearl
+hippopotas,28
+hippopotas,28
+hippopotas,34
+}
+//6
+Collector Ivan
+{
+version:diamond
+version:pearl
+progresspoint:5
+hippopotas,51
+hippopotas,53
+hippopotas,52
+}
+//7
+Fisherman Cory
+{
+version:diamond
+version:pearl
+magikarp,28
+finneon,30
+gyarados,32
+}
+//8
+Swimmer Vanessa
+{
+version:diamond
+version:pearl
+golduck,33
+}
+//9
+Swimmer Dillon
+{
+version:diamond
+version:pearl
+shellos,30
+gastrodon,32
+}

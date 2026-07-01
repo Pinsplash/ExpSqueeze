@@ -1,0 +1,7 @@
+//1
+Dragon Tamer Darien
+{
+version:diamond
+version:pearl
+gyarados,60
+}

@@ -1,0 +1,135 @@
+//1
+Ace Trainer Alyssa
+{
+version:diamond
+version:pearl
+ponyta,27
+grotle,27
+}
+//2
+Ace Trainer Ernest
+{
+version:diamond
+version:pearl
+mothim,25
+onix,26
+luxio,27
+}
+//3
+Bird Keeper Brianna
+{
+version:diamond
+version:pearl
+hoothoot,27
+noctowl,27
+}
+//4
+Bird Keeper Brianna
+{
+version:diamond
+version:pearl
+progresspoint:4
+noctowl,38
+noctowl,42
+}
+//5
+Bird Keeper Brianna
+{
+version:diamond
+version:pearl
+progresspoint:6
+noctowl,60
+noctowl,60
+}
+//6
+Black Belt Adam
+{
+version:diamond
+version:pearl
+machoke,29
+}
+//7
+Double Team Zac & Jen
+{
+version:diamond
+version:pearl
+gyarados,27
+raichu,27
+}
+//8
+Dragon Tamer Patrick
+{
+version:diamond
+version:pearl
+gible,39
+}
+//9
+Dragon Tamer Patrick
+{
+version:diamond
+version:pearl
+progresspoint:4
+gabite,43
+}
+//10
+Dragon Tamer Patrick
+{
+version:diamond
+version:pearl
+progresspoint:6
+gabite,63
+}
+//11
+Ninja Boy Davido
+{
+version:diamond
+version:pearl
+dustox,27
+}
+//12
+Ninja Boy Joel
+{
+version:diamond
+version:pearl
+zubat,23
+skorupi,25
+zubat,23
+golbat,25
+}
+//13
+Ninja Boy Nathan
+{
+version:diamond
+version:pearl
+croagunk,25
+golbat,25
+}
+//14
+Veteran Brian
+{
+version:diamond
+version:pearl
+buizel,26
+girafarig,26
+machoke,26
+}
+//15
+Veteran Brian
+{
+version:diamond
+version:pearl
+progresspoint:4
+buizel,38
+girafarig,40
+machoke,39
+}
+//16
+Veteran Brian
+{
+version:diamond
+version:pearl
+progresspoint:6
+floatzel,58
+girafarig,59
+machamp,60
+}

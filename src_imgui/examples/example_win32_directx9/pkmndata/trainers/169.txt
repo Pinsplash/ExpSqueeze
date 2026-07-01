@@ -1,0 +1,16 @@
+//1
+Tuber Mariel
+{
+version:diamond
+version:pearl
+marill,29
+marill,29
+}
+//2
+Tuber Trenton
+{
+version:diamond
+version:pearl
+shellos,29
+shellos,29
+}

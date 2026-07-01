@@ -1,0 +1,90 @@
+//1
+Aroma Lady Hannah
+{
+version:diamond
+version:pearl
+combee,16
+roselia,18
+}
+//2
+Artist Kevin
+{
+version:diamond
+version:pearl
+progresspoint:3
+mr-mime,29
+sudowoodo,29
+}
+//3
+Artist Kevin
+{
+version:diamond
+version:pearl
+mr-mime,29
+sudowoodo,29
+}
+//4
+Artist Kevin
+{
+version:diamond
+version:pearl
+progresspoint:4
+mr-mime,37
+sudowoodo,39
+}
+//5
+Artist Kevin
+{
+version:diamond
+version:pearl
+progresspoint:6
+mr-mime,57
+sudowoodo,59
+}
+//6
+Artist William
+{
+version:diamond
+version:pearl
+mime-jr,17
+bonsly,17
+}
+//7
+Black Belt Kyle
+{
+version:diamond
+version:pearl
+machop,19
+}
+//8
+Fisherman Cody
+{
+version:diamond
+version:pearl
+barboach,31
+gyarados,31
+}
+//9
+Hiker Alexander
+{
+version:diamond
+version:pearl
+golbat,35
+graveler,35
+onix,35
+}
+//10
+Hiker Jonathan
+{
+version:diamond
+version:pearl
+onix,19
+}
+//11
+Hiker Robert
+{
+version:diamond
+version:pearl
+geodude,17
+geodude,17
+}

@@ -1,0 +1,46 @@
+//1
+Lass Natalie
+{
+version:diamond
+version:pearl
+bidoof,3
+bidoof,3
+}
+//2
+Youngster Logan
+{
+version:diamond
+version:pearl
+shinx,5
+}
+//3
+Youngster Tristan
+{
+version:diamond
+version:pearl
+starly,5
+}
+//4
+Youngster Tristan
+{
+version:diamond
+version:pearl
+progresspoint:2
+starly,19
+}
+//5
+Youngster Tristan
+{
+version:diamond
+version:pearl
+progresspoint:3
+staravia,31
+}
+//6
+Youngster Tristan
+{
+version:diamond
+version:pearl
+progresspoint:4
+staravia,40
+}
