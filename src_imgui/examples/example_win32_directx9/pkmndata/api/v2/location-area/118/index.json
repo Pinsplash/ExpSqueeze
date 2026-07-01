@@ -37,6 +37,7 @@
         "url": "/api/v2/location/23/"
     },
     "name": "trophy-garden-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -153,6 +153,7 @@
         "url": "/api/v2/location/34/"
     },
     "name": "sinnoh-route-204-south-towards-jubilife-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

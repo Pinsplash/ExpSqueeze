@@ -37,6 +37,7 @@
         "url": "/api/v2/location/25/"
     },
     "name": "old-chateau-2f-right-room",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

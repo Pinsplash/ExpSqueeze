@@ -37,6 +37,7 @@
         "url": "/api/v2/location/10/"
     },
     "name": "mt-coronet-exterior",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

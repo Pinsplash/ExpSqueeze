@@ -153,6 +153,7 @@
         "url": "/api/v2/location/43/"
     },
     "name": "sinnoh-route-212-east-towards-pastoria-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

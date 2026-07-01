@@ -37,6 +37,7 @@
         "url": "/api/v2/location/16/"
     },
     "name": "stark-mountain-inside",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

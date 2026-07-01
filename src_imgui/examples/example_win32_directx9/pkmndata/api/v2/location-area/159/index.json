@@ -37,6 +37,7 @@
         "url": "/api/v2/location/42/"
     },
     "name": "sinnoh-route-211-west-towards-eterna-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

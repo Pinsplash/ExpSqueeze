@@ -153,6 +153,7 @@
         "url": "/api/v2/location/7/"
     },
     "name": "valley-windworks-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

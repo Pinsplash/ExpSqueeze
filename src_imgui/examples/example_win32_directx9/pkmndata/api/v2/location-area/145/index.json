@@ -153,6 +153,7 @@
         "url": "/api/v2/location/34/"
     },
     "name": "sinnoh-route-204-north-towards-floaroma-town",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

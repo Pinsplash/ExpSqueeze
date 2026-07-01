@@ -153,6 +153,7 @@
         "url": "/api/v2/location/49/"
     },
     "name": "sinnoh-route-218-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

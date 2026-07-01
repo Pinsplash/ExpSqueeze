@@ -153,6 +153,7 @@
         "url": "/api/v2/location/13/"
     },
     "name": "sinnoh-victory-road-back-main",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

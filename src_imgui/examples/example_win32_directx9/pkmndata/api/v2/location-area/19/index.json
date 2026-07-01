@@ -37,6 +37,7 @@
         "url": "/api/v2/location/10/"
     },
     "name": "mt-coronet-6f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

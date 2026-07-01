@@ -153,6 +153,7 @@
         "url": "/api/v2/location/43/"
     },
     "name": "sinnoh-route-212-north-towards-hearthome-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

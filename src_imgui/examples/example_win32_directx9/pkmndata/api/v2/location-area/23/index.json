@@ -153,6 +153,7 @@
         "url": "/api/v2/location/10/"
     },
     "name": "mt-coronet-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

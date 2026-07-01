@@ -37,6 +37,7 @@
         "url": "/api/v2/location/6/"
     },
     "name": "oreburgh-mine-b1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

@@ -37,6 +37,7 @@
         "url": "/api/v2/location/25/"
     },
     "name": "old-chateau-area",
+    "walk_string": "Building",
     "names": [
         {
             "language": {

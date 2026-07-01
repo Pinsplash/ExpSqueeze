@@ -153,6 +153,7 @@
         "url": "/api/v2/location/27/"
     },
     "name": "lake-valor-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

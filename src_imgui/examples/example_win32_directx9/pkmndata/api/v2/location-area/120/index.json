@@ -37,6 +37,7 @@
         "url": "/api/v2/location/24/"
     },
     "name": "iron-island-1f",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

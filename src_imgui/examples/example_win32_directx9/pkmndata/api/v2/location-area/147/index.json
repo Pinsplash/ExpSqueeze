@@ -153,6 +153,7 @@
         "url": "/api/v2/location/35/"
     },
     "name": "sinnoh-route-205-east-towards-eterna-city",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -37,6 +37,7 @@
         "url": "/api/v2/location/41/"
     },
     "name": "sinnoh-route-210-south-towards-solaceon-town",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

@@ -37,6 +37,7 @@
         "url": "/api/v2/location/18/"
     },
     "name": "turnback-cave-before-pillar-1",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

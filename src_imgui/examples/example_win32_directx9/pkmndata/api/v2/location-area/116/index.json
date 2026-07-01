@@ -37,6 +37,7 @@
         "url": "/api/v2/location/22/"
     },
     "name": "ruin-maniac-cave-10-25-different-unown-seen",
+    "walk_string": "Cave",
     "names": [
         {
             "language": {

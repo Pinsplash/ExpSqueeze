@@ -37,6 +37,7 @@
         "url": "/api/v2/location/42/"
     },
     "name": "sinnoh-route-211-east-towards-celestic-town",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

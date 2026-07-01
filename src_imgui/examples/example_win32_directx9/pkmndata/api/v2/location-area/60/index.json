@@ -153,6 +153,7 @@
         "url": "/api/v2/location/178/"
     },
     "name": "sendoff-spring-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {

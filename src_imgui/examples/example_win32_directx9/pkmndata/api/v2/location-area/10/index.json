@@ -153,6 +153,7 @@
         "url": "/api/v2/location/9/"
     },
     "name": "fuego-ironworks-area",
+    "walk_string": "Grass",
     "names": [
         {
             "language": {
