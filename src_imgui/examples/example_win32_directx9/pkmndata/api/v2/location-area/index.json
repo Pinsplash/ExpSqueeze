@@ -2328,10 +2328,6 @@
             "url": "/api/v2/location-area/805/"
         },
         {
-            "name": "birth-island-area",
-            "url": "/api/v2/location-area/806/"
-        },
-        {
             "name": "navel-rock-area",
             "url": "/api/v2/location-area/807/"
         },
@@ -2412,20 +2408,12 @@
             "url": "/api/v2/location-area/838/"
         },
         {
-            "name": "flower-paradise-area",
-            "url": "/api/v2/location-area/839/"
-        },
-        {
             "name": "sinnoh-hall-of-origin-1-area",
             "url": "/api/v2/location-area/840/"
         },
         {
             "name": "team-rocket-hq-area",
             "url": "/api/v2/location-area/841/"
-        },
-        {
-            "name": "sinjoh-ruins-area",
-            "url": "/api/v2/location-area/842/"
         },
         {
             "name": "galar-route-1-area",
