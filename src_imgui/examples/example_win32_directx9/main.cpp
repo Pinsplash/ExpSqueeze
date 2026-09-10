@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <complex>
 #include <future>
+#include <format>
 
 // Data
 static LPDIRECT3D9              g_pD3D = nullptr;
@@ -698,12 +699,12 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 	}
 }
 
-static bool isEqualString(char* initial, char* compare)
+static bool isEqualString(const char* initial, const char* compare)
 {
 	return !strcmp(initial, compare);
 }
 
-static json_value* FindArrayInObjectByName(json_value* initialObject, char* name)
+static json_value* FindArrayInObjectByName(json_value* initialObject, const char* name)
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
@@ -725,7 +726,7 @@ static json_value* FindArrayInObjectByName(json_value* initialObject, char* name
 	return NULL;
 }
 
-static json_value* FindValueInObjectByKey(json_value* initialObject, char* key)
+static json_value* FindValueInObjectByKey(json_value* initialObject, const char* key)
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
@@ -743,7 +744,7 @@ static json_value* FindValueInObjectByKey(json_value* initialObject, char* key)
 	return NULL;
 }
 
-static json_value* FindObjectInObjectByName(json_value* initialObject, char* name)
+static json_value* FindObjectInObjectByName(json_value* initialObject, const char* name)
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
@@ -2722,21 +2723,21 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{
 			std::sort(maintables.begin(), maintables.end(), compareByExpPerHPEV);
 			for (EncounterTable& table : maintables)
-				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_HP].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_HP].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				table.header = format("{}", trunc(table.efficientEVs[OFFSET_HP].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_HP].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Atk"))
 		{
 			std::sort(maintables.begin(), maintables.end(), compareByExpPerAttackEV);
 			for (EncounterTable& table : maintables)
-				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				table.header = format("{}", trunc(table.efficientEVs[OFFSET_ATTACK].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Def"))
 		{
 			std::sort(maintables.begin(), maintables.end(), compareByExpPerDefenseEV);
 			for (EncounterTable& table : maintables)
-				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				table.header = format("{}", trunc(table.efficientEVs[OFFSET_DEFENSE].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 		}
 		ImGui::SameLine();
 		if (game->generation == 1)
@@ -2745,7 +2746,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpAtkEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = format("{}", trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 		}
@@ -2755,14 +2756,14 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpAtkEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = format("{}", trunc(table.efficientEVs[OFFSET_SP_ATTACK].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_ATTACK].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("SpD"))
 			{
 				std::sort(maintables.begin(), maintables.end(), compareByExpPerSpDefEV);
 				for (EncounterTable& table : maintables)
-					table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SP_DEFENSE].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+					table.header = format("{}", trunc(table.efficientEVs[OFFSET_SP_DEFENSE].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_SP_DEFENSE].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 			}
 			ImGui::SameLine();
 		}
@@ -2770,14 +2771,14 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{
 			std::sort(maintables.begin(), maintables.end(), compareByExpPerSpeedEV);
 			for (EncounterTable& table : maintables)
-				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_SPEED].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				table.header = format("{}", trunc(table.efficientEVs[OFFSET_SPEED].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_SPEED].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Total"))
 		{
 			std::sort(maintables.begin(), maintables.end(), compareByExpPerTotalEV);
 			for (EncounterTable& table : maintables)
-				table.header = to_string((int)trunc(table.efficientEVs[OFFSET_TOTAL].expPerEV)) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
+				table.header = format("{}", trunc(table.efficientEVs[OFFSET_TOTAL].expPerEV * 10) / 10) + " EXP/EV from " + table.efficientEVs[OFFSET_TOTAL].pokemonname + ", " + table.placename + ", " + g_methods[table.method_index]->uiname + ", " + g_games[table.version_index]->uiname;
 		}
 		ImGui::PopID();
 
@@ -3798,7 +3799,7 @@ static void UIMainWindow()
 		"Sun", "Moon", "Ultra Sun", "Ultra Moon", "All"//26 (ALLGAMES_INDEX)
 	};
 
-	ImGui::Begin("Options", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Options", (bool *)0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 	static int game_current = 0;
 	ImGui::Combo("Game", &game_current, f_games, IM_ARRAYSIZE(f_games));
 	g_newsettings.wantedgame_index = game_current;
