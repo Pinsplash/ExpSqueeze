@@ -1368,6 +1368,11 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		else
 			table->averageYields[offset] += (double)(stat * encounter->chance * chancescale) / table->expectedtotalpercent;
 		double lowestExp = CalculateExperienceCore(generation, (double)encounter->minlevel, encounter->baseExp);
+		//only place in the program where we do game-accurate rounding lol
+		if (generation >= 5)
+			lowestExp = round(lowestExp);
+		else
+			lowestExp = floor(lowestExp);
 		//just to avoid divide by 0
 		if (stat > 0)
 		{
@@ -1375,6 +1380,8 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 			{
 				table->efficientEVs[offset].expPerEV = lowestExp / stat;
 				table->efficientEVs[offset].pokemonname = encounter->pokemonname;
+				//if (table->filenumber == 253 && table->method_index == METHOD_WALK)
+					//cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 			}
 			else
 			{
@@ -1382,7 +1389,11 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 				{
 					table->efficientEVs[offset].expPerEV = lowestExp / stat;
 					table->efficientEVs[offset].pokemonname = encounter->pokemonname;
+					//if (table->filenumber == 253 && table->method_index == METHOD_WALK)
+						//cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 				}
+				//else if (table->filenumber == 253 && table->method_index == METHOD_WALK)
+					//cout << "Less efficient EV for " << offset << ": " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 			}
 		}
 	}
