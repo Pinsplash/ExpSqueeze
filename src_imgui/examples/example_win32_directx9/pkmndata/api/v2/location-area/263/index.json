@@ -616,6 +616,16 @@
                                 "url": "/api/v2/encounter-method/1/"
                             },
                             "min_level": 48
+                        },
+                        {
+                            "chance": 30,
+                            "condition_values": [],
+                            "max_level": 39,
+                            "method": {
+                                "name": "surf",
+                                "url": "/api/v2/encounter-method/5/"
+                            },
+                            "min_level": 35
                         }
                     ],
                     "max_chance": 60,
