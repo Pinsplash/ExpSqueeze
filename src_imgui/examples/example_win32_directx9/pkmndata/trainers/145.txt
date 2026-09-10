@@ -11,6 +11,7 @@ Bug Catcher Brandon
 {
 version:diamond
 version:pearl
+progresspoint:1
 kricketot,7
 wurmple,7
 }

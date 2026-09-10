@@ -34,6 +34,7 @@ Gamer Darian
 {
 version:firered
 version:leafgreen
+progresspoint:1
 growlithe,18
 vulpix,18
 }
@@ -96,6 +97,7 @@ Youngster Yasu
 {
 version:firered
 version:leafgreen
+progresspoint:1
 rattata,17
 rattata,17
 raticate,17
@@ -113,6 +115,7 @@ Engineer Bernie
 {
 version:firered
 version:leafgreen
+progresspoint:1
 magnemite,18
 magnemite,18
 magneton,18

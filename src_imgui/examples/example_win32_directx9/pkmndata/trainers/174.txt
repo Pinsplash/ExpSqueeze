@@ -12,6 +12,7 @@ Ace Trainer Saul
 {
 version:diamond
 version:pearl
+progresspoint:1
 tauros,55
 }
 //3

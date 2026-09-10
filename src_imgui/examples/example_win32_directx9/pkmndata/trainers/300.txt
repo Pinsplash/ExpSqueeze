@@ -3,6 +3,7 @@ Picnicker Isabelle
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,16
 pidgey,16
 pidgey,16
@@ -27,6 +28,7 @@ Camper Ricky
 {
 version:firered
 version:leafgreen
+progresspoint:1
 squirtle,20
 }
 //5
@@ -107,6 +109,7 @@ Camper Jeff
 {
 version:firered
 version:leafgreen
+progresspoint:1
 spearow,16
 raticate,16
 }

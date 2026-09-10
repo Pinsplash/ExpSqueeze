@@ -26,6 +26,7 @@ Dragon Tamer Hayden
 {
 version:diamond
 version:pearl
+progresspoint:1
 swablu,53
 altaria,57
 }
@@ -43,6 +44,7 @@ Psychic Brittney
 {
 version:diamond
 version:pearl
+progresspoint:1
 medicham,52
 alakazam,54
 }
@@ -60,6 +62,7 @@ Psychic Maxwell
 {
 version:diamond
 version:pearl
+progresspoint:1
 misdreavus,52
 haunter,54
 }
@@ -84,6 +87,7 @@ Veteran Armando
 {
 version:diamond
 version:pearl
+progresspoint:1
 staravia,52
 pelipper,53
 golbat,54

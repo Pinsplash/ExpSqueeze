@@ -20,6 +20,7 @@ Bird Keeper Brianna
 {
 version:diamond
 version:pearl
+progresspoint:1
 hoothoot,27
 noctowl,27
 }
@@ -61,6 +62,7 @@ Dragon Tamer Patrick
 {
 version:diamond
 version:pearl
+progresspoint:1
 gible,39
 }
 //9
@@ -109,6 +111,7 @@ Veteran Brian
 {
 version:diamond
 version:pearl
+progresspoint:1
 buizel,26
 girafarig,26
 machoke,26

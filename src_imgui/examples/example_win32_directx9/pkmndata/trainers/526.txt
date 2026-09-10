@@ -48,6 +48,7 @@ PKMN Ranger Nicolas
 {
 version:firered
 version:leafgreen
+progresspoint:1
 weepinbell,51
 victreebel,51
 }
@@ -56,6 +57,7 @@ PKMN Ranger Madeline
 {
 version:firered
 version:leafgreen
+progresspoint:1
 gloom,51
 vileplume,51
 }
@@ -64,6 +66,7 @@ Juggler Mason
 {
 version:firered
 version:leafgreen
+progresspoint:1
 voltorb,47
 pineco,47
 voltorb,47

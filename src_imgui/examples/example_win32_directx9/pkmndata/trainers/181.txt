@@ -3,6 +3,7 @@ Sailor Zachariah
 {
 version:diamond
 version:pearl
+progresspoint:1
 pelipper,38
 machoke,38
 gastrodon,44
@@ -38,6 +39,7 @@ Swimmer Crystal
 {
 version:diamond
 version:pearl
+progresspoint:1
 wingull,41
 seaking,41
 }
@@ -62,6 +64,7 @@ Swimmer Miranda
 {
 version:diamond
 version:pearl
+progresspoint:1
 lumineon,43
 }
 //9
@@ -95,6 +98,7 @@ Swimmer Francisco
 {
 version:diamond
 version:pearl
+progresspoint:1
 tentacool,40
 golduck,42
 }
@@ -135,6 +139,7 @@ Swimmer Wesley
 {
 version:diamond
 version:pearl
+progresspoint:1
 buizel,41
 tentacruel,41
 }

@@ -10,6 +10,7 @@ Fisherman Alec
 {
 version:diamond
 version:pearl
+progresspoint:1
 magikarp,40
 gyarados,42
 }
@@ -71,6 +72,7 @@ Rich Boy Trey
 {
 version:diamond
 version:pearl
+progresspoint:1
 luxio,43
 }
 //10
@@ -103,6 +105,7 @@ Sailor Marc
 {
 version:diamond
 version:pearl
+progresspoint:1
 mantyke,43
 }
 //14

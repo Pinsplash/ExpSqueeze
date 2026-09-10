@@ -246,6 +246,7 @@ struct EncounterTable
 	int method_index = 0;
 	string placename;
 	string trainername;
+	int trainerindex;
 	string walkstring;
 	vector<Encounter> encounters;
 	int filenumber = 0;
@@ -619,12 +620,12 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex,
 	return foundtable && !excludebymethod && methodavailable && !removed && teamunlocked;
 }
 
-static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int i, int filterReason, string warning, bool goodtype, bool goodEVs, int trainerindex, string trainername, int progresspoint)
+static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel, string pokemonname, string placename, string walkstring, int method_index, int version_index, int iFile, int filterReason, string warning, bool goodtype, bool goodEVs, int trainerindex, string trainername, int progresspoint)
 {
 	if (g_settings.repellevel > maxlevel && method_index != METHOD_REMATCH)
 		return;
 
-	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname, trainerindex, progresspoint))
+	if (g_settings.useprogressfilter && !EncounterIsAccessible(iFile, g_methods[method_index]->internalname, trainerindex, progresspoint))
 	{
 		filterReason = Reason_BadProgress;
 		//std::cout << "table " << to_string(i) << " " << g_methods[method_index]->internalname << " trainer " << to_string(trainerindex) << " bad progress\n";
@@ -641,7 +642,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 	bool makenewtable = true;
 	for (EncounterTable& table : maintables)
 	{
-		if (table.placename == placename && table.trainername == trainername && table.method_index == method_index && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
+		if (table.placename == placename && table.trainername == trainername && table.method_index == method_index && table.progresspoint == progresspoint && (g_settings.wantedgame_index != ALLGAMES_INDEX || table.version_index == version_index))
 		{
 			//don't lose our reason just because another encounter was ok
 			//prioritize OverLevelCap because BadType may simply be a warning
@@ -681,8 +682,9 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 		newTable->method_index = method_index;
 		newTable->placename = placename;
 		newTable->trainername = trainername;
+		newTable->trainerindex = trainerindex;
 		newTable->walkstring = walkstring;
-		newTable->filenumber = i;
+		newTable->filenumber = iFile;
 		newTable->expectedtotalpercent = chance;
 		newTable->version_index = version_index;
 		newTable->filterReason = filterReason;
@@ -2129,7 +2131,7 @@ static void TablePostProcess()
 		}
 		if (table.progresspoint != PROGRESSPOINT_DONTCHECK)
 			for (EncounterTable& table2 : maintables)
-				if (table.progresspoint < table2.progresspoint && table.trainername == table2.trainername)
+				if (table.progresspoint < table2.progresspoint && table.trainername == table2.trainername && (!g_settings.useprogressfilter || EncounterIsAccessible(table2.filenumber, g_methods[METHOD_REMATCH]->internalname, table2.trainerindex, table2.progresspoint)))
 					table.filterReason = Reason_TeamSuperceded;
 	}
 }
@@ -2922,6 +2924,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		{
 			//before you run this code again, understand that the sorting method's behavior has changed since the last time we made this data,
 			//so rematch numbers will change and you may have to edit progress files
+			//also, we now require progresspoint:1 to be specified in the files, but this code hasn't been updated to do that
 			ESAssert(false);
 			vector<Party> parties;
 			//Iterate through the rematchX.csv files. For each one, make a new Party struct for every line of the file.
@@ -3111,6 +3114,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 		}
 		if (ImGui::Button("Make DP Trainer Data"))
 		{
+			//also, we now require progresspoint:1 to be specified in the files, but this code hasn't been updated to do that
 			vector<Party> parties;
 			//Iterate through the rematchX.txt files. For each one, make a new Party struct for every line of the file.
 			//For DP the first file tells us all base teams (includes all that are rematchable and some who are not, also doesn't include some numbered guys who are incidentally not rematchable)
@@ -3401,10 +3405,16 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 	}
 }
 
+static bool ShouldDisplayTable(EncounterTable table)
+{
+	bool showWarning = (g_settings.pkmntypewarn && table.filterReason == Reason_BadType);
+	return table.filterReason == Reason_None || showWarning;
+}
+
 static void UITableDisplay(EncounterTable table, GameObject* game)
 {
 	bool showWarning = (g_settings.pkmntypewarn && table.filterReason == Reason_BadType);
-	if (table.filterReason == Reason_None || showWarning)
+	if (ShouldDisplayTable(table))
 	{
 		if (showWarning)
 		{
@@ -3422,8 +3432,7 @@ static void UITableDisplay(EncounterTable table, GameObject* game)
 					//trainer doesn't change team
 					break;
 				case 1:
-					//trainer's original team if they're one that eventually changes their team. we don't represent this properly in data. should be unused.
-					assert(0);
+					//ImGui::Text("Initial team");
 					break;
 				case 2:
 					ImGui::Text("Available immediately after obtaining Vs. Seeker");

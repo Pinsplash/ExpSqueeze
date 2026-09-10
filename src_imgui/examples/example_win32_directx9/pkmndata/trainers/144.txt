@@ -3,6 +3,7 @@ Lass Samantha
 {
 version:diamond
 version:pearl
+progresspoint:1
 budew,7
 }
 //2

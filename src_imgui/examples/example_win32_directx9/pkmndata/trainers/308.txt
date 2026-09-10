@@ -22,6 +22,7 @@ Bird Keeper Chester
 {
 version:firered
 version:leafgreen
+progresspoint:1
 dodrio,28
 doduo,28
 doduo,28
@@ -112,6 +113,7 @@ Picnicker Becky
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pikachu,29
 raichu,29
 }
@@ -129,6 +131,7 @@ Beauty Grace
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgeotto,29
 wigglytuff,29
 }
@@ -174,6 +177,7 @@ Crush Kin Ron & Mya
 {
 version:firered
 version:leafgreen
+progresspoint:1
 hitmonchan,29
 hitmonlee,29
 }

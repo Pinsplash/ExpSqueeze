@@ -3,6 +3,7 @@ Ace Trainer Shannon
 {
 version:diamond
 version:pearl
+progresspoint:1
 cherrim,30
 marill,32
 lopunny,34
@@ -22,6 +23,7 @@ Ace Trainer Jake
 {
 version:diamond
 version:pearl
+progresspoint:1
 staravia,33
 girafarig,33
 }
@@ -39,6 +41,7 @@ Collector Ivan
 {
 version:diamond
 version:pearl
+progresspoint:1
 hippopotas,28
 hippopotas,28
 hippopotas,34

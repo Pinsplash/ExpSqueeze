@@ -3,6 +3,7 @@ Aroma Lady Elizabeth
 {
 version:diamond
 version:pearl
+progresspoint:1
 budew,14
 }
 //2
@@ -48,6 +49,7 @@ Camper Zackary
 {
 version:diamond
 version:pearl
+progresspoint:1
 geodude,14
 }
 //8
@@ -96,6 +98,7 @@ Picnicker Karina
 {
 version:diamond
 version:pearl
+progresspoint:1
 piplup,14
 }
 //14

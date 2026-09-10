@@ -18,6 +18,7 @@ Youngster Tristan
 {
 version:diamond
 version:pearl
+progresspoint:1
 starly,5
 }
 //4

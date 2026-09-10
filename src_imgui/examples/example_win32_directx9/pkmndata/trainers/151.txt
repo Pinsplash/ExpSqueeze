@@ -28,6 +28,7 @@ Pokémon Breeder Jennifer
 {
 version:diamond
 version:pearl
+progresspoint:1
 mime-jr,16
 budew,15
 cleffa,17
@@ -67,6 +68,7 @@ Pokémon Breeder Albert
 {
 version:diamond
 version:pearl
+progresspoint:1
 bonsly,16
 budew,15
 pichu,17
@@ -106,6 +108,7 @@ Poké Kid Danielle
 {
 version:diamond
 version:pearl
+progresspoint:1
 pikachu,19
 }
 //13

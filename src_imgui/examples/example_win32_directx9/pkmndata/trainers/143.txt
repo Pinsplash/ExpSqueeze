@@ -12,6 +12,7 @@ Lass Madeline
 {
 version:diamond
 version:pearl
+progresspoint:1
 starly,5
 bidoof,5
 }
@@ -47,6 +48,7 @@ Youngster Dallas
 {
 version:diamond
 version:pearl
+progresspoint:1
 kricketot,7
 }
 //7

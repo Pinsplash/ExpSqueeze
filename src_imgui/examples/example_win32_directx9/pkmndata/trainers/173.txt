@@ -3,6 +3,7 @@ Ace Trainer Deanna
 {
 version:diamond
 version:pearl
+progresspoint:1
 flaaffy,53
 tropius,53
 }
@@ -28,6 +29,7 @@ Ace Trainer Rodolfo
 {
 version:diamond
 version:pearl
+progresspoint:1
 lickitung,53
 miltank,53
 }
@@ -45,6 +47,7 @@ Bird Keeper Audrey
 {
 version:diamond
 version:pearl
+progresspoint:1
 farfetchd,52
 swellow,54
 }
@@ -62,6 +65,7 @@ Dragon Tamer Geoffrey
 {
 version:diamond
 version:pearl
+progresspoint:1
 dratini,53
 dragonair,55
 }
@@ -79,6 +83,7 @@ Pokémon Ranger Ashlee
 {
 version:diamond
 version:pearl
+progresspoint:1
 zigzagoon,50
 skarmory,56
 }
@@ -103,6 +108,7 @@ Psychic Daisy
 {
 version:diamond
 version:pearl
+progresspoint:1
 slowpoke,51
 slowbro,55
 }

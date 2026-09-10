@@ -38,6 +38,7 @@ Cue Ball Camron
 {
 version:firered
 version:leafgreen
+progresspoint:1
 mankey,29
 machop,29
 }
@@ -53,6 +54,7 @@ Biker Ruben
 {
 version:firered
 version:leafgreen
+progresspoint:1
 weezing,28
 koffing,28
 weezing,28

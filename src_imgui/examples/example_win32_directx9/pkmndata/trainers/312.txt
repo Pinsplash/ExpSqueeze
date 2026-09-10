@@ -12,6 +12,7 @@ Fisherman Wade
 {
 version:firered
 version:leafgreen
+progresspoint:1
 magikarp,27
 magikarp,27
 magikarp,27
@@ -67,6 +68,7 @@ Swimmer Jack
 {
 version:firered
 version:leafgreen
+progresspoint:1
 starmie,37
 }
 //9
@@ -74,6 +76,7 @@ Sis And Bro Lil & Ian
 {
 version:firered
 version:leafgreen
+progresspoint:1
 seadra,33
 starmie,33
 }

@@ -60,6 +60,7 @@ Rancher Marco
 {
 version:diamond
 version:pearl
+progresspoint:1
 aipom,18
 psyduck,19
 girafarig,17
@@ -89,6 +90,7 @@ Twins Teri & Tia
 {
 version:diamond
 version:pearl
+progresspoint:1
 pikachu,21
 clefairy,21
 }

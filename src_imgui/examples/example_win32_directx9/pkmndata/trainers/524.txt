@@ -44,6 +44,7 @@ Ruin Maniac Larry
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machoke,49
 machoke,49
 }
@@ -52,6 +53,7 @@ Pokemaniac Hector
 {
 version:firered
 version:leafgreen
+progresspoint:1
 rhyhorn,49
 kangaskhan,49
 }

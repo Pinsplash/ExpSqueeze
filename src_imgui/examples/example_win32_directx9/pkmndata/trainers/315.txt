@@ -21,6 +21,7 @@ Youngster Chad
 {
 version:firered
 version:leafgreen
+progresspoint:1
 ekans,14
 sandshrew,14
 }
@@ -92,6 +93,7 @@ Hiker Franklin
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machop,15
 geodude,15
 }
@@ -117,6 +119,7 @@ Picnicker Kelsey
 {
 version:firered
 version:leafgreen
+progresspoint:1
 nidoran-m,15
 nidoran-f,15
 }

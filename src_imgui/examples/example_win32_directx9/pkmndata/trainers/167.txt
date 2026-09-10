@@ -3,6 +3,7 @@ Ace Trainer Olivia
 {
 version:diamond
 version:pearl
+progresspoint:1
 roselia,37
 seaking,37
 }
@@ -20,6 +21,7 @@ Ace Trainer Dalton
 {
 version:diamond
 version:pearl
+progresspoint:1
 raichu,34
 pelipper,36
 hippopotas,38
@@ -74,6 +76,7 @@ Skier Madison
 {
 version:diamond
 version:pearl
+progresspoint:1
 snover,37
 }
 //10
@@ -97,6 +100,7 @@ Skier Bjorn
 {
 version:diamond
 version:pearl
+progresspoint:1
 mantyke,36
 sneasel,38
 }

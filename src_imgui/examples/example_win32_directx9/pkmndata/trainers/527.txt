@@ -15,6 +15,7 @@ PKMN Ranger Katelyn
 {
 version:firered
 version:leafgreen
+progresspoint:1
 chansey,52
 }
 //3
@@ -22,6 +23,7 @@ Cooltrainer Leroy
 {
 version:firered
 version:leafgreen
+progresspoint:1
 rhydon,47
 slowbro,48
 kangaskhan,47
@@ -42,6 +44,7 @@ PKMN Ranger Jackson
 {
 version:firered
 version:leafgreen
+progresspoint:1
 tangela,49
 exeggcute,49
 exeggutor,49
@@ -51,6 +54,7 @@ Cooltrainer Michelle
 {
 version:firered
 version:leafgreen
+progresspoint:1
 persian,47
 dewgong,47
 ninetales,48
@@ -112,6 +116,7 @@ Cool Couple Lex & Nya
 {
 version:firered
 version:leafgreen
+progresspoint:1
 miltank,52
 tauros,52
 }
@@ -120,6 +125,7 @@ Crush Girl Cyndy
 {
 version:firered
 version:leafgreen
+progresspoint:1
 primeape,48
 hitmontop,48
 machoke,48
@@ -129,6 +135,7 @@ Tamer Evan
 {
 version:firered
 version:leafgreen
+progresspoint:1
 sandslash,48
 lickitung,48
 ursaring,49

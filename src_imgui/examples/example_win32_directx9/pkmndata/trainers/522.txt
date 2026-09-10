@@ -13,6 +13,7 @@ Psychic Jaclyn
 {
 version:firered
 version:leafgreen
+progresspoint:1
 natu,48
 slowbro,48
 kadabra,49

@@ -21,6 +21,7 @@ Rocker Luca
 {
 version:firered
 version:leafgreen
+progresspoint:1
 voltorb,29
 electrode,29
 }
@@ -45,6 +46,7 @@ Young Couple Gia & Jes
 {
 version:firered
 version:leafgreen
+progresspoint:1
 nidoran-m,24
 nidoran-f,24
 }
@@ -90,6 +92,7 @@ Fisherman Elliot
 {
 version:firered
 version:leafgreen
+progresspoint:1
 poliwag,21
 shellder,21
 goldeen,21

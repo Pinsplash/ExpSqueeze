@@ -18,6 +18,7 @@ Bird Keeper Jacob
 {
 version:firered
 version:leafgreen
+progresspoint:1
 spearow,26
 spearow,26
 fearow,26

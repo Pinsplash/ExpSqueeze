@@ -15,6 +15,7 @@ Fisherman Joseph
 {
 version:diamond
 version:pearl
+progresspoint:1
 goldeen,14
 }
 //3

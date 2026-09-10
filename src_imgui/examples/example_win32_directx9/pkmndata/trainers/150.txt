@@ -6,6 +6,7 @@ version:pearl
 combee,16
 roselia,18
 }
+//note: artist william changes his name to kevin in rematches. because of how our code works, this generates an extra "artist kevin" battle here which has to be manually deleted
 //2
 Artist Kevin
 {
@@ -16,14 +17,14 @@ mr-mime,29
 sudowoodo,29
 }
 //3
-Artist Kevin
-{
-version:diamond
-version:pearl
-mr-mime,29
-sudowoodo,29
-}
-//4
+//Artist Kevin
+//{
+//version:diamond
+//version:pearl
+//mr-mime,29
+//sudowoodo,29
+//}
+//3
 Artist Kevin
 {
 version:diamond
@@ -32,7 +33,7 @@ progresspoint:4
 mr-mime,37
 sudowoodo,39
 }
-//5
+//4
 Artist Kevin
 {
 version:diamond
@@ -41,7 +42,7 @@ progresspoint:6
 mr-mime,57
 sudowoodo,59
 }
-//6
+//5
 Artist William
 {
 version:diamond
@@ -49,14 +50,14 @@ version:pearl
 mime-jr,17
 bonsly,17
 }
-//7
+//6
 Black Belt Kyle
 {
 version:diamond
 version:pearl
 machop,19
 }
-//8
+//7
 Fisherman Cody
 {
 version:diamond
@@ -64,7 +65,7 @@ version:pearl
 barboach,31
 gyarados,31
 }
-//9
+//8
 Hiker Alexander
 {
 version:diamond
@@ -73,14 +74,14 @@ golbat,35
 graveler,35
 onix,35
 }
-//10
+//9
 Hiker Jonathan
 {
 version:diamond
 version:pearl
 onix,19
 }
-//11
+//10
 Hiker Robert
 {
 version:diamond

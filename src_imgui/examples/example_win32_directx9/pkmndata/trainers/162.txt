@@ -37,6 +37,7 @@ Parasol Lady Alexa
 {
 version:diamond
 version:pearl
+progresspoint:1
 goldeen,19
 buizel,19
 }
@@ -79,6 +80,7 @@ Pokémon Ranger Allison
 {
 version:diamond
 version:pearl
+progresspoint:1
 aipom,21
 marill,21
 }
@@ -122,6 +124,7 @@ Pokémon Ranger Taylor
 {
 version:diamond
 version:pearl
+progresspoint:1
 luxio,21
 buizel,21
 }
@@ -157,6 +160,7 @@ Policeman Danny
 {
 version:diamond
 version:pearl
+progresspoint:1
 hoothoot,20
 machop,20
 }
@@ -192,6 +196,7 @@ Scientist Shaun
 {
 version:diamond
 version:pearl
+progresspoint:1
 abra,19
 kadabra,19
 }

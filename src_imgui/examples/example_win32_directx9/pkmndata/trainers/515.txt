@@ -3,6 +3,7 @@ Twins Joy & Meg
 {
 version:firered
 version:leafgreen
+progresspoint:1
 clefairy,37
 clefairy,37
 }
@@ -28,6 +29,7 @@ Tuber Amira
 {
 version:firered
 version:leafgreen
+progresspoint:1
 poliwag,34
 poliwhirl,35
 poliwag,34

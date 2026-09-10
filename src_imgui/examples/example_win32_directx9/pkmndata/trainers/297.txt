@@ -32,6 +32,7 @@ Youngster Ben
 {
 version:firered
 version:leafgreen
+progresspoint:1
 rattata,11
 ekans,11
 }
@@ -40,6 +41,7 @@ Bug Catcher Colton
 {
 version:firered
 version:leafgreen
+progresspoint:1
 caterpie,10
 weedle,10
 caterpie,10
@@ -49,6 +51,7 @@ Lass Janice
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,9
 pidgey,9
 }

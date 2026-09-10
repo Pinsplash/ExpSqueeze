@@ -3,6 +3,7 @@ Picnicker Alicia
 {
 version:firered
 version:leafgreen
+progresspoint:1
 oddish,18
 bellsprout,18
 oddish,18
@@ -13,6 +14,7 @@ Hiker Jeremy
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machop,20
 onix,20
 }
@@ -29,6 +31,7 @@ Camper Chris
 {
 version:firered
 version:leafgreen
+progresspoint:1
 growlithe,21
 charmander,21
 }

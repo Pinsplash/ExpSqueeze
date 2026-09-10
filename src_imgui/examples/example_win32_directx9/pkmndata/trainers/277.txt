@@ -68,6 +68,7 @@ Swimmer Alice
 {
 version:firered
 version:leafgreen
+progresspoint:1
 goldeen,30
 seaking,30
 }
@@ -86,6 +87,7 @@ Swimmer Tony
 {
 version:firered
 version:leafgreen
+progresspoint:1
 horsea,30
 horsea,30
 }
@@ -121,6 +123,7 @@ Swimmer Matthew
 {
 version:firered
 version:leafgreen
+progresspoint:1
 poliwag,30
 poliwhirl,30
 }

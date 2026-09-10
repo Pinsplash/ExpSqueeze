@@ -27,6 +27,7 @@ Swimmer Nicole
 {
 version:firered
 version:leafgreen
+progresspoint:1
 marill,50
 }
 //5

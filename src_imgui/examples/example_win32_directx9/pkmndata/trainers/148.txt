@@ -3,6 +3,7 @@ Cyclist Kayla
 {
 version:diamond
 version:pearl
+progresspoint:1
 pikachu,17
 }
 //2
@@ -71,6 +72,7 @@ Cyclist John
 {
 version:diamond
 version:pearl
+progresspoint:1
 starly,15
 staravia,15
 }
@@ -113,6 +115,7 @@ Hiker Theodore
 {
 version:diamond
 version:pearl
+progresspoint:1
 onix,15
 onix,15
 }

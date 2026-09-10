@@ -35,6 +35,7 @@ Bird Keeper Marlon
 {
 version:firered
 version:leafgreen
+progresspoint:1
 spearow,28
 doduo,28
 fearow,28
@@ -44,6 +45,7 @@ Bird Keeper Benny
 {
 version:firered
 version:leafgreen
+progresspoint:1
 spearow,29
 fearow,29
 }
@@ -110,6 +112,7 @@ Biker Lukas
 {
 version:firered
 version:leafgreen
+progresspoint:1
 koffing,26
 koffing,26
 grimer,26
@@ -138,6 +141,7 @@ Biker Gerald
 {
 version:firered
 version:leafgreen
+progresspoint:1
 koffing,29
 muk,29
 }

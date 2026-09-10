@@ -18,6 +18,7 @@ Ninja Boy Zach
 {
 version:diamond
 version:pearl
+progresspoint:1
 zubat,13
 zubat,14
 zubat,15

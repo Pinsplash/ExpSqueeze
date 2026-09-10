@@ -20,6 +20,7 @@ Swimmer Melissa
 {
 version:firered
 version:leafgreen
+progresspoint:1
 poliwag,31
 seaking,31
 }
@@ -28,6 +29,7 @@ Picnicker Missy
 {
 version:firered
 version:leafgreen
+progresspoint:1
 goldeen,31
 seaking,31
 }
@@ -61,6 +63,7 @@ Swimmer Darrin
 {
 version:firered
 version:leafgreen
+progresspoint:1
 horsea,28
 horsea,28
 seadra,28

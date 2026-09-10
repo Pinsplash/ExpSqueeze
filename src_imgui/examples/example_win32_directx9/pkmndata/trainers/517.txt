@@ -34,6 +34,7 @@ Painter Rayna
 {
 version:firered
 version:leafgreen
+progresspoint:1
 smeargle,50
 }
 //6
@@ -58,6 +59,7 @@ Youngster Destin
 {
 version:firered
 version:leafgreen
+progresspoint:1
 raticate,48
 pidgeotto,48
 }

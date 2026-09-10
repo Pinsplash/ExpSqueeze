@@ -27,6 +27,7 @@ Ruin Maniac Harry
 {
 version:diamond
 version:pearl
+progresspoint:1
 bronzor,30
 }
 //5

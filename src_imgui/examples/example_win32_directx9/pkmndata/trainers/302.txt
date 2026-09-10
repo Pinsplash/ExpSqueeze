@@ -3,6 +3,7 @@ Super Nerd Glenn
 {
 version:firered
 version:leafgreen
+progresspoint:1
 grimer,22
 muk,22
 grimer,22
@@ -39,6 +40,7 @@ Biker Jaren
 {
 version:firered
 version:leafgreen
+progresspoint:1
 grimer,24
 grimer,24
 }
@@ -56,6 +58,7 @@ Twins Eli & Anne
 {
 version:firered
 version:leafgreen
+progresspoint:1
 clefairy,22
 jigglypuff,22
 }
@@ -64,6 +67,7 @@ Lass Megan
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,19
 rattata,19
 nidoran-m,19
@@ -160,6 +164,7 @@ Gamer Rich
 {
 version:firered
 version:leafgreen
+progresspoint:1
 growlithe,24
 vulpix,24
 }

@@ -3,6 +3,7 @@ Swimmer Joanna
 {
 version:diamond
 version:pearl
+progresspoint:1
 luvdisc,50
 lapras,54
 }
@@ -36,6 +37,7 @@ Swimmer Glenn
 {
 version:diamond
 version:pearl
+progresspoint:1
 seel,51
 starmie,51
 }

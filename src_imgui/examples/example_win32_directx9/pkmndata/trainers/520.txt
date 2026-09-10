@@ -30,6 +30,7 @@ Bird Keeper Harold
 {
 version:firered
 version:leafgreen
+progresspoint:1
 hoothoot,47
 noctowl,49
 }
@@ -38,6 +39,7 @@ Bird Keeper Chaz
 {
 version:firered
 version:leafgreen
+progresspoint:1
 spearow,47
 fearow,49
 }
@@ -46,6 +48,7 @@ Bird Keeper Milo
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,47
 pidgeotto,49
 }

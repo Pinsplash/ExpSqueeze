@@ -37,6 +37,7 @@ PI Carlos
 {
 version:diamond
 version:pearl
+progresspoint:1
 goldeen,23
 goldeen,23
 goldeen,23
@@ -66,6 +67,7 @@ Psychic Abigail
 {
 version:diamond
 version:pearl
+progresspoint:1
 gastly,22
 misdreavus,23
 kadabra,24
@@ -95,6 +97,7 @@ Psychic Mitchell
 {
 version:diamond
 version:pearl
+progresspoint:1
 haunter,23
 kadabra,23
 }

@@ -58,7 +58,7 @@ checkpoint Obtained Vs. Seeker
 unlock rematch
 progresspoint 2
 11//mt-coronet-1f-route-207
-150 exclude remnum:8,remnum:9,//sinnoh-route-208
+150 exclude remnum:7,remnum:8,//sinnoh-route-208
 
 checkpoint Visited Contest Hall then defeated Barry
 151//sinnoh-route-209
@@ -109,7 +109,7 @@ checkpoint Defeated Bird Keeper Brianna (North Route 210)
 
 checkpoint Defeated Fantina
 progresspoint 3
-150 exclude remnum:9,//sinnoh-route-208
+150 exclude remnum:8,//sinnoh-route-208
 169//sinnoh-route-219
 180//sinnoh-sea-route-220
 170//sinnoh-route-221

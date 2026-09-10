@@ -3,6 +3,7 @@ Gentleman Jeremy
 {
 version:diamond
 version:pearl
+progresspoint:1
 chatot,19
 }
 //2
@@ -34,6 +35,7 @@ Lady Melissa
 {
 version:diamond
 version:pearl
+progresspoint:1
 buneary,19
 }
 //6
@@ -104,6 +106,7 @@ Socialite Reina
 {
 version:diamond
 version:pearl
+progresspoint:1
 roselia,19
 }
 //15

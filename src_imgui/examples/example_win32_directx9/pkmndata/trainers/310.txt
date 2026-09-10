@@ -3,6 +3,7 @@ Biker Jaxon
 {
 version:firered
 version:leafgreen
+progresspoint:1
 weezing,29
 muk,29
 }
@@ -22,6 +23,7 @@ Cue Ball Corey
 {
 version:firered
 version:leafgreen
+progresspoint:1
 primeape,29
 machoke,29
 }
@@ -71,6 +73,7 @@ Cue Ball Isaiah
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machop,29
 machamp,29
 }

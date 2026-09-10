@@ -36,6 +36,7 @@ Black Belt Philip
 {
 version:diamond
 version:pearl
+progresspoint:1
 machoke,40
 }
 //6
@@ -51,6 +52,7 @@ Skier Andrea
 {
 version:diamond
 version:pearl
+progresspoint:1
 staravia,38
 }
 //8
@@ -91,6 +93,7 @@ Skier Edward
 {
 version:diamond
 version:pearl
+progresspoint:1
 sneasel,35
 }
 //13

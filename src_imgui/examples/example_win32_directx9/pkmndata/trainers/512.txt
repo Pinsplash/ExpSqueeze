@@ -65,6 +65,7 @@ Black Belt Shea
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machop,38
 machoke,38
 }
@@ -73,6 +74,7 @@ Black Belt Hugh
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machop,37
 machoke,37
 }
@@ -136,6 +138,7 @@ Crush Kin Mik & Kia
 {
 version:firered
 version:leafgreen
+progresspoint:1
 machoke,39
 primeape,39
 }
@@ -144,6 +147,7 @@ Swimmer Finn
 {
 version:firered
 version:leafgreen
+progresspoint:1
 starmie,38
 }
 //18
@@ -180,6 +184,7 @@ Crush Girl Sharon
 {
 version:firered
 version:leafgreen
+progresspoint:1
 mankey,37
 primeape,37
 }
@@ -188,6 +193,7 @@ Crush Girl Tanya
 {
 version:firered
 version:leafgreen
+progresspoint:1
 hitmonlee,38
 hitmonchan,38
 }

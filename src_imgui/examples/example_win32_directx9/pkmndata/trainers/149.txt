@@ -3,6 +3,7 @@ Battle Girl Helen
 {
 version:diamond
 version:pearl
+progresspoint:1
 meditite,18
 machop,18
 }

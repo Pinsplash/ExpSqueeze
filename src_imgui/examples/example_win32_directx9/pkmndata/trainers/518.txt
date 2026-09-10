@@ -13,6 +13,7 @@ PKMN Breeder Alize
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pikachu,48
 clefairy,48
 marill,48

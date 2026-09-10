@@ -57,6 +57,7 @@ Lass Reli
 {
 version:firered
 version:leafgreen
+progresspoint:1
 nidoran-m,16
 nidoran-f,16
 }
@@ -84,6 +85,7 @@ Youngster Timmy
 {
 version:firered
 version:leafgreen
+progresspoint:1
 sandshrew,14
 ekans,14
 }

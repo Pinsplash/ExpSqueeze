@@ -3,6 +3,7 @@ Hiker Trent
 {
 version:firered
 version:leafgreen
+progresspoint:1
 onix,19
 graveler,19
 }
@@ -19,6 +20,7 @@ Pokemaniac Herman
 {
 version:firered
 version:leafgreen
+progresspoint:1
 cubone,20
 slowpoke,20
 }
@@ -35,6 +37,7 @@ Pokemaniac Mark
 {
 version:firered
 version:leafgreen
+progresspoint:1
 rhyhorn,29
 lickitung,29
 }

@@ -95,6 +95,7 @@ Picnicker Susie
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,24
 meowth,24
 rattata,24
@@ -106,6 +107,7 @@ Beauty Sheila
 {
 version:firered
 version:leafgreen
+progresspoint:1
 clefairy,29
 meowth,29
 }
@@ -132,6 +134,7 @@ Bird Keeper Robert
 {
 version:firered
 version:leafgreen
+progresspoint:1
 pidgey,26
 pidgeotto,26
 spearow,26

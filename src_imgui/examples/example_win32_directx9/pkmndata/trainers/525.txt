@@ -21,6 +21,7 @@ Psychic Rodette
 {
 version:firered
 version:leafgreen
+progresspoint:1
 natu,48
 drowzee,48
 hypno,50
@@ -30,5 +31,6 @@ Psychic Dario
 {
 version:firered
 version:leafgreen
+progresspoint:1
 girafarig,52
 }
