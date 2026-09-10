@@ -355,52 +355,52 @@ static void RecordCustomData(string condition)
 
 static void PrintCustomData(/*Settings* settings*/)
 {
-	//cout << settings->wantedgame << "\n";
+	//std::cout << settings->wantedgame << "\n";
 	for (string str : g_debugdata)
 	{
-		//cout << "condition " << str << "\n";
+		//std::cout << "condition " << str << "\n";
 	}
 }
 #endif //_DEBUG
 /*
 static void PrintMethodFlags(int flags)
 {
-	cout << "Method Flags:\n";
-	if (flags == 0) cout << "-MethodFilterFlags_None\n";
-	if (flags & MethodFilterFlags_Walk) cout << "-MethodFilterFlags_Walk\n";
-	if (flags & MethodFilterFlags_Surf) cout << "-MethodFilterFlags_Surf\n";
-	if (flags & MethodFilterFlags_RodOld) cout << "-MethodFilterFlags_RodOld\n";
-	if (flags & MethodFilterFlags_RodGood) cout << "-MethodFilterFlags_RodGood\n";
-	if (flags & MethodFilterFlags_RodSuper) cout << "-MethodFilterFlags_RodSuper\n";
-	if (flags & MethodFilterFlags_RockSmash) cout << "-MethodFilterFlags_RockSmash\n";
-	if (flags & MethodFilterFlags_Headbutt) cout << "-MethodFilterFlags_Headbutt\n";
-	if (flags & MethodFilterFlags_DarkGrass) cout << "-MethodFilterFlags_DarkGrass\n";
-	if (flags & MethodFilterFlags_Phenomena) cout << "-MethodFilterFlags_Phenomena\n";
-	if (flags & MethodFilterFlags_BubblingSpots) cout << "-MethodFilterFlags_BubblingSpots\n";
-	if (flags & MethodFilterFlags_Ambush) cout << "-MethodFilterFlags_Ambush\n";
+	std::cout << "Method Flags:\n";
+	if (flags == 0) std::cout << "-MethodFilterFlags_None\n";
+	if (flags & MethodFilterFlags_Walk) std::cout << "-MethodFilterFlags_Walk\n";
+	if (flags & MethodFilterFlags_Surf) std::cout << "-MethodFilterFlags_Surf\n";
+	if (flags & MethodFilterFlags_RodOld) std::cout << "-MethodFilterFlags_RodOld\n";
+	if (flags & MethodFilterFlags_RodGood) std::cout << "-MethodFilterFlags_RodGood\n";
+	if (flags & MethodFilterFlags_RodSuper) std::cout << "-MethodFilterFlags_RodSuper\n";
+	if (flags & MethodFilterFlags_RockSmash) std::cout << "-MethodFilterFlags_RockSmash\n";
+	if (flags & MethodFilterFlags_Headbutt) std::cout << "-MethodFilterFlags_Headbutt\n";
+	if (flags & MethodFilterFlags_DarkGrass) std::cout << "-MethodFilterFlags_DarkGrass\n";
+	if (flags & MethodFilterFlags_Phenomena) std::cout << "-MethodFilterFlags_Phenomena\n";
+	if (flags & MethodFilterFlags_BubblingSpots) std::cout << "-MethodFilterFlags_BubblingSpots\n";
+	if (flags & MethodFilterFlags_Ambush) std::cout << "-MethodFilterFlags_Ambush\n";
 }
 
 static void PrintTypeFlags(int flags)
 {
-	if (flags == 0) cout << "-TypeFlags_None\n";
-	if (flags & TypeFlags_Normal) cout << "-TypeFlags_Normal\n";
-	if (flags & TypeFlags_Fighting) cout << "-TypeFlags_Fighting\n";
-	if (flags & TypeFlags_Flying) cout << "-TypeFlags_Flying\n";
-	if (flags & TypeFlags_Poison) cout << "-TypeFlags_Poison\n";
-	if (flags & TypeFlags_Ground) cout << "-TypeFlags_Ground\n";
-	if (flags & TypeFlags_Rock) cout << "-TypeFlags_Rock\n";
-	if (flags & TypeFlags_Bug) cout << "-TypeFlags_Bug\n";
-	if (flags & TypeFlags_Ghost) cout << "-TypeFlags_Ghost\n";
-	if (flags & TypeFlags_Steel) cout << "-TypeFlags_Steel\n";
-	if (flags & TypeFlags_Fire) cout << "-TypeFlags_Fire\n";
-	if (flags & TypeFlags_Water) cout << "-TypeFlags_Water\n";
-	if (flags & TypeFlags_Grass) cout << "-TypeFlags_Grass\n";
-	if (flags & TypeFlags_Electric) cout << "-TypeFlags_Electric\n";
-	if (flags & TypeFlags_Psychic) cout << "-TypeFlags_Psychic\n";
-	if (flags & TypeFlags_Ice) cout << "-TypeFlags_Ice\n";
-	if (flags & TypeFlags_Dragon) cout << "-TypeFlags_Dragon\n";
-	if (flags & TypeFlags_Dark) cout << "-TypeFlags_Dark\n";
-	if (flags & TypeFlags_Fairy) cout << "-TypeFlags_Fairy\n";
+	if (flags == 0) std::cout << "-TypeFlags_None\n";
+	if (flags & TypeFlags_Normal) std::cout << "-TypeFlags_Normal\n";
+	if (flags & TypeFlags_Fighting) std::cout << "-TypeFlags_Fighting\n";
+	if (flags & TypeFlags_Flying) std::cout << "-TypeFlags_Flying\n";
+	if (flags & TypeFlags_Poison) std::cout << "-TypeFlags_Poison\n";
+	if (flags & TypeFlags_Ground) std::cout << "-TypeFlags_Ground\n";
+	if (flags & TypeFlags_Rock) std::cout << "-TypeFlags_Rock\n";
+	if (flags & TypeFlags_Bug) std::cout << "-TypeFlags_Bug\n";
+	if (flags & TypeFlags_Ghost) std::cout << "-TypeFlags_Ghost\n";
+	if (flags & TypeFlags_Steel) std::cout << "-TypeFlags_Steel\n";
+	if (flags & TypeFlags_Fire) std::cout << "-TypeFlags_Fire\n";
+	if (flags & TypeFlags_Water) std::cout << "-TypeFlags_Water\n";
+	if (flags & TypeFlags_Grass) std::cout << "-TypeFlags_Grass\n";
+	if (flags & TypeFlags_Electric) std::cout << "-TypeFlags_Electric\n";
+	if (flags & TypeFlags_Psychic) std::cout << "-TypeFlags_Psychic\n";
+	if (flags & TypeFlags_Ice) std::cout << "-TypeFlags_Ice\n";
+	if (flags & TypeFlags_Dragon) std::cout << "-TypeFlags_Dragon\n";
+	if (flags & TypeFlags_Dark) std::cout << "-TypeFlags_Dark\n";
+	if (flags & TypeFlags_Fairy) std::cout << "-TypeFlags_Fairy\n";
 }
 */
 
@@ -535,7 +535,7 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex,
 		{
 			if (foundtable && ms.type == MILESTONE_ONEWAY && MilestoneIsRelevant(Islot, 0, g_newsettings.selected_checkpoint_slot))
 			{
-				//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because oneway\n";
+				//std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accesible because oneway\n";
 				return false;
 			}
 			if (ms.progresspoint > gameprogresspoint)
@@ -550,7 +550,7 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex,
 					//seems odd but is necessary
 					if (ms.type == MILESTONE_ONEWAY)
 					{
-						//cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " oneway special case\n";
+						//std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " oneway special case\n";
 						bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
 						return methodavailable;
 					}
@@ -612,10 +612,10 @@ static bool EncounterIsAccessible(int tablenum, string method, int trainerindex,
 	//superceded teams are culled in post process
 	bool teamunlocked = trainerprogresspoint == TRAINERINDEX_NOTATRAINER || trainerprogresspoint <= gameprogresspoint;
 	bool methodavailable = std::find(unlockedmethods.begin(), unlockedmethods.end(), method) != unlockedmethods.end();
-	//if (!foundtable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because didn't find table\n";
-	//if (excludebymethod) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method excluded\n";
-	//if (!methodavailable) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method not yet available\n";
-	//if (removed) cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because table removed\n";
+	//if (!foundtable) std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because didn't find table\n";
+	//if (excludebymethod) std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method excluded\n";
+	//if (!methodavailable) std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because method not yet available\n";
+	//if (removed) std::cout << "table " << to_string(tablenum) << " " << method << " trainer " << to_string(trainerindex) << " not accessible because table removed\n";
 	return foundtable && !excludebymethod && methodavailable && !removed && teamunlocked;
 }
 
@@ -627,7 +627,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 	if (g_settings.useprogressfilter && !EncounterIsAccessible(i, g_methods[method_index]->internalname, trainerindex, progresspoint))
 	{
 		filterReason = Reason_BadProgress;
-		//cout << "table " << to_string(i) << " " << g_methods[method_index]->internalname << " trainer " << to_string(trainerindex) << " bad progress\n";
+		//std::cout << "table " << to_string(i) << " " << g_methods[method_index]->internalname << " trainer " << to_string(trainerindex) << " bad progress\n";
 	}
 
 	if (g_settings.maxallowedlevel < maxlevel)
@@ -649,7 +649,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 				table.filterReason = filterReason;
 
 			makenewtable = false;
-			//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
+			//std::cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ".\n";
 			table.encounters.push_back(newEnc);
 			table.expectedtotalpercent += chance;
 			table.lowestlevel = min(table.lowestlevel, minlevel);
@@ -676,7 +676,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 	}
 	if (makenewtable)
 	{
-		//cout << "Line " << linenum << ": new table\n";
+		//std::cout << "Line " << linenum << ": new table\n";
 		EncounterTable* newTable = new EncounterTable;
 		newTable->method_index = method_index;
 		newTable->placename = placename;
@@ -692,7 +692,7 @@ static void RegisterEncounter(__int64 chance, __int64 minlevel, __int64 maxlevel
 		newTable->goodtype = goodtype;
 		newTable->goodEVs = goodEVs;
 		newTable->progresspoint = progresspoint;
-		//cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
+		//std::cout << "///" << placename << ", " << method << " has a " << chance << "% chance of finding a " << pokemonname << " between level " << minlevel << " and " << maxlevel << ". (new table)\n";
 		newTable->encounters.push_back(newEnc);
 
 		maintables.push_back(*newTable);
@@ -708,17 +708,17 @@ static json_value* FindArrayInObjectByName(json_value* initialObject, const char
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
-	//cout << "FindArrayInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
+	//std::cout << "FindArrayInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
 	for (int i = 0; i < arrayLength; i++)
 	{
 		json_object_entry obj = initialObject->u.object.values[i];
-		//cout << "FindArrayInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		//std::cout << "FindArrayInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
 		if (obj.value->type == json_array)
 		{
 			if (isEqualString(obj.name, name))
 			{
 				//return index array is at in object
-				//cout << "FindArrayInObjectByName: " + to_string(i) + " MATCHED\n";
+				//std::cout << "FindArrayInObjectByName: " + to_string(i) + " MATCHED\n";
 				return obj.value;
 			}
 		}
@@ -730,14 +730,14 @@ static json_value* FindValueInObjectByKey(json_value* initialObject, const char*
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
-	//cout << "FindValueInObjectByKey: arrayLength: " << to_string(arrayLength) << "\n";
+	//std::cout << "FindValueInObjectByKey: arrayLength: " << to_string(arrayLength) << "\n";
 	for (int i = 0; i < arrayLength; i++)
 	{
 		json_object_entry obj = initialObject->u.object.values[i];
-		//cout << "FindValueInObjectByKey: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		//std::cout << "FindValueInObjectByKey: " + to_string(i) + " "; ExplainObjectEntry(obj);
 		if (isEqualString(obj.name, key))
 		{
-			//cout << "FindValueInObjectByKey: " + to_string(i) + " MATCHED\n";
+			//std::cout << "FindValueInObjectByKey: " + to_string(i) + " MATCHED\n";
 			return obj.value;
 		}
 	}
@@ -748,15 +748,15 @@ static json_value* FindObjectInObjectByName(json_value* initialObject, const cha
 {
 	assert(initialObject->type == json_object);
 	int arrayLength = initialObject->u.object.length;
-	//cout << "FindObjectInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
+	//std::cout << "FindObjectInObjectByName: arrayLength: " << to_string(arrayLength) << "\n";
 	for (int i = 0; i < arrayLength; i++)
 	{
 		json_object_entry obj = initialObject->u.object.values[i];
-		//cout << "FindObjectInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
+		//std::cout << "FindObjectInObjectByName: " + to_string(i) + " "; ExplainObjectEntry(obj);
 		if (obj.value->type == json_object && isEqualString(obj.name, name))
 		{
 			//return index object is at in object
-			//cout << "FindObjectInObjectByName: " + to_string(i) + " MATCHED\n";
+			//std::cout << "FindObjectInObjectByName: " + to_string(i) + " MATCHED\n";
 			return obj.value;
 		}
 	}
@@ -909,7 +909,7 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 	json_value* file;
 	if (stat(monpath.c_str(), &filestatus) != 0)
 	{
-		cout << "File " + monpath + " not found\n";
+		std::cout << "File " + monpath + " not found\n";
 		assert(0);
 		*warning = "File " + monpath + " not found";
 		return false;
@@ -918,7 +918,7 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 	file_contents = (char*)malloc(filestatus.st_size);
 	if (!file_contents)
 	{
-		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+		std::cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		assert(0);
 		*warning = "Memory error: unable to allocate " + to_string(file_size) + " bytes";
 		return false;
@@ -926,7 +926,7 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 	fp = fopen(monpath.c_str(), "rb");
 	if (!fp)
 	{
-		cout << "Unable to open " + monpath + "\n";
+		std::cout << "Unable to open " + monpath + "\n";
 		//fclose(fp);
 		free(file_contents);
 		assert(0);
@@ -936,10 +936,10 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
-		cout << "Unable to read content of " + monpath + " ret " + to_string(readNum) + "\n";
-		cout << "ferror " + to_string(ferror(fp)) + "\n";
-		cout << "feof " + to_string(feof(fp)) + "\n";
-		cout << "file_size " + to_string(file_size) + "\n";
+		std::cout << "Unable to read content of " + monpath + " ret " + to_string(readNum) + "\n";
+		std::cout << "ferror " + to_string(ferror(fp)) + "\n";
+		std::cout << "feof " + to_string(feof(fp)) + "\n";
+		std::cout << "file_size " + to_string(file_size) + "\n";
 		fclose(fp);
 		free(file_contents);
 		assert(0);
@@ -952,7 +952,7 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 	file = json_parse(json, file_size, &error_buf);
 	if (file == NULL)
 	{
-		cout << "File " << monpath << ": Unable to parse data: " << error_buf << "\n";
+		std::cout << "File " << monpath << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		assert(0);
 		*warning = "File " + monpath + ": Unable to parse data: " + error_buf;
@@ -986,7 +986,7 @@ static bool IsPokemonMatchingType(string version, int flags, string pokemonname,
 		{
 			for (gameindex = 0; gameindex < GAMES_TOTAL; gameindex++)
 			{
-				//cout << version << " == " << g_games[gameindex]->internalname << "\n";
+				//std::cout << version << " == " << g_games[gameindex]->internalname << "\n";
 				if (version == g_games[gameindex]->internalname)
 				{
 					break;
@@ -1071,7 +1071,7 @@ static int ValidateMethod(int flags, string method)
 	int i = 0;
 	while (i < METHODS_TOTAL)
 	{
-		//cout << method << " == " << g_methods[i]->internalname << "\n";
+		//std::cout << method << " == " << g_methods[i]->internalname << "\n";
 		StringFlagsContainStringFlag(method, flags, g_methods[i]->internalname, g_methods[i]->flag, &result);
 		if (result != 0)
 			break;
@@ -1082,7 +1082,7 @@ static int ValidateMethod(int flags, string method)
 		assert(0);//this encounter method is unaccounted for
 	else if (result == 1)
 		return -1;//bad method
-	//cout << to_string(i) << "\n";
+	//std::cout << to_string(i) << "\n";
 	return i;
 }
 
@@ -1142,7 +1142,7 @@ static bool FindInExpFile(int offset, string expfile, string pokemonname, int* s
 		size_t s1End = textLine.find(',');
 		string str1 = textLine.substr(0, s1End);
 
-		//cout << "mon '" << str2 << "'\n";
+		//std::cout << "mon '" << str2 << "'\n";
 		if (str1 == pokemonname)
 		{
 			size_t s2Start = s1End + 1;
@@ -1200,7 +1200,7 @@ static bool IsPokemonInEVRange(string version, string pokemonname)
 		int stat;
 		if (!FindInExpFile(i, expfile, pokemonname, &stat))
 		{
-			cout << "ERROR: Could not find pokemon named '" << pokemonname << "' in " << expfile << "\n";
+			std::cout << "ERROR: Could not find pokemon named '" << pokemonname << "' in " << expfile << "\n";
 			continue;
 		}
 		if (stat < g_settings.minSingleMonEV[i] || stat > g_settings.maxSingleMonEV[i])
@@ -1223,7 +1223,7 @@ static void ParseRematchDetails(string pokemonname, string level, string placena
 		if (IsPokemonMatchingType(g_games[version_index]->internalname, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
 		{
 			//pokemon is a type we don't allow
-			//cout << pokemonname << " is bad type\n";
+			//std::cout << pokemonname << " is bad type\n";
 			filterReason = Reason_BadType;
 		}
 	}
@@ -1344,18 +1344,18 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 		}
 		assert(encounter->avgexp > 0);
 #ifdef _DEBUG
-		//if (settings->printtext) cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
-		//if (settings->printtext) cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
+		//if (settings->printtext) std::cout << "total avg exp " << table->averageYields[OFFSET_EXP] << " += " << encounter.avgexpweighted << "\n";
+		//if (settings->printtext) std::cout << "totalchance " << table->totalchance << " += " << encounter.chance << "\n\n";
 #endif //_DEBUG
 		if (table->method_index == METHOD_REMATCH)
 		{
-			if (g_settings.printtext) cout << encounter->pokemonname << " at level " << encounter->minlevel << " gives " << encounter->avgexp << "EXP\n";
+			if (g_settings.printtext) std::cout << encounter->pokemonname << " at level " << encounter->minlevel << " gives " << encounter->avgexp << "EXP\n";
 			table->averageYields[OFFSET_EXP] += encounter->avgexp;
 		}
 		else
 		{
 			encounter->avgexpweighted = (double)(encounter->avgexp * (encounter->chance - pctlost) * chancescale) / table->expectedtotalpercent;
-			if (g_settings.printtext) cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
+			if (g_settings.printtext) std::cout << encounter->pokemonname << " has " << encounter->chance << "% chance between level " << encounter->minlevel << " and " << encounter->maxlevel << ". avgexp " << encounter->avgexp << ", weighted " << encounter->avgexpweighted << "\n";
 			table->averageYields[OFFSET_EXP] += encounter->avgexpweighted;
 			assert(encounter->avgexpweighted > 0);
 		}
@@ -1382,7 +1382,7 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 				table->efficientEVs[offset].expPerEV = lowestExp / stat;
 				table->efficientEVs[offset].pokemonname = encounter->pokemonname;
 				//if (table->filenumber == 253 && table->method_index == METHOD_WALK)
-					//cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
+					//std::cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 			}
 			else
 			{
@@ -1391,10 +1391,10 @@ static void ProcessStat(Encounter* encounter, EncounterTable* table, int offset,
 					table->efficientEVs[offset].expPerEV = lowestExp / stat;
 					table->efficientEVs[offset].pokemonname = encounter->pokemonname;
 					//if (table->filenumber == 253 && table->method_index == METHOD_WALK)
-						//cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
+						//std::cout << "Best efficient EV for " << offset << " is " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 				}
 				//else if (table->filenumber == 253 && table->method_index == METHOD_WALK)
-					//cout << "Less efficient EV for " << offset << ": " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
+					//std::cout << "Less efficient EV for " << offset << ": " << encounter->pokemonname << " (" << lowestExp << " / " << stat << " = " << (lowestExp / stat) << ")\n";
 			}
 		}
 	}
@@ -1433,7 +1433,7 @@ static int AddHoennUnovaSwarm(EncounterTable* table, int generation)
 			targetgame = "w2";
 		else
 		{
-			cout << "ERROR: tried to get gen 3/5 swarm encounter for invalid game '" << g_games[table->version_index]->uiname << "' file number " << to_string(table->filenumber) << "\n";
+			std::cout << "ERROR: tried to get gen 3/5 swarm encounter for invalid game '" << g_games[table->version_index]->uiname << "' file number " << to_string(table->filenumber) << "\n";
 			continue;
 		}
 		if (textLine.find(targetgame) != string::npos)
@@ -1514,7 +1514,7 @@ static int ParseEncounterBlock(json_value* versiondetails, json_value* encounter
 			if (IsPokemonMatchingType(givengame, g_settings.pkmnfiltertypeflags, pokemonname, &warning))
 			{
 				//pokemon is a type we don't allow
-				//cout << pokemonname << " is bad type\n";
+				//std::cout << pokemonname << " is bad type\n";
 				filterReason = Reason_BadType;
 			}
 		}
@@ -1652,7 +1652,7 @@ static int ParseTrainerFile(int iFile, string placename)
 			}
 			else
 			{
-				cout << "Didn't know what to do with trainer data: '" + str1 + "'\n";
+				std::cout << "Didn't know what to do with trainer data: '" + str1 + "'\n";
 				return 0;
 			}
 		}
@@ -1663,7 +1663,7 @@ static int ParseTrainerFile(int iFile, string placename)
 		}
 		else
 		{
-			cout << "Didn't know what to do with line: '" + str1 + "'\n";
+			std::cout << "Didn't know what to do with line: '" + str1 + "'\n";
 			return 0;
 		}
 	}
@@ -1673,7 +1673,7 @@ static int ParseTrainerFile(int iFile, string placename)
 static int ParseLocationDataFile(int iFile, string *placename)
 {
 	string locationareapath = g_pkmndatapath + "api\\v2\\location-area\\" + to_string(iFile) + "\\index.json";
-	//cout << path << "\n";
+	//std::cout << path << "\n";
 	GameObject* game = g_games[g_settings.wantedgame_index];
 	FILE* fp;
 	struct stat filestatus;
@@ -1683,7 +1683,7 @@ static int ParseLocationDataFile(int iFile, string *placename)
 	json_value* file;
 	if (stat(locationareapath.c_str(), &filestatus) != 0)
 	{
-		//cout << "File " + locationareapath + " not found\n";
+		//std::cout << "File " + locationareapath + " not found\n";
 		//we delete some folders because they're redundant, and sometimes pokeapi is just missing folders on its own
 		//return quietly
 		return 1;
@@ -1692,13 +1692,13 @@ static int ParseLocationDataFile(int iFile, string *placename)
 	file_contents = (char*)malloc(filestatus.st_size);
 	if (!file_contents)
 	{
-		cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+		std::cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 		return 0;
 	}
 	fp = fopen(locationareapath.c_str(), "rb");
 	if (!fp)
 	{
-		cout << "Unable to open " + locationareapath + "\n";
+		std::cout << "Unable to open " + locationareapath + "\n";
 		//fclose(fp);
 		free(file_contents);
 		return 0;
@@ -1706,10 +1706,10 @@ static int ParseLocationDataFile(int iFile, string *placename)
 	size_t readNum = fread(file_contents, 1, file_size, fp);
 	if (readNum != file_size)
 	{
-		cout << "Unable to read content of " + locationareapath + " ret " + to_string(readNum) + "\n";
-		cout << "ferror " + to_string(ferror(fp)) + "\n";
-		cout << "feof " + to_string(feof(fp)) + "\n";
-		cout << "file_size " + to_string(file_size) + "\n";
+		std::cout << "Unable to read content of " + locationareapath + " ret " + to_string(readNum) + "\n";
+		std::cout << "ferror " + to_string(ferror(fp)) + "\n";
+		std::cout << "feof " + to_string(feof(fp)) + "\n";
+		std::cout << "file_size " + to_string(file_size) + "\n";
 		fclose(fp);
 		free(file_contents);
 		return 0;
@@ -1720,7 +1720,7 @@ static int ParseLocationDataFile(int iFile, string *placename)
 	file = json_parse(json, file_size, &error_buf);
 	if (file == NULL)
 	{
-		cout << "File " << to_string(iFile) << ": Unable to parse data: " << error_buf << "\n";
+		std::cout << "File " << to_string(iFile) << ": Unable to parse data: " << error_buf << "\n";
 		free(file_contents);
 		return 0;
 	}
@@ -1797,7 +1797,7 @@ static bool compareByPartyMap(const Party a, const Party b)
 
 static bool compareByExp(const EncounterTable a, const EncounterTable b)
 {
-	//cout << a.averageYields[OFFSET_EXP] << " > " << b.averageYields[OFFSET_EXP] << "\n";
+	//std::cout << a.averageYields[OFFSET_EXP] << " > " << b.averageYields[OFFSET_EXP] << "\n";
 	//if a table is filtered out then total avg exp is probably 0
 	assert(a.averageYields[OFFSET_EXP] > 0 || a.filterReason != Reason_None);
 	assert(b.averageYields[OFFSET_EXP] > 0 || b.filterReason != Reason_None);
@@ -1925,7 +1925,7 @@ static bool compareByExpPerTotalEV(const EncounterTable a, const EncounterTable 
 
 static void ReadTables()
 {
-	if (g_settings.printtext) cout << "Reading encounter data\n";
+	if (g_settings.printtext) std::cout << "Reading encounter data\n";
 	GameObject* game = g_games[g_settings.wantedgame_index];
 	
 	//look at ranges to find how many files we're looking through for the progress bar
@@ -1942,14 +1942,14 @@ static void ReadTables()
 	for (int i = 0; i < game->folderRanges.size(); i += 2)
 	{
 		int a = i + 1;
-		if (g_settings.printtext) cout << "|     PROGRESS     |\n";
+		if (g_settings.printtext) std::cout << "|     PROGRESS     |\n";
 		for (int j = game->folderRanges[i]; j <= game->folderRanges[a]; j++)
 		{
 			filesread++;
 			g_settingswindowdata.progress = (1 - (static_cast<float>(totalfiles) - filesread) / totalfiles) * 0.5;
 			if (g_settingswindowdata.progress >= (notch * 0.05))
 			{
-				if (g_settings.printtext) cout << "-";
+				if (g_settings.printtext) std::cout << "-";
 				notch++;
 			}
 			string placename;
@@ -1960,7 +1960,7 @@ static void ReadTables()
 		}
 	}
 
-	if (g_settings.printtext) cout << "\n";
+	if (g_settings.printtext) std::cout << "\n";
 	int numTablesProcessed = 0;
 	for (EncounterTable& table : maintables)
 	{
@@ -1974,16 +1974,16 @@ static void ReadTables()
 		}
 		//progress bar
 		numTablesProcessed++;
-		//cout << to_string(settingswindowdata->progress) << "\n";
+		//std::cout << to_string(settingswindowdata->progress) << "\n";
 		if (g_settingswindowdata.progress >= (notch * 0.05))
 		{
-			if (g_settings.printtext) cout << "-";
+			if (g_settings.printtext) std::cout << "-";
 			notch++;
 		}
 		//really prefer to not save tables that i know are bad, but this is by far the least painful way to take care of this
 		if (table.filterReason == Reason_None || table.filterReason == Reason_BadType)
 		{
-			if (g_settings.printtext) cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			if (g_settings.printtext) std::cout << "\n" << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			int slot = OFFSET_EXP - 1;
 			table.averageYields[slot] = 0;
 			table.totalchance = 0;//sanity check: this number should always = 100 or expectedtotalpercent at the end of the table.
@@ -2012,7 +2012,7 @@ static void ReadTables()
 					size_t s1End = textLine.find(',');
 					string str1 = textLine.substr(0, s1End);
 
-					//cout << "mon '" << str1 << "'\n";
+					//std::cout << "mon '" << str1 << "'\n";
 					if (str1 != encounter.pokemonname)
 						continue;
 
@@ -2043,7 +2043,7 @@ static void ReadTables()
 					}
 				}
 			}
-			if (g_settings.printtext) cout << table.averageYields[OFFSET_EXP] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
+			if (g_settings.printtext) std::cout << table.averageYields[OFFSET_EXP] << " average EXP in " << table.placename << ", " << g_methods[table.method_index]->uiname << ", " << g_games[table.version_index]->uiname << "\n";
 			std::sort(table.encounters.begin(), table.encounters.end(), compareByAEW);
 
 			//unless we're using repel or max level, the table's total chance should always be 100.
@@ -2056,10 +2056,10 @@ static void ReadTables()
 			//rematch slots don't have a concept of chance
 			if (errorfound && table.method_index != METHOD_REMATCH)
 			{
-				cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
-				cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
-				cout << "repellevel: " << to_string(g_settings.repellevel) << " maxallowedlevel: " << to_string(g_settings.maxallowedlevel) << "\n";
-				cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
+				std::cout << "ERROR: Total chance was " << table.totalchance << "! File number " << table.filenumber << "\n";
+				std::cout << "wantedgame: " << game->uiname << " totalchance: " << to_string(table.totalchance) << "\n";
+				std::cout << "repellevel: " << to_string(g_settings.repellevel) << " maxallowedlevel: " << to_string(g_settings.maxallowedlevel) << "\n";
+				std::cout << "expectedtotalpercent: " << to_string(table.expectedtotalpercent) << "\n";
 				cin.get();
 				return;
 			}
@@ -2068,9 +2068,9 @@ static void ReadTables()
 	}
 	if (g_settings.printtext)
 	{
-		cout << "\n";
-		cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
-		cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
+		std::cout << "\n";
+		std::cout << "To view data more neatly, copy the text output above and put it into any website or program that can sort text (http://www.unit-conversion.info/texttools/sort-lines/)\n";
+		std::cout << "You may also want to filter the lines in some way (http://www.unit-conversion.info/texttools/filter-lines/)\n";
 	}
 #ifdef _DEBUG
 	PrintCustomData(/*settings*/);
@@ -2827,14 +2827,14 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				{
 					if (lastmonname == encounter.pokemonname)
 					{
-						//cout << lastmonname << " == " << encounter.pokemonname << "\n";
+						//std::cout << lastmonname << " == " << encounter.pokemonname << "\n";
 						found = true;
 					}
 					lastmonname = encounter.pokemonname;
 				}
 				if (!found)
 				{
-					cout << "Culling table " << table.placename << ", " << g_methods[table.method_index]->uiname << "\n";
+					std::cout << "Culling table " << table.placename << ", " << g_methods[table.method_index]->uiname << "\n";
 					table.filterReason = Reason_LackingDuplicateMons;
 				}
 			}
@@ -2854,23 +2854,23 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				json_value* file;
 				if (stat(path.c_str(), &filestatus) != 0)
 				{
-					//cout << "File " + path + " not found\n";
+					//std::cout << "File " + path + " not found\n";
 					//assert(0);
 					continue;
 				}
-				cout << i << "/10277\n";
+				std::cout << i << "/10277\n";
 				file_size = filestatus.st_size;
 				file_contents = (char*)malloc(filestatus.st_size);
 				if (!file_contents)
 				{
-					cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
+					std::cout << "Memory error: unable to allocate " + to_string(file_size) + " bytes\n";
 					assert(0);
 					return;
 				}
 				fp = fopen(path.c_str(), "rb");
 				if (!fp)
 				{
-					cout << "Unable to open " + path + "\n";
+					std::cout << "Unable to open " + path + "\n";
 					//fclose(fp);
 					free(file_contents);
 					assert(0);
@@ -2879,10 +2879,10 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				size_t readNum = fread(file_contents, 1, file_size, fp);
 				if (readNum != file_size)
 				{
-					cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
-					cout << "ferror " + to_string(ferror(fp)) + "\n";
-					cout << "feof " + to_string(feof(fp)) + "\n";
-					cout << "file_size " + to_string(file_size) + "\n";
+					std::cout << "Unable to read content of " + path + " ret " + to_string(readNum) + "\n";
+					std::cout << "ferror " + to_string(ferror(fp)) + "\n";
+					std::cout << "feof " + to_string(feof(fp)) + "\n";
+					std::cout << "file_size " + to_string(file_size) + "\n";
 					fclose(fp);
 					free(file_contents);
 					assert(0);
@@ -2894,7 +2894,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				file = json_parse(json, file_size, &error_buf);
 				if (file == NULL)
 				{
-					cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
+					std::cout << "File " << path << ": Unable to parse data: " << error_buf << "\n";
 					free(file_contents);
 					assert(0);
 					return;
@@ -2931,7 +2931,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				struct stat filestatus;
 				if (stat(rematchpath.c_str(), &filestatus) != 0)
 				{
-					cout << "missing " << to_string(i) << "\n";
+					std::cout << "missing " << to_string(i) << "\n";
 					break;
 				}
 				ifstream ReadFile(rematchpath);
@@ -2947,7 +2947,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					size_t nameEnd = textLine.find(',');
 					string partyName = textLine.substr(0, nameEnd);
 					string mapName = textLine.substr(nameEnd + 1);
-					//cout << "party " << partyName << " on map " << mapName << "\n";
+					//std::cout << "party " << partyName << " on map " << mapName << "\n";
 					Party newParty;
 					newParty.code_name = partyName;
 					newParty.map_num = stoi(mapName);
@@ -2962,7 +2962,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			struct stat filestatus;
 			if (stat(rematchpath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing overworld_party_names.txt\n";
+				std::cout << "missing overworld_party_names.txt\n";
 			}
 			else
 			{
@@ -2985,7 +2985,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					else if (!mapName.empty())
 					{
 						string partyName = str1;
-						//cout << "party " << partyName << " on map " << mapName << "\n";
+						//std::cout << "party " << partyName << " on map " << mapName << "\n";
 						//don't duplicate
 						bool foundDupe = false;
 						for (Party party : parties)
@@ -3011,7 +3011,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					}
 					else
 					{
-						cout << "Got party name, but no mapname: '" << textLine << "'\n";
+						std::cout << "Got party name, but no mapname: '" << textLine << "'\n";
 						break;
 					}
 
@@ -3022,7 +3022,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			string partypath = g_pkmndatapath + "frlgtrainerdata/party_defs.txt";
 			if (stat(partypath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing party_defs.txt\n";
+				std::cout << "missing party_defs.txt\n";
 			}
 			else
 			{
@@ -3054,7 +3054,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 								std::transform(mon.begin(), mon.end(), mon.begin(), [](unsigned char c) { return std::tolower(c); });
 								std::replace(mon.begin(), mon.end(), '_', '-');
 								party.mondata.push_back(mon + "," + level);
-								//cout << mon << "," << level << "\n";
+								//std::cout << mon << "," << level << "\n";
 								assert(party.mondata.size() <= 6);
 								level.clear();
 							}
@@ -3065,7 +3065,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 							}
 							else
 							{
-								cout << "Didn't know what to do with data: '" << textLine << "'\n";
+								std::cout << "Didn't know what to do with data: '" << textLine << "'\n";
 								break;
 							}
 						}
@@ -3120,7 +3120,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 				struct stat filestatus;
 				if (stat(rematchpath.c_str(), &filestatus) != 0)
 				{
-					cout << "missing " << to_string(iFile) << "\n";
+					std::cout << "missing " << to_string(iFile) << "\n";
 					break;
 				}
 				ifstream ReadFile(rematchpath);
@@ -3137,7 +3137,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					newParty.code_name = textLine;
 					//map number will come from the name of the bulba file
 					newParty.progresspoint = iFile == 1 ? PROGRESSPOINT_DONTCHECK : iFile;
-					cout << "Party #" << to_string(parties.size()) << " From File " << to_string(iFile) << " Name: " << newParty.code_name << " PP: " << to_string(newParty.progresspoint) << "\n";
+					std::cout << "Party #" << to_string(parties.size()) << " From File " << to_string(iFile) << " Name: " << newParty.code_name << " PP: " << to_string(newParty.progresspoint) << "\n";
 					parties.push_back(newParty);
 				}
 				ReadFile.close();
@@ -3147,7 +3147,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			struct stat filestatus;
 			if (stat(locpath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing trainer_locations_2.txt\n";
+				std::cout << "missing trainer_locations_2.txt\n";
 			}
 			else
 			{
@@ -3178,7 +3178,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 							{
 								found = true;
 								parties[iParty].map_num = stoi(mapName);
-								cout << "Party " << parties[iParty].code_name << " Location is " << to_string(parties[iParty].map_num) << "\n";
+								std::cout << "Party " << parties[iParty].code_name << " Location is " << to_string(parties[iParty].map_num) << "\n";
 								ESAssert(parties[iParty].map_num);
 								break;
 							}
@@ -3191,7 +3191,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 					}
 					else
 					{
-						cout << "Got party name, but no mapname: '" << textLine << "'\n";
+						std::cout << "Got party name, but no mapname: '" << textLine << "'\n";
 						break;
 					}
 
@@ -3202,7 +3202,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			string rematchpath = g_pkmndatapath + "dptrainerdata/rematch_data.txt";
 			if (stat(rematchpath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing rematch_data.txt\n";
+				std::cout << "missing rematch_data.txt\n";
 			}
 			else
 			{
@@ -3237,7 +3237,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 									{
 										if (parties[iParty2].code_name == newPartyName)
 										{
-											cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << "\n";
+											std::cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << "\n";
 											//ESAssert(p.map_num);
 											parties[iParty2].map_num = p.map_num;
 										}
@@ -3252,7 +3252,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 								{
 									if (parties[iParty2].code_name == lastPartyName)
 									{
-										cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << " (B)\n";
+										std::cout << "Copying map number " << to_string(p.map_num) << " from " << p.code_name << " to " << parties[iParty2].code_name << " (B)\n";
 										parties[iParty2].map_num = p.map_num;
 									}
 								}
@@ -3266,7 +3266,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			string partypath = g_pkmndatapath + "dptrainerdata/party_defs.txt";
 			if (stat(partypath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing party_defs.txt\n";
+				std::cout << "missing party_defs.txt\n";
 			}
 			else
 			{
@@ -3298,7 +3298,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 								std::transform(mon.begin(), mon.end(), mon.begin(), [](unsigned char c) { return std::tolower(c); });
 								std::replace(mon.begin(), mon.end(), '_', '-');
 								party.mondata.push_back(mon + "," + level);
-								cout << mon << "," << level << "\n";
+								std::cout << mon << "," << level << "\n";
 								assert(party.mondata.size() <= 6);
 								level.clear();
 							}
@@ -3309,14 +3309,14 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 							}
 							else
 							{
-								cout << "Didn't know what to do with data: '" << textLine << "'\n";
+								std::cout << "Didn't know what to do with data: '" << textLine << "'\n";
 								break;
 							}
 						}
 						else if (str1 == party.code_name)
 						{
 							reachedParty = true;
-							cout << party.code_name << "\n";
+							std::cout << party.code_name << "\n";
 						}
 					}
 					ReadFile.close();
@@ -3326,7 +3326,7 @@ static void UISettingSections(GameObject* game, bool allgames, bool hgss)
 			string namespath = g_pkmndatapath + "dptrainerdata/trainer_name_translate.txt";
 			if (stat(namespath.c_str(), &filestatus) != 0)
 			{
-				cout << "missing trainer_name_translate.txt\n";
+				std::cout << "missing trainer_name_translate.txt\n";
 			}
 			else
 			{
@@ -3650,7 +3650,7 @@ static void ParseProgressFile(int game_index)
 
 		if (ms_type != MILESTONE_CHECKPOINT && lastcheckpointslot == -1)
 		{
-			cout << "ERROR on line: " + textLine + "\nNo checkpoint to attach this item to!\n";
+			std::cout << "ERROR on line: " + textLine + "\nNo checkpoint to attach this item to!\n";
 			return;
 		}
 
@@ -3667,7 +3667,7 @@ static void ParseProgressFile(int game_index)
 
 		if (ms_type != MILESTONE_CHECKPOINT && lastmilestoneslot == -1)
 		{
-			cout << "ERROR on line: " + textLine + "\nNo milestone to attach this item to!\n";
+			std::cout << "ERROR on line: " + textLine + "\nNo milestone to attach this item to!\n";
 			return;
 		}
 
@@ -3752,14 +3752,14 @@ static void ParseProgressFile(int game_index)
 			}
 			else
 			{
-				cout << "ERROR on line: " + textLine + "\nString '" + str2 + "' not recognized.\n";
+				std::cout << "ERROR on line: " + textLine + "\nString '" + str2 + "' not recognized.\n";
 				return;
 			}
 		}
 
 		if (ms_type == MILESTONE_NONE)
 		{
-			cout << "ERROR on line: " + textLine + "\nCommand not recognized.\n";
+			std::cout << "ERROR on line: " + textLine + "\nCommand not recognized.\n";
 			return;
 		}
 
@@ -4030,9 +4030,9 @@ static void RegisterMethods()
 //most stuff below this line is imgui
 int main(int, char**)
 {
-	cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based\n";
-	cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
-	cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
+	std::cout << "Oh hi, I'm the text output window. If you use the text output option, a purely text-based\n";
+	std::cout << "output will be printed inside me. This was the program's output from before it had a GUI.\n";
+	std::cout << "You may want to use the old output if you have some kind of specific analytical use.\n";
 
 	RegisterGames();
 	RegisterMethods();
